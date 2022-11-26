@@ -1,6 +1,6 @@
 package com.msgrserver.service;
 
-import com.msgrserver.model.User;
+import com.msgrserver.model.entity.User;
 import com.msgrserver.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
