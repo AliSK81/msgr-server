@@ -19,27 +19,6 @@ import java.util.stream.Collectors;
 public class ChatHandler {
     private final ChatService chatService;
 
-    public Response sendText(Long userId, MessageSendTextDto dto) {
-        var chat = chatService.sendText(
-                dto.getChatId(),
-                userId,
-                Mapper.map(dto, TextMessage.class)
-        );
 
-        var newMessage = (TextMessage) chat.getMessages().last();
-
-        var newMessageDto = Mapper.map(newMessage, MessageReceiveTextDto.class);
-        newMessageDto.setChatId(chat.getId());
-
-        var action = Action.builder()
-                .type(ActionType.SEND_TEXT)
-                .dto(newMessageDto)
-                .build();
-
-        return Response.builder()
-                .receivers(chat.getUsers().stream().map(User::getId).collect(Collectors.toSet()))
-                .action(action)
-                .build();
-    }
 
 }

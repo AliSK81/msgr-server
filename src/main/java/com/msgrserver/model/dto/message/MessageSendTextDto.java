@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessageSendTextDto extends ActionDto {
+    private Long senderId;
     private Long chatId;
     private String text;
 }

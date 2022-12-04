@@ -1,6 +1,7 @@
 package com.msgrserver.action;
 
 import com.msgrserver.handler.ChatHandler;
+import com.msgrserver.handler.MessageHandler;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
 import com.msgrserver.service.ChatService;
@@ -13,8 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ActionHandler {
-    private Long userId;
+
     private final ChatHandler chatHandler;
+    private final MessageHandler messageHandler;
 
     public Response handle(Action action) {
 
@@ -26,7 +28,7 @@ public class ActionHandler {
 
             case SEND_TEXT -> {
 
-                return chatHandler.sendText(userId, (MessageSendTextDto) action.getDto());
+                return messageHandler.sendText((MessageSendTextDto) action.getDto());
 
             }
 

@@ -1,9 +1,7 @@
 package com.msgrserver.model.entity.user;
 
 import com.msgrserver.model.entity.chat.Chat;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Set;
@@ -16,11 +14,8 @@ import java.util.Set;
 @Entity
 public class User {
     @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String phone;
     private String email;
-
-    @ManyToMany
-    private Set<Chat> chats;
-
 }

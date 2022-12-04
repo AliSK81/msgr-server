@@ -2,7 +2,10 @@ package com.msgrserver.service;
 
 import com.msgrserver.exception.BadRequestException;
 import com.msgrserver.exception.ChatNotFoundException;
+import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.chat.Chat;
+import com.msgrserver.model.entity.chat.PrivateChat;
+import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.message.BinaryMessage;
 import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.message.TextMessage;
@@ -24,31 +27,33 @@ public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepository;
 
-    @Override
-    public Chat sendText(Long chatId, Long senderId, TextMessage textMessage) {
-
-        checkChat(chatId, senderId);
-
-        textMessage.setSenderId(senderId);
-        textMessage.setDateTime(LocalDateTime.now());
-
-        var chat = findChat(chatId);
-        chat.getMessages().add(textMessage);
-
-        return chatRepository.save(chat);
-    }
-
-    @Override
-    public Chat sendFile(Long chatId, BinaryMessage binaryMessage) {
-        return null;
-    }
-
-
     private void checkChat(Long chatId, Long senderId) {
         // todo check chat exist or to be allowed to send message
     }
 
     private Chat findChat(Long chatId) {
         return chatRepository.findById(chatId).orElseThrow(ChatNotFoundException::new);
+    }
+
+    @Override
+    public Chat addChat(Long userId, Chat chat) {
+        var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        chat.setOwner(user);
+        return chatRepository.save(chat);
+    }
+
+    @Override
+    public void deleteChat(Long userId, Long chatId) {
+
+    }
+
+    @Override
+    public PublicChat joinPublicChat(Long chatId, Long userId) {
+        return null;
+    }
+
+    @Override
+    public PublicChat leavePublicChat(Long chatId, Long userId) {
+        return null;
     }
 }

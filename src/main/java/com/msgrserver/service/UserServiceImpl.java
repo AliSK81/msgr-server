@@ -27,32 +27,6 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteById(userId);
     }
 
-    @Override
-    public User createPrivateChat(Long userId, PrivateChat privateChat) {
-        return null;
-    }
-
-    @Override
-    public User createPublicChat(Long userId, PublicChat publicChat) {
-        return null;
-    }
-
-    @Override
-    public User joinPublicChat(Long userId, Long chatId) {
-        return null;
-    }
-
-    @Override
-    public User leavePublicChat(Long userId, Long chatId) {
-        return null;
-    }
-
-    @Override
-    public void deletePublicChat(Long userId, Long chatId) {
-
-    }
-
-
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }

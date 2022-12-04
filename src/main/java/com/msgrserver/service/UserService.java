@@ -13,14 +13,4 @@ public interface UserService {
 
     void removeUser(Long userId);
 
-    User createPrivateChat(Long userId, PrivateChat privateChat);
-
-    User createPublicChat(Long userId, PublicChat publicChat);
-
-    User joinPublicChat(Long userId, Long chatId);
-
-    User leavePublicChat(Long userId, Long chatId);
-
-    void deletePublicChat(Long userId, Long chatId);
-
 }
