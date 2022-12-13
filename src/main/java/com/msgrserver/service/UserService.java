@@ -1,16 +1,13 @@
 package com.msgrserver.service;
 
-import com.msgrserver.model.entity.chat.Chat;
-import com.msgrserver.model.entity.chat.PrivateChat;
-import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 
-import java.util.List;
-import java.util.Set;
-
 public interface UserService {
-    User addUser(User user);
+    User findUser(Long userId);
 
-    void removeUser(Long userId);
+    User saveUser(User user);
+
+    void deleteUser(Long userId);
+
 
 }

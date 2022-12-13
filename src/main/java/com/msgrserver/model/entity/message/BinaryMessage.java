@@ -13,5 +13,6 @@ import lombok.experimental.SuperBuilder;
 @ToString
 public class BinaryMessage extends Message {
     private String name;
+    private String path;
     private String caption;
 }

@@ -1,12 +1,8 @@
 package com.msgrserver.model.entity.chat;
 
 import com.msgrserver.model.entity.user.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Set;
@@ -17,9 +13,17 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Getter
-public class PublicChat extends Chat {
+@Setter
+public class PublicChat {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
     private String title;
     private String link;
+
+    @ManyToOne
+    private User owner;
 
     @ManyToMany
     private Set<User> members;

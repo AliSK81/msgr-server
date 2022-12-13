@@ -7,11 +7,16 @@ import com.msgrserver.model.dto.message.MessageReceiveTextDto;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
 import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
+import com.msgrserver.service.ChatService;
 import com.msgrserver.service.MessageService;
+import com.msgrserver.service.UserService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -19,24 +24,36 @@ import java.util.stream.Collectors;
 public class MessageHandler {
 
     private final MessageService messageService;
+    private final ChatService chatService;
+
+    private final UserService userService;
 
     public Response sendText(MessageSendTextDto dto) {
-        var newMessage = messageService.sendText(
-                dto.getChatId(),
+        var newMessage = messageService.saveText(
                 Mapper.map(dto, TextMessage.class)
         );
 
         var newMessageDto = Mapper.map(newMessage, MessageReceiveTextDto.class);
-
-        newMessageDto.setChatId(newMessage.getChat().getId());
 
         var action = Action.builder()
                 .type(ActionType.SEND_TEXT)
                 .dto(newMessageDto)
                 .build();
 
+        var chatId = dto.getChatId();
+
+        Set<Long> receivers;
+
+        if (chatId < 0) {
+            chatId = -chatId;
+            receivers = chatService.findChat(chatId).getMembers().stream()
+                    .map(User::getId).collect(Collectors.toSet());
+        } else {
+            receivers = new HashSet<>(List.of(userService.findUser(chatId).getId()));
+        }
+
         return Response.builder()
-                .receivers(newMessage.getChat().getUsers().stream().map(User::getId).collect(Collectors.toSet()))
+                .receivers(receivers)
                 .action(action)
                 .build();
     }
