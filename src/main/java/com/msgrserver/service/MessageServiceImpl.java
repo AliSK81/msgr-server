@@ -24,11 +24,12 @@ public class MessageServiceImpl implements MessageService {
     private final UserRepository userRepository;
 
     @Override
-    public TextMessage saveText(TextMessage textMessage) {
+    public TextMessage saveText(Long chatId, TextMessage textMessage) {
 
         var sender = findUser(textMessage.getSenderId());
 
-        var chatId = textMessage.getChatId();
+        var Chat = findChat(chatId);
+
 
         if (chatId < 0) {
 
@@ -36,9 +37,9 @@ public class MessageServiceImpl implements MessageService {
 
             var chat = findChat(chatId);
 
-            if (!chat.getMembers().contains(sender)) {
-                throw new BadRequestException();
-            }
+//            if (!chat.getMembers().contains(sender)) {
+//                throw new BadRequestException();
+//            }
 
             // todo check sender is a chat participant
             // todo check chat type is channel and sender is an admin

@@ -1,5 +1,6 @@
 package com.msgrserver.model.entity.message;
 
+import com.msgrserver.model.entity.chat.Chat;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -18,8 +19,8 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Long chatId;
     private Long senderId;
     private LocalDateTime dateTime;
     private MessageType messageType;
+
 }

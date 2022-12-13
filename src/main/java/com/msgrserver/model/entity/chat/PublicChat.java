@@ -9,15 +9,11 @@ import java.util.Set;
 
 @Entity
 @SuperBuilder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
-@Getter
 @Setter
-public class PublicChat {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class PublicChat extends Chat {
 
     private String title;
     private String link;
