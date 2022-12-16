@@ -12,14 +12,22 @@ import jakarta.websocket.EndpointConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
 public class ActionDecoder implements Decoder.Text<Action> {
 
     @Override
     public Action decode(String jsonMessage) {
         try {
-            // todo decrypt json message
-
-            JSONObject obj = new JSONObject(jsonMessage);
+            EncryptDecrypt encryptDecrypt = new EncryptDecrypt();
+            String decrypt = encryptDecrypt.decrypt(jsonMessage);
+            JSONObject obj = new JSONObject(decrypt);
 
             var actionTypeJson = obj.getString("type");
             var actionDtoJson = obj.getString("dto");
@@ -32,7 +40,9 @@ public class ActionDecoder implements Decoder.Text<Action> {
                     .type(actionType)
                     .dto(actionDto)
                     .build();
-        } catch (JsonProcessingException | JSONException | ClassNotFoundException e) {
+        } catch (JsonProcessingException | JSONException | ClassNotFoundException | NoSuchAlgorithmException |
+                 NoSuchPaddingException | UnsupportedEncodingException | InvalidKeyException | BadPaddingException |
+                 IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
             throw new RuntimeException(e);
         }
     }
