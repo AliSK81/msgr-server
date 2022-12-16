@@ -32,10 +32,9 @@ class MessageServiceTest {
 
         var msgFromAli = TextMessage.builder()
                 .senderId(userAli.getId())
-                .chatId(userMmd.getId())
                 .text("msg from ali").build();
 
-        var sentMessage = messageService.saveText(msgFromAli);
+        var sentMessage = messageService.saveText(userMmd.getId(), msgFromAli);
     }
 
     @Test

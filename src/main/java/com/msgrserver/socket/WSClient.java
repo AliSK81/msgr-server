@@ -3,7 +3,6 @@ package com.msgrserver.socket;
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
-import com.msgrserver.model.entity.message.TextMessage;
 import jakarta.websocket.*;
 import org.glassfish.tyrus.client.ClientManager;
 
@@ -33,13 +32,14 @@ public class WSClient {
                     .chatId(2L)
                     .text("msg from ali").build();
 
-            session.getBasicRemote().sendObject(
-                    Action.builder()
-                            .type(ActionType.SEND_TEXT)
-                            .dto(msgFromAli)
-                            .dtoType(MessageSendTextDto.class.getSimpleName())
-                            .build()
-            );
+
+            var action = Action.builder()
+                    .type(ActionType.SEND_TEXT)
+                    .dto(msgFromAli)
+                    .build();
+
+
+            session.getBasicRemote().sendObject(action);
 
         } catch (IOException | EncodeException e) {
             e.printStackTrace();

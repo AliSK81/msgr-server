@@ -32,10 +32,6 @@ public class WSServerEndpoint {
         LOGGER.info("[FROM CLIENT]: " + action + ", Session ID: " + session.getId());
 
 
-        System.out.println(
-
-                Mapper.mapToJson(action)
-        );
 
     }
 

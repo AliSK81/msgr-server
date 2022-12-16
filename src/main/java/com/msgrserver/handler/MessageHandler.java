@@ -30,6 +30,7 @@ public class MessageHandler {
 
     public Response sendText(MessageSendTextDto dto) {
         var newMessage = messageService.saveText(
+                dto.getChatId(),
                 Mapper.map(dto, TextMessage.class)
         );
 

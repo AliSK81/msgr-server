@@ -8,6 +8,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class MessageSendTextDto extends ActionDto {
     private Long chatId;
     private Long senderId;

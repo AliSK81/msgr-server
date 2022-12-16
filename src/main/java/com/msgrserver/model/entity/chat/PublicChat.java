@@ -13,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString
 @Setter
+@Getter
 public class PublicChat extends Chat {
 
     private String title;

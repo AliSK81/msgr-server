@@ -9,9 +9,11 @@ import jakarta.websocket.EndpointConfig;
 public class ActionEncoder implements Encoder.Text<Action> {
 
     @Override
-    public String encode(Action message) {
+    public String encode(Action action) {
         try {
-            return Mapper.mapToJson(message);
+            // todo encrypt json message
+
+            return Mapper.toJson(action);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

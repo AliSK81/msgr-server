@@ -1,23 +1,26 @@
 package com.msgrserver.action;
 
 import com.msgrserver.model.dto.ActionDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Action {
     private ActionType type;
     private ActionDto dto;
-    private String dtoType;
-    public Action(ActionType type, ActionDto dto) {
-        this.type = type;
-        this.dto = dto;
-        dtoType = dto.getClass().getSimpleName();
+    private String dtoName;
+
+    public static class ActionBuilder {
+        public ActionBuilder dto(ActionDto dto) {
+            this.dto = dto;
+            this.dtoName = dto.getClass().getSimpleName();
+            return this;
+        }
     }
+
 }
 
