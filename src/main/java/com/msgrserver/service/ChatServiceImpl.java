@@ -2,10 +2,11 @@ package com.msgrserver.service;
 
 import com.msgrserver.exception.ChatNotFoundException;
 import com.msgrserver.exception.UserNotFoundException;
+import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
+import com.msgrserver.repository.ChatRepository;
 import com.msgrserver.repository.MessageRepository;
-import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,19 +20,14 @@ public class ChatServiceImpl implements ChatService {
 
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
-    private final PublicChatRepository publicChatRepository;
-
-    @Override
-    public PublicChat findChat(Long chatId) {
-        return publicChatRepository.findById(chatId).orElseThrow(ChatNotFoundException::new);
-    }
+    private final ChatRepository chatRepository;
 
     @Override
     public PublicChat savePublicChat(Long userId, PublicChat chat) {
         var user = findUser(userId);
         chat.setOwner(user);
         chat.setMembers(new HashSet<>(List.of(user)));
-        return publicChatRepository.save(chat);
+        return chatRepository.save(chat);
     }
 
     @Override
@@ -41,19 +37,25 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public PublicChat joinPublicChat(Long chatId, Long userId) {
-        var chat = findChat(chatId);
+        var chat = (PublicChat) findChat(chatId);
         var user = findUser(userId);
 
         // todo check user is not banned
         // todo other required checks
 
         chat.getMembers().add(user);
-        return publicChatRepository.save(chat);
+        return chatRepository.save(chat);
     }
 
     @Override
     public PublicChat leavePublicChat(Long chatId, Long userId) {
         return null;
+    }
+
+
+    @Override
+    public Chat findChat(Long chatId) {
+        return chatRepository.findById(chatId).orElseThrow(ChatNotFoundException::new);
     }
 
     private User findUser(Long userId) {
