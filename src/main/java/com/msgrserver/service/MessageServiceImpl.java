@@ -13,6 +13,7 @@ import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.ChatRepository;
 import com.msgrserver.repository.MessageRepository;
+import com.msgrserver.repository.PrivateChatRepository;
 import com.msgrserver.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 @Service
 public class MessageServiceImpl implements MessageService {
     private final ChatRepository chatRepository;
+    private final PrivateChatRepository privateChatRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
@@ -30,7 +32,10 @@ public class MessageServiceImpl implements MessageService {
     public TextMessage saveText(Long chatId, TextMessage textMessage) {
 
         User sender = findUser(textMessage.getSenderId());
+
         Chat chat = findChat(chatId);
+
+        // todo create private chat if not exist
 
         if (chat instanceof PublicChat) {
             validatePublicChat(sender, (PublicChat) chat);

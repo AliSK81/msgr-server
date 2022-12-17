@@ -17,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 public class PrivateChat extends Chat {
     @OneToOne
-    private User sender;
+    private User user1;
     @OneToOne
-    private User receiver;
+    private User user2;
 }
