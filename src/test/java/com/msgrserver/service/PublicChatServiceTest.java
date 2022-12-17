@@ -8,10 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class ChatServiceTest {
+class PublicChatServiceTest {
 
     private final UserService userService;
-    private final ChatService chatService;
+    private final PublicChatService publicChatService;
     private final MessageService messageService;
 
     @BeforeEach

@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class MessageServiceTest {
 
     private final UserService userService;
-    private final ChatService chatService;
+    private final PublicChatService publicChatService;
     private final MessageService messageService;
 
     @BeforeEach

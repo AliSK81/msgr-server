@@ -8,6 +8,7 @@ import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.ChatRepository;
 import com.msgrserver.repository.MessageRepository;
+import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,50 +18,61 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class ChatServiceImpl implements ChatService {
+public class PublicChatServiceImpl implements PublicChatService {
 
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
-    private final ChatRepository chatRepository;
+    private final PublicChatRepository publicChatRepository;
 
     @Override
     public PublicChat savePublicChat(Long userId, PublicChat chat) {
         var user = findUser(userId);
         chat.setOwner(user);
         chat.setMembers(new HashSet<>(List.of(user)));
-        return chatRepository.save(chat);
+        return publicChatRepository.save(chat);
     }
 
     @Override
     public void deletePublicChat(Long userId, Long chatId) {
-        Chat chat = findChat(chatId);
-        checkChatIsPublic(chat);
+        Chat chat = findPublicChat(chatId);
         checkUserIsOwner(userId, chat);
         messageRepository.deleteMessagesByChatId(chatId);
-        chatRepository.deleteById(chatId);
+        publicChatRepository.deleteById(chatId);
     }
 
     @Override
     public PublicChat joinPublicChat(Long chatId, Long userId) {
-        var chat = (PublicChat) findChat(chatId);
-        var user = findUser(userId);
+        PublicChat chat = findPublicChat(chatId);
+        User user = findUser(userId);
 
         // todo check user is not banned
         // todo other required checks
 
         chat.getMembers().add(user);
-        return chatRepository.save(chat);
+        return publicChatRepository.save(chat);
     }
 
     @Override
     public PublicChat leavePublicChat(Long chatId, Long userId) {
-        return null;
+        PublicChat chat = findPublicChat(chatId);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        boolean isAdmin = chat.getAdmins().contains(user);
+        boolean isOwner = chat.getOwner().getId().equals(userId);
+        if (isOwner) {
+            deletePublicChat(userId, chatId);
+        } else if (isAdmin) {
+            chat.getAdmins().remove(user);
+            chat.getMembers().remove(user);
+        } else {
+            chat.getMembers().remove(user);
+        }
+        return publicChatRepository.save(chat);
     }
 
 
     @Override
-    public Chat findChat(Long chatId) {
-        return chatRepository.findById(chatId).orElseThrow(ChatNotFoundException::new);
+    public PublicChat findPublicChat(Long chatId) {
+        return publicChatRepository.findById(chatId).orElseThrow(ChatNotFoundException::new);
     }
 
     private User findUser(Long userId) {
