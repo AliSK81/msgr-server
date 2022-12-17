@@ -1,10 +1,11 @@
 package com.msgrserver.service;
 
+import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PublicChat;
 
 public interface ChatService {
 
-    public PublicChat findChat(Long chatId);
+    public Chat findChat(Long chatId);
 
     PublicChat savePublicChat(Long userId, PublicChat chat);
 

@@ -23,4 +23,7 @@ public class Message {
     private LocalDateTime dateTime;
     private MessageType messageType;
 
+
+    @ManyToOne
+    private Chat chat;
 }
