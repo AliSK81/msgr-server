@@ -53,11 +53,10 @@ public class MessageHandler {
         Set<Long> receivers;
 
         boolean isPrivate = message.getChat() instanceof PrivateChat;
-
         if (isPrivate) {
             var chat = (PrivateChat) message.getChat();
             receivers = new HashSet<>(Collections.singleton(
-                    chat.getUser2().getId()));
+                    chat.getReceiverId(message.getSenderId())));
         } else {
             var chat = (PublicChat) message.getChat();
             receivers = chat.getMembers().stream()

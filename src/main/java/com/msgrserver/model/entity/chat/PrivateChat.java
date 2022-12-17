@@ -20,4 +20,12 @@ public class PrivateChat extends Chat {
     private User user1;
     @OneToOne
     private User user2;
+    public Long getReceiverId(Long sender_id)
+    {
+        if (user1.getId().equals(sender_id))
+        {
+            return user2.getId();
+        }
+        return user1.getId();
+    }
 }
