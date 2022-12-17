@@ -1,5 +1,6 @@
 package com.msgrserver.service;
 
+import com.msgrserver.exception.BadRequestException;
 import com.msgrserver.exception.ChatNotFoundException;
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.chat.Chat;
@@ -32,7 +33,11 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void deletePublicChat(Long userId, Long chatId) {
-
+        Chat chat = findChat(chatId);
+        checkChatIsPublic(chat);
+        checkUserIsOwner(userId, chat);
+        messageRepository.deleteMessagesByChatId(chatId);
+        chatRepository.deleteById(chatId);
     }
 
     @Override
@@ -62,4 +67,17 @@ public class ChatServiceImpl implements ChatService {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
 
+
+    private void checkUserIsOwner(Long userId, Chat chat) {
+        User owner = ((PublicChat) chat).getOwner();
+        if (!(owner.getId().equals(userId))) {
+            throw new BadRequestException();
+        }
+    }
+
+    private void checkChatIsPublic(Chat chat) {
+        if (!(chat instanceof PublicChat)) {
+            throw new BadRequestException();
+        }
+    }
 }
