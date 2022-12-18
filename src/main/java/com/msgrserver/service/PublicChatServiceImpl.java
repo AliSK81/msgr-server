@@ -55,7 +55,7 @@ public class PublicChatServiceImpl implements PublicChatService {
     @Override
     public PublicChat leavePublicChat(Long chatId, Long userId) {
         PublicChat chat = findPublicChat(chatId);
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User user = findUser(userId);
         boolean isAdmin = chat.getAdmins().contains(user);
         boolean isOwner = chat.getOwner().getId().equals(userId);
         if (isOwner) {
