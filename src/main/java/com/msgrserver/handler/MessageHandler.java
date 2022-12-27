@@ -51,7 +51,6 @@ public class MessageHandler {
 
     private Set<Long> getMessageReceivers(Message message) {
         Set<Long> receivers;
-
         boolean isPrivate = message.getChat() instanceof PrivateChat;
         if (isPrivate) {
             var chat = (PrivateChat) message.getChat();
