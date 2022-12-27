@@ -11,6 +11,7 @@ import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.service.MessageService;
+import com.msgrserver.service.UserService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MessageHandler {
     private final MessageService messageService;
+    private final UserService userService;
 
     public Response sendText(MessageSendTextDto dto) {
         TextMessage newMessage = messageService.saveText(
@@ -66,4 +68,5 @@ public class MessageHandler {
 
         return receivers;
     }
+
 }

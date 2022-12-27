@@ -3,6 +3,9 @@ package com.msgrserver.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+
+import java.util.Base64;
+
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 import java.io.IOException;
@@ -27,5 +30,15 @@ public class Mapper {
     public static <T> T fromJson(String json, String className) throws ClassNotFoundException, JsonProcessingException {
         Class<?> clz = Class.forName(className);
         return (T) fromJson(json, clz);
+    }
+
+    public static String hashPassword(String password) {
+        Base64.Encoder encoder = Base64.getEncoder();
+        return encoder.encodeToString(password.getBytes());
+    }
+
+    public static String restoreHashedPassword(String hashedPassword) {
+        Base64.Decoder decoder = Base64.getDecoder();
+        return new String(decoder.decode(hashedPassword));
     }
 }
