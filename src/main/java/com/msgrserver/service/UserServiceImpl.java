@@ -8,6 +8,7 @@ import com.msgrserver.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -32,8 +33,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<Chat> getUserChats(Long userId) {
-        return chatRepository.findUserChatsByID(userId);
+        return findUser(userId).getChats();
     }
-
-
 }

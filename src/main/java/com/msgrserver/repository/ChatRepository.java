@@ -7,5 +7,4 @@ import java.util.List;
 import java.util.Set;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
-    Set<Chat> findUserChatsByID(Long userId);
 }
