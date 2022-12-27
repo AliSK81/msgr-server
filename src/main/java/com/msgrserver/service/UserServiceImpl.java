@@ -35,4 +35,7 @@ public class UserServiceImpl implements UserService {
     public Set<Chat> getUserChats(Long userId) {
         return findUser(userId).getChats();
     }
+    public Boolean findUserByUsernameAndPassword(String username, String password) {
+        return null;
+    }
 }

@@ -19,9 +19,11 @@ public class User {
     private String phone;
     private String email;
     private String username;
+    private String password;
     private String firstName;
     private String lastName;
 
     @ManyToMany(fetch = FetchType.LAZY)
     Set<Chat> chats;
+    private String avatar;
 }

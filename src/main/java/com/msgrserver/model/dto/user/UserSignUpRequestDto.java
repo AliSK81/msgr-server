@@ -6,9 +6,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserSignUpDto extends ActionDto {
+public class UserSignUpRequestDto extends ActionDto {
     private String firstName;
     private String lastName;
-    private String phone;
+    private String username;
+    private String password;
     private String avatar;
 }
