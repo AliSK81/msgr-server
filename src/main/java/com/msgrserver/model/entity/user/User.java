@@ -1,10 +1,10 @@
 package com.msgrserver.model.entity.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.msgrserver.model.entity.chat.Chat;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Set;
 
 @Builder
 @Getter
@@ -22,5 +22,8 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    Set<Chat> chats;
     private String avatar;
 }
