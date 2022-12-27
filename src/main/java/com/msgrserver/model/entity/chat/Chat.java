@@ -1,11 +1,11 @@
 package com.msgrserver.model.entity.chat;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import com.msgrserver.model.entity.message.Message;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.Set;
 
 @Entity
 @SuperBuilder
@@ -21,6 +21,6 @@ public class Chat {
 
     private ChatType type;
 
-//    @OneToMany
-//    private Set<Message> messages;
+    @OneToMany
+    private Set<Message> messages;
 }
