@@ -25,4 +25,7 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
+    public Boolean findUserByUsernameAndPassword(String username, String password) {
+        return null;
+    }
 }

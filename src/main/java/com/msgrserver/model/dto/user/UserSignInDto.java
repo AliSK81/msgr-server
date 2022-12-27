@@ -1,4 +1,6 @@
 package com.msgrserver.model.dto.user;
 
-public class UserSignInDto {
+import com.msgrserver.model.dto.ActionDto;
+
+public class UserSignInDto extends ActionDto {
 }
