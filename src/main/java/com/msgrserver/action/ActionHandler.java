@@ -2,6 +2,7 @@ package com.msgrserver.action;
 
 import com.msgrserver.handler.*;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
+import com.msgrserver.model.dto.user.UserGetChatsRequestDto;
 import com.msgrserver.model.dto.user.UserSignInRequestDto;
 import com.msgrserver.model.dto.user.UserSignUpRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class ActionHandler {
             case SIGN_UP -> response = userHandler.signUp((UserSignUpRequestDto) action.getDto());
             case SIGN_IN -> response = userHandler.signIn((UserSignInRequestDto) action.getDto());
             case SEND_TEXT -> response = messageHandler.sendText((MessageSendTextDto) action.getDto());
+            case GET_USER_CHATS -> response = userHandler.getUserChats((UserGetChatsRequestDto) action.getDto());
         }
         return response;
     }

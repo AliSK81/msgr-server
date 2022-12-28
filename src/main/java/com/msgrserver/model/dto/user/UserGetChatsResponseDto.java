@@ -1,10 +1,8 @@
 package com.msgrserver.model.dto.user;
 
+import com.msgrserver.model.dto.ActionDto;
 import com.msgrserver.model.entity.chat.Chat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
@@ -12,6 +10,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserGetChatsResponseDto {
+@Builder
+public class UserGetChatsResponseDto extends ActionDto {
     Set<Chat> chats;
 }
