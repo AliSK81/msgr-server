@@ -45,6 +45,7 @@ public class UserHandlerImpl implements UserHandler {
                 .receivers(receivers).build();
     }
 
+    @Override
     public Response signIn(UserSignInRequestDto dto) {
 
         User user = userService.findUser(dto.getUsername(), dto.getPassword());
