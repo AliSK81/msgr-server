@@ -3,11 +3,10 @@ package com.msgrserver.handler;
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
 import com.msgrserver.action.Response;
-import com.msgrserver.model.dto.user.UserSignInRequestDto;
-import com.msgrserver.model.dto.user.UserSignInResponseDto;
-import com.msgrserver.model.dto.user.UserSignUpRequestDto;
-import com.msgrserver.model.dto.user.UserSignUpResponseDto;
+import com.msgrserver.model.dto.user.*;
+import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.user.User;
+import com.msgrserver.repository.UserRepository;
 import com.msgrserver.service.UserService;
 import com.msgrserver.util.TokenGenerator;
 import com.msgrserver.util.Mapper;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -59,6 +59,23 @@ public class UserHandlerImpl implements UserHandler {
                 .dto(responseDto).build();
 
         Set<Long> receivers = new HashSet<>(List.of(user.getId()));
+
+        return Response.builder()
+                .action(action)
+                .receivers(receivers).build();
+    }
+
+    @Override
+    public Response getUserChats(UserGetChatsRequestDto dto) {
+        Set<Chat> chats = userService.getUserChats(dto.getUserId());
+        UserGetChatsResponseDto responseDto = UserGetChatsResponseDto.builder()
+                .chats(chats).build();
+
+        Action action = Action.builder()
+                .type(ActionType.GET_USER_CHATS)
+                .dto(responseDto).build();
+
+        Set<Long> receivers = new HashSet<>(List.of(dto.getUserId()));
 
         return Response.builder()
                 .action(action)
