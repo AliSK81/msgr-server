@@ -5,10 +5,10 @@ import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class UserSignUpResponseDto extends ActionDto {
+public class UserSignInResponseDto extends ActionDto {
     private Long userId;
     private String token;
 }

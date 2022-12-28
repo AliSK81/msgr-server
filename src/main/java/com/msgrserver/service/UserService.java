@@ -13,4 +13,6 @@ public interface UserService {
     void deleteUser(Long userId);
 
     Set<Chat> getUserChats(Long userId);
+
+    User findUser(String username, String password);
 }

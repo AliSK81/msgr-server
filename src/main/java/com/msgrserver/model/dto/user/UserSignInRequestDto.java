@@ -10,10 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSignUpRequestDto extends ActionDto {
-    private String firstName;
-    private String lastName;
+public class UserSignInRequestDto extends ActionDto {
     private String username;
     private String password;
-    private String avatar;
 }

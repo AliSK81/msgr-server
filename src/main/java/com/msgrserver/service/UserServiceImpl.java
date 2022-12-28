@@ -8,7 +8,6 @@ import com.msgrserver.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -38,6 +37,7 @@ public class UserServiceImpl implements UserService {
         return findUser(userId).getChats();
     }
 
+    @Override
     public User findUser(String username, String password) {
         return userRepository.findUserByUsernameAndPassword(username, password)
                 .orElseThrow(UserNotFoundException::new);
