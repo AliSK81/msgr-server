@@ -1,12 +1,14 @@
 package com.msgrserver.socket;
 
 import com.msgrserver.action.Action;
-import com.msgrserver.util.Mapper;
+import com.msgrserver.action.ActionHandler;
+import com.msgrserver.action.Response;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
@@ -17,22 +19,28 @@ import java.util.logging.Logger;
 )
 public class WSServerEndpoint {
 
-    HashSet<Session> sessions = new HashSet<>();
+    private ActionHandler actionHandler;
+
+    private static final HashMap<Long, Session> sessions = new HashMap<>();
 
     private static final Logger LOGGER = Logger.getLogger(WSServerEndpoint.class.getName());
 
     @OnOpen
     public void onOpen(Session session) {
         LOGGER.info("[SERVER]: Handshake successful! - Connected! - Session ID: " + session.getId());
-        sessions.add(session);
+        sessions.put(1L, session);
     }
 
     @OnMessage
     public void onMessage(Session session, Action action) throws IOException {
         LOGGER.info("[FROM CLIENT]: " + action + ", Session ID: " + session.getId());
 
+        Response response = actionHandler.handle(action);
 
-
+        for (long receiverId : response.getReceivers()) {
+            Session receiver = sessions.get(receiverId);
+            receiver.getAsyncRemote().sendObject(response.getAction());
+        }
     }
 
     @OnMessage
