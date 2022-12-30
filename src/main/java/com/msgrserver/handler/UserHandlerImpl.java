@@ -24,10 +24,12 @@ public class UserHandlerImpl implements UserHandler {
 
     private final UserService userService;
 
+    private final Mapper mapper;
+
     @Override
     public Response signUp(UserSignUpRequestDto dto) {
         User newUser = userService.saveUser(
-                Mapper.map(dto, User.class)
+                mapper.map(dto, User.class)
         );
 
         UserSignUpResponseDto responseDto = UserSignUpResponseDto.builder()
@@ -69,8 +71,8 @@ public class UserHandlerImpl implements UserHandler {
     public Response getUserChats(UserGetChatsRequestDto dto) {
         Set<Chat> chats = userService.getUserChats(dto.getUserId());
         UserGetChatsResponseDto responseDto = UserGetChatsResponseDto.builder()
-                .chats(chats).build();
-
+//                .chats(chats).build();
+                .build();
         Action action = Action.builder()
                 .type(ActionType.GET_USER_CHATS)
                 .dto(responseDto).build();
