@@ -71,8 +71,7 @@ public class UserHandlerImpl implements UserHandler {
     public Response getUserChats(UserGetChatsRequestDto dto) {
         Set<Chat> chats = userService.getUserChats(dto.getUserId());
         UserGetChatsResponseDto responseDto = UserGetChatsResponseDto.builder()
-//                .chats(chats).build();
-                .build();
+                .chats(chats).build();
         Action action = Action.builder()
                 .type(ActionType.GET_USER_CHATS)
                 .dto(responseDto).build();
