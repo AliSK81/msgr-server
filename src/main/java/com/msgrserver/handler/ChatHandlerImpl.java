@@ -5,6 +5,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ChatHandlerImpl {
+public class ChatHandlerImpl implements ChatHandler{
 
 }

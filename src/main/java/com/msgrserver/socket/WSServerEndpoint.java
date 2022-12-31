@@ -1,7 +1,6 @@
 package com.msgrserver.socket;
 
 import com.msgrserver.action.Action;
-import com.msgrserver.util.Mapper;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 
@@ -31,14 +30,13 @@ public class WSServerEndpoint {
     public void onMessage(Session session, Action action) throws IOException {
         LOGGER.info("[FROM CLIENT]: " + action + ", Session ID: " + session.getId());
 
-
-
     }
 
     @OnMessage
     public void onMessage(Session session, ByteBuffer buffer) throws IOException {
 
     }
+
     @OnError
     public void onError(Session session, Throwable err) {
         LOGGER.info("[SERVER]: Error!, Session ID: " + session.getId() + ", " + err.getMessage());
