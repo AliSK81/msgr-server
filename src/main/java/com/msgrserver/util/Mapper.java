@@ -7,11 +7,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MapperUtil {
+public class Mapper {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public MapperUtil() {
+    public Mapper() {
         objectMapper.findAndRegisterModules();
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);

@@ -3,9 +3,8 @@ package com.msgrserver.util;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-public class TokenGeneratorUtil {
+public class TokenGenerator {
     private static final SecureRandom Random = new SecureRandom();
-
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     public static String generateNewToken() {
