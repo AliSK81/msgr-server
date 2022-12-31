@@ -3,12 +3,17 @@ package com.msgrserver.model.dto.user;
 import com.msgrserver.model.dto.ActionDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
-public class UserSignUpDto extends ActionDto {
+@NoArgsConstructor
+public class UserSignUpRequestDto extends ActionDto {
     private String firstName;
     private String lastName;
-    private String phone;
+    private String username;
+    private String password;
     private String avatar;
 }

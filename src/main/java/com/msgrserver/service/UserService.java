@@ -1,6 +1,9 @@
 package com.msgrserver.service;
 
+import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.user.User;
+
+import java.util.Set;
 
 public interface UserService {
     User findUser(Long userId);
@@ -9,5 +12,7 @@ public interface UserService {
 
     void deleteUser(Long userId);
 
+    Set<Chat> getUserChats(Long userId);
 
+    User findUser(String username, String password);
 }

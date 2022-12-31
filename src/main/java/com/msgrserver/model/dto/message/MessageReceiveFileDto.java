@@ -1,4 +1,6 @@
 package com.msgrserver.model.dto.message;
 
-public class MessageReceiveFileDto {
+import com.msgrserver.model.dto.ActionDto;
+
+public class MessageReceiveFileDto extends ActionDto {
 }

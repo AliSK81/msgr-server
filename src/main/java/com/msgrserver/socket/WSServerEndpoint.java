@@ -5,13 +5,16 @@ import com.msgrserver.action.ActionHandler;
 import com.msgrserver.action.Response;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.logging.Logger;
 
+@Component
+@RequiredArgsConstructor
 @ServerEndpoint(
         value = "/msgr",
         encoders = {ActionEncoder.class},
@@ -19,7 +22,7 @@ import java.util.logging.Logger;
 )
 public class WSServerEndpoint {
 
-    private ActionHandler actionHandler;
+    private final ActionHandler actionHandler;
 
     private static final HashMap<Long, Session> sessions = new HashMap<>();
 
@@ -47,6 +50,7 @@ public class WSServerEndpoint {
     public void onMessage(Session session, ByteBuffer buffer) throws IOException {
 
     }
+
     @OnError
     public void onError(Session session, Throwable err) {
         LOGGER.info("[SERVER]: Error!, Session ID: " + session.getId() + ", " + err.getMessage());

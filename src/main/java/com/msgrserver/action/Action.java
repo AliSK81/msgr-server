@@ -1,5 +1,7 @@
 package com.msgrserver.action;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.msgrserver.model.dto.ActionDto;
 import lombok.*;
 
@@ -12,15 +14,6 @@ import lombok.*;
 public class Action {
     private ActionType type;
     private ActionDto dto;
-    private String dtoName;
-
-    public static class ActionBuilder {
-        public ActionBuilder dto(ActionDto dto) {
-            this.dto = dto;
-            this.dtoName = dto.getClass().getSimpleName();
-            return this;
-        }
-    }
-
+    private String token;
 }
 
