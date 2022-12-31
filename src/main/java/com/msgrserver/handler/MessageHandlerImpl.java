@@ -12,7 +12,7 @@ import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.service.MessageService;
-import com.msgrserver.util.MapperUtil;
+import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class MessageHandlerImpl implements MessageHandler{
-    private final MessageService messageService;
 
-    private final MapperUtil mapperUtil;
+    private final MessageService messageService;
+    private final Mapper mapper;
 
     public Response sendText(MessageSendTextDto dto) {
         TextMessage newMessage = messageService.saveText(
                 dto.getChatId(),
-                mapperUtil.map(dto, TextMessage.class)
+                mapper.map(dto, TextMessage.class)
         );
 
         Action action = getMessageReceiveAction(newMessage);
@@ -44,7 +44,7 @@ public class MessageHandlerImpl implements MessageHandler{
     }
 
     private Action getMessageReceiveAction(Message message) {
-        MessageReceiveTextDto newMessageDto = mapperUtil.map(message, MessageReceiveTextDto.class);
+        MessageReceiveTextDto newMessageDto = mapper.map(message, MessageReceiveTextDto.class);
 
         return Action.builder()
                 .type(ActionType.SEND_TEXT)

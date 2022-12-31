@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MapperUtil {
+public class MapperUtil implements Mapper{
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

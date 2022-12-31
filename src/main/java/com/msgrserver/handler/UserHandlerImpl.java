@@ -7,8 +7,8 @@ import com.msgrserver.model.dto.user.*;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.service.UserService;
-import com.msgrserver.util.TokenGeneratorUtil;
-import com.msgrserver.util.MapperUtil;
+import com.msgrserver.util.Mapper;
+import com.msgrserver.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,18 +21,18 @@ import java.util.Set;
 public class UserHandlerImpl implements UserHandler {
 
     private final UserService userService;
-
-    private final MapperUtil mapperUtil;
+    private final Mapper mapper;
+    private final TokenGenerator tokenGenerator;
 
     @Override
     public Response signUp(UserSignUpRequestDto dto) {
         User newUser = userService.saveUser(
-                mapperUtil.map(dto, User.class)
+                mapper.map(dto, User.class)
         );
 
         UserSignUpResponseDto responseDto = UserSignUpResponseDto.builder()
                 .userId(newUser.getId())
-                .token(TokenGeneratorUtil.generateNewToken()).build();
+                .token(tokenGenerator.generateNewToken()).build();
 
         Action action = Action.builder()
                 .type(ActionType.SIGN_UP)
@@ -52,7 +52,7 @@ public class UserHandlerImpl implements UserHandler {
 
         UserSignInResponseDto responseDto = UserSignInResponseDto.builder()
                 .userId(user.getId())
-                .token(TokenGeneratorUtil.generateNewToken()).build();
+                .token(tokenGenerator.generateNewToken()).build();
 
         Action action = Action.builder()
                 .type(ActionType.SIGN_IN)
@@ -69,8 +69,7 @@ public class UserHandlerImpl implements UserHandler {
     public Response getUserChats(UserGetChatsRequestDto dto) {
         Set<Chat> chats = userService.getUserChats(dto.getUserId());
         UserGetChatsResponseDto responseDto = UserGetChatsResponseDto.builder()
-//                .chats(chats).build();
-                .build();
+                .chats(chats).build();
         Action action = Action.builder()
                 .type(ActionType.GET_USER_CHATS)
                 .dto(responseDto).build();
