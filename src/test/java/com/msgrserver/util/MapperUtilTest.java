@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class MapperTest {
+class MapperUtilTest {
 
-    private final Mapper mapper;
+    private final MapperUtil mapperUtil;
 
     @Test
     void mapTest() {
@@ -52,9 +52,9 @@ class MapperTest {
                 .build();
 
         // act
-        String json = mapper.toJson(expectedAction);
+        String json = mapperUtil.toJson(expectedAction);
 
-        var actualAction = mapper.fromJson(json, Action.class);
+        var actualAction = mapperUtil.fromJson(json, Action.class);
 
         // assert
         assertEquals(expectedAction.toString(), actualAction.toString());
