@@ -24,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class MapperTest {
 
-    private final Mapper mapper;
-
     @Test
     void mapTest() {
     }
@@ -52,9 +50,9 @@ class MapperTest {
                 .build();
 
         // act
-        String json = mapper.toJson(expectedAction);
+        String json = Mapper.toJson(expectedAction);
 
-        var actualAction = mapper.fromJson(json, Action.class);
+        var actualAction = Mapper.fromJson(json, Action.class);
 
         // assert
         assertEquals(expectedAction.toString(), actualAction.toString());
