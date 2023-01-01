@@ -3,6 +3,8 @@ package com.msgrserver.model.dto;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.msgrserver.model.dto.chat.ChatReceiveProfileUpdateDto;
+import com.msgrserver.model.dto.chat.ChatRequestJoinChatWithLinkDto;
+import com.msgrserver.model.dto.chat.ChatResponseJoinChatWithLinkDto;
 import com.msgrserver.model.dto.message.MessageReceiveFileDto;
 import com.msgrserver.model.dto.message.MessageReceiveTextDto;
 import com.msgrserver.model.dto.message.MessageSendFileDto;
@@ -25,7 +27,8 @@ import lombok.ToString;
         @JsonSubTypes.Type(value = MessageSendFileDto.class, name = "MessageSendFileDto"),
         @JsonSubTypes.Type(value = MessageSendTextDto.class, name = "MessageSendTextDto"),
         @JsonSubTypes.Type(value = ChatReceiveProfileUpdateDto.class, name = "ChatReceiveProfileUpdateDto"),
-        @JsonSubTypes.Type(value = UserGetChatsRequestDto.class, name = "UserGetChatsRequestDto"),
+        @JsonSubTypes.Type(value = ChatRequestJoinChatWithLinkDto.class, name = "ChatRequestJoinChatWithLinkDto"),
+        @JsonSubTypes.Type(value = ChatResponseJoinChatWithLinkDto.class, name = "ChatResponseJoinChatWithLinkDto"),
 })
 public class ActionDto {
 }
