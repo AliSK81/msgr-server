@@ -6,16 +6,14 @@ import com.msgrserver.action.Response;
 import com.msgrserver.model.dto.user.*;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.repository.UserRepository;
 import com.msgrserver.service.UserService;
-import com.msgrserver.util.TokenGenerator;
 import com.msgrserver.util.Mapper;
+import com.msgrserver.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -24,12 +22,10 @@ public class UserHandlerImpl implements UserHandler {
 
     private final UserService userService;
 
-    private final Mapper mapper;
-
     @Override
     public Response signUp(UserSignUpRequestDto dto) {
         User newUser = userService.saveUser(
-                mapper.map(dto, User.class)
+                Mapper.map(dto, User.class)
         );
 
         UserSignUpResponseDto responseDto = UserSignUpResponseDto.builder()

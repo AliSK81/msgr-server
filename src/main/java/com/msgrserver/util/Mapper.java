@@ -4,28 +4,26 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Mapper {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public Mapper() {
+    static {
         objectMapper.findAndRegisterModules();
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
-    public <T> T map(Object fromValue, Class<T> toValueType) {
+    public static  <T> T map(Object fromValue, Class<T> toValueType) {
         return objectMapper.convertValue(fromValue, toValueType);
     }
 
-    public String toJson(Object value) throws JsonProcessingException {
+    public static String toJson(Object value) throws JsonProcessingException {
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
     }
 
-    public <T> T fromJson(String json, Class<T> valueType) throws JsonProcessingException {
+    public static  <T> T fromJson(String json, Class<T> valueType) throws JsonProcessingException {
         return objectMapper.readValue(json, valueType);
     }
 }
