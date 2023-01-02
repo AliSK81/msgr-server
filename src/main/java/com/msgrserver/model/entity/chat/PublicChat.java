@@ -31,9 +31,7 @@ public class PublicChat extends Chat {
 
     public Set<Long> getId(Set<User> users) {
         Set<Long> usersId = new HashSet<>();
-        for (User user : users) {
-            usersId.add(user.getId());
-        }
+        users.forEach(user -> usersId.add(user.getId()));
         return usersId;
     }
 }

@@ -36,10 +36,7 @@ public class ChatHandlerImpl implements ChatHandler {
         Action action = Action.builder()
                 .type(ActionType.ADD_USER_BY_ADMIN)
                 .dto(responseDto).build();
-        Set<Long> receivers = new HashSet<>();
-        receivers.addAll(publicChat.getId(chat.getMembers()));
-        receivers.addAll(publicChat.getId(chat.getAdmins()));
-        receivers.add(chat.getOwner().getId());
+        Set<Long> receivers = new HashSet<>(publicChat.getId(chat.getMembers()));
         return Response.builder()
                 .action(action)
                 .receivers(receivers).build();
@@ -56,10 +53,7 @@ public class ChatHandlerImpl implements ChatHandler {
         Action action = Action.builder()
                 .type(ActionType.DELETE_USER_BY_ADMIN)
                 .dto(responseDto).build();
-        Set<Long> receivers = new HashSet<>();
-        receivers.addAll(publicChat.getId(chat.getMembers()));
-        receivers.addAll(publicChat.getId(chat.getAdmins()));
-        receivers.add(chat.getOwner().getId());
+        Set<Long> receivers = new HashSet<>(publicChat.getId(chat.getMembers()));
         return Response.builder()
                 .action(action)
                 .receivers(receivers).build();

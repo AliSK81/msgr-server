@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddUserByAdminRequestDto extends ActionDto {
-    Long chatId;
-    Long adminId;
-    Long userId;
+    private Long chatId;
+    private Long adminId;
+    private Long userId;
 }

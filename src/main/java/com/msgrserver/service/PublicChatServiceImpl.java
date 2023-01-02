@@ -2,7 +2,6 @@ package com.msgrserver.service;
 
 import com.msgrserver.exception.BadRequestException;
 import com.msgrserver.exception.ChatNotFoundException;
-import com.msgrserver.exception.IllegalAccessException;
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PublicChat;
@@ -76,11 +75,11 @@ public class PublicChatServiceImpl implements PublicChatService {
         PublicChat chat = findPublicChat(chatId);
         User user = findUser(userId);
         User admin = findUser(adminId);
-        boolean isAdmin = chat.getAdmins().contains(admin);
-        if (!(isAdmin))
-            throw new IllegalAccessException();
+        boolean isAdminOrOwner = chat.getAdmins().contains(admin) || chat.getOwner().equals(admin);
+        if (!(isAdminOrOwner))
+            throw new BadRequestException();
         if (!(user.getAccessAddPublicChat()))
-            throw new IllegalAccessException();
+            throw new BadRequestException();
         chat.getMembers().add(user);
         user.getChats().add(chat);
         userRepository.save(user);
@@ -94,14 +93,14 @@ public class PublicChatServiceImpl implements PublicChatService {
         PublicChat chat = findPublicChat(chatId);
         User user = findUser(userId);
         User admin = findUser(adminId);
-        boolean isAdmin = chat.getAdmins().contains(admin);
-        if (!(isAdmin))
-            throw new IllegalAccessException();
+        boolean isAdminOrOwner = chat.getAdmins().contains(admin) || chat.getOwner().equals(admin);
+        if (!(isAdminOrOwner))
+            throw new BadRequestException();
         if (user.equals(chat.getOwner()))
-            throw new IllegalAccessException();
+            throw new BadRequestException();
         if (chat.getAdmins().contains(user)) {
             if (!(chat.getOwner().getId()).equals(adminId))
-                throw new IllegalAccessException();
+                throw new BadRequestException();
         }
         chat.getMembers().remove(user);
         user.getChats().remove(chat);

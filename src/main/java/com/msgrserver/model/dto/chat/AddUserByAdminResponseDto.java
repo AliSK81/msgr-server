@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class AddUserByAdminResponseDto extends ActionDto {
-    Long chatId;
-    Long adminId;
-    Long userId;
+    private Long chatId;
+    private Long adminId;
+    private Long userId;
 }

@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class DeleteUserByAdminResponseDto extends ActionDto {
-    Long chatId;
-    Long adminId;
-    Long userId;
+    private Long chatId;
+    private Long adminId;
+    private Long userId;
 }
