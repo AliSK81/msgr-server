@@ -1,5 +1,6 @@
 package com.msgrserver.service;
 
+import com.msgrserver.exception.IllegalAccessException;
 import com.msgrserver.model.entity.chat.PublicChat;
 
 public interface PublicChatService {
@@ -14,4 +15,7 @@ public interface PublicChatService {
 
     PublicChat leavePublicChat(Long chatId, Long userId);
 
+    PublicChat addUserByAdmin(Long chatId, Long adminId, Long userId) throws IllegalAccessException;
+
+    PublicChat deleteUserByAdmin(Long chatId, Long adminId, Long userId);
 }

@@ -23,7 +23,7 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
-
+    private Boolean accessAddPublicChat;
     @ManyToMany(fetch = FetchType.LAZY)
     Set<Chat> chats;
     private String avatar;

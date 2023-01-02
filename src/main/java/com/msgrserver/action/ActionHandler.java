@@ -1,6 +1,8 @@
 package com.msgrserver.action;
 
 import com.msgrserver.handler.*;
+import com.msgrserver.model.dto.chat.AddUserByAdminRequestDto;
+import com.msgrserver.model.dto.chat.DeleteUserByAdminRequestDto;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
 import com.msgrserver.model.dto.user.UserGetChatsRequestDto;
 import com.msgrserver.model.dto.user.UserSignInRequestDto;
@@ -24,6 +26,8 @@ public class ActionHandler {
             case SIGN_IN -> response = userHandler.signIn((UserSignInRequestDto) action.getDto());
             case SEND_TEXT -> response = messageHandler.sendText((MessageSendTextDto) action.getDto());
             case GET_USER_CHATS -> response = userHandler.getUserChats((UserGetChatsRequestDto) action.getDto());
+            case ADD_USER_BY_ADMIN -> response = chatHandler.addUserByAdmin((AddUserByAdminRequestDto) action.getDto());
+            case DELETE_USER_BY_ADMIN -> response = chatHandler.deleteUserByAdmin((DeleteUserByAdminRequestDto) action.getDto());
         }
         return response;
     }

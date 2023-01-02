@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -27,4 +28,12 @@ public class PublicChat extends Chat {
 
     @ManyToMany
     private Set<User> admins;
+
+    public Set<Long> getId(Set<User> users) {
+        Set<Long> usersId = new HashSet<>();
+        for (User user : users) {
+            usersId.add(user.getId());
+        }
+        return usersId;
+    }
 }

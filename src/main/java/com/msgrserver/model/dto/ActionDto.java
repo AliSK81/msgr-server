@@ -2,7 +2,7 @@ package com.msgrserver.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.msgrserver.model.dto.chat.ChatReceiveProfileUpdateDto;
+import com.msgrserver.model.dto.chat.*;
 import com.msgrserver.model.dto.message.MessageReceiveFileDto;
 import com.msgrserver.model.dto.message.MessageReceiveTextDto;
 import com.msgrserver.model.dto.message.MessageSendFileDto;
@@ -26,6 +26,10 @@ import lombok.ToString;
         @JsonSubTypes.Type(value = MessageSendTextDto.class, name = "MessageSendTextDto"),
         @JsonSubTypes.Type(value = ChatReceiveProfileUpdateDto.class, name = "ChatReceiveProfileUpdateDto"),
         @JsonSubTypes.Type(value = UserGetChatsRequestDto.class, name = "UserGetChatsRequestDto"),
+        @JsonSubTypes.Type(value = AddUserByAdminRequestDto.class, name = "AddUserByAdminRequestDto"),
+        @JsonSubTypes.Type(value = AddUserByAdminResponseDto.class, name = "AddUserByAdminResponseDto"),
+        @JsonSubTypes.Type(value = DeleteUserByAdminRequestDto.class, name = "DeleteUserByAdminRequestDto"),
+        @JsonSubTypes.Type(value = DeleteUserByAdminResponseDto.class, name = "DeleteUserByAdminResponseDto"),
 })
 public class ActionDto {
 }

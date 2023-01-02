@@ -2,15 +2,16 @@ package com.msgrserver.service;
 
 import com.msgrserver.exception.BadRequestException;
 import com.msgrserver.exception.ChatNotFoundException;
+import com.msgrserver.exception.IllegalAccessException;
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.repository.ChatRepository;
 import com.msgrserver.repository.MessageRepository;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -66,6 +67,45 @@ public class PublicChatServiceImpl implements PublicChatService {
         } else {
             chat.getMembers().remove(user);
         }
+        return publicChatRepository.save(chat);
+    }
+
+    @SneakyThrows
+    @Override
+    public PublicChat addUserByAdmin(Long chatId, Long adminId, Long userId) {
+        PublicChat chat = findPublicChat(chatId);
+        User user = findUser(userId);
+        User admin = findUser(adminId);
+        boolean isAdmin = chat.getAdmins().contains(admin);
+        if (!(isAdmin))
+            throw new IllegalAccessException();
+        if (!(user.getAccessAddPublicChat()))
+            throw new IllegalAccessException();
+        chat.getMembers().add(user);
+        user.getChats().add(chat);
+        userRepository.save(user);
+        return publicChatRepository.save(chat);
+    }
+
+
+    @SneakyThrows
+    @Override
+    public PublicChat deleteUserByAdmin(Long chatId, Long adminId, Long userId) {
+        PublicChat chat = findPublicChat(chatId);
+        User user = findUser(userId);
+        User admin = findUser(adminId);
+        boolean isAdmin = chat.getAdmins().contains(admin);
+        if (!(isAdmin))
+            throw new IllegalAccessException();
+        if (user.equals(chat.getOwner()))
+            throw new IllegalAccessException();
+        if (chat.getAdmins().contains(user)) {
+            if (!(chat.getOwner().getId()).equals(adminId))
+                throw new IllegalAccessException();
+        }
+        chat.getMembers().remove(user);
+        user.getChats().remove(chat);
+        userRepository.save(user);
         return publicChatRepository.save(chat);
     }
 
