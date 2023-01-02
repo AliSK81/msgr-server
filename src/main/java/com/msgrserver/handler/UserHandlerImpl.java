@@ -3,9 +3,14 @@ package com.msgrserver.handler;
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
 import com.msgrserver.action.Response;
+import com.msgrserver.model.dto.chat.ChatDto;
+import com.msgrserver.model.dto.message.MessageDto;
 import com.msgrserver.model.dto.user.*;
 import com.msgrserver.model.entity.chat.Chat;
+import com.msgrserver.model.entity.chat.PrivateChat;
+import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
+import com.msgrserver.service.MessageService;
 import com.msgrserver.service.UserService;
 import com.msgrserver.util.Mapper;
 import com.msgrserver.util.TokenGenerator;
@@ -21,6 +26,7 @@ import java.util.Set;
 public class UserHandlerImpl implements UserHandler {
 
     private final UserService userService;
+    private final MessageService messageService;
 
     @Override
     public Response signUp(UserSignUpRequestDto dto) {
@@ -66,8 +72,11 @@ public class UserHandlerImpl implements UserHandler {
     @Override
     public Response getUserChats(UserGetChatsRequestDto dto) {
         Set<Chat> chats = userService.getUserChats(dto.getUserId());
+
+        Set<ChatDto> chatDtos = convert(dto.getUserId(), chats);
+
         UserGetChatsResponseDto responseDto = UserGetChatsResponseDto.builder()
-                .chats(chats).build();
+                .chats(chatDtos).build();
         Action action = Action.builder()
                 .type(ActionType.GET_USER_CHATS)
                 .dto(responseDto).build();
@@ -77,6 +86,37 @@ public class UserHandlerImpl implements UserHandler {
         return Response.builder()
                 .action(action)
                 .receivers(receivers).build();
+    }
+
+    private Set<ChatDto> convert(Long senderId, Set<Chat> chats) {
+        Set<ChatDto> chatDtos = new HashSet<>();
+
+        for (Chat chat : chats) {
+
+            var lastMessage = messageService.getLastMessage(chat.getId());
+            // todo
+            var lastMessageDto = new MessageDto();
+
+            ChatDto chatDto = ChatDto.builder()
+                    .id(chat.getId())
+                    .lastMessage(lastMessageDto)
+                    .chatType(chat.getType())
+                    .build();
+
+            if (chat instanceof PrivateChat privateChat) {
+                User receiver = userService.findUser(privateChat.getReceiverId(senderId));
+                chatDto.setAvatar(receiver.getAvatar());
+                chatDto.setTitle(receiver.getName());
+
+            } else if (chat instanceof PublicChat publicChat) {
+                chatDto.setAvatar(publicChat.getAvatar());
+                chatDto.setTitle(publicChat.getTitle());
+            }
+
+            chatDtos.add(chatDto);
+        }
+
+        return chatDtos;
     }
 }
 

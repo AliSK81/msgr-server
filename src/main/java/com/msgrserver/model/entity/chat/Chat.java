@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import javax.swing.plaf.BorderUIResource;
 import java.util.Set;
 
 @Entity

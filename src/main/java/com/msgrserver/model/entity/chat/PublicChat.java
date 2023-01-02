@@ -19,6 +19,8 @@ public class PublicChat extends Chat {
     private String title;
     private String link;
 
+    private String avatar;
+
     @ManyToOne
     private User owner;
 
