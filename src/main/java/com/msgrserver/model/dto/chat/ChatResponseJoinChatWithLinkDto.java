@@ -10,5 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ChatResponseJoinChatWithLinkDto extends ActionDto {
-    PublicChat chat;
+    Long chatId;
+    Long userId;
 }

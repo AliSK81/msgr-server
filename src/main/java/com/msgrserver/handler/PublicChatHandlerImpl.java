@@ -19,11 +19,13 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     public Response joinChatWithLink(ChatRequestJoinChatWithLinkDto dto) {
         PublicChat chat = publicChatService.joinChatWithLink(dto.getLink(), dto.getUserId());
         ChatResponseJoinChatWithLinkDto responseDto = ChatResponseJoinChatWithLinkDto.builder()
-                .chat(chat).build();
+                .chatId(chat.getId())
+                .userId(dto.getUserId())
+                .build();
         Action action = Action.builder()
                 .type(ActionType.JOIN_CHAT_WITH_LINK)
                 .dto(responseDto).build();
-        Set<Long> receivers = new HashSet<>(List.of(dto.getUserId()));
+        Set<Long> receivers = new HashSet<>();//todo use function for get members id after merge
         return Response.builder()
                 .action(action)
                 .receivers(receivers).build();
