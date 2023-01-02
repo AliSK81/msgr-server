@@ -22,8 +22,8 @@ public class User {
     private String username;
     private String password;
     private String name;
+    private String avatar;
 
     @ManyToMany(fetch = FetchType.LAZY)
     Set<Chat> chats;
-    private String avatar;
 }
