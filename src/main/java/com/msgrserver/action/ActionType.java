@@ -9,4 +9,6 @@ public enum ActionType {
     CREATE_GROUP,
     GET_USER_CHATS,
     JOIN_CHAT_WITH_LINK,
+    ADD_USER_BY_ADMIN,
+    DELETE_USER_BY_ADMIN,
 }
