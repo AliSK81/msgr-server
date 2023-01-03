@@ -9,10 +9,12 @@ import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.MessageRepository;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
+import com.msgrserver.util.LinkGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -24,11 +26,14 @@ public class PublicChatServiceImpl implements PublicChatService {
     private final UserRepository userRepository;
     private final PublicChatRepository publicChatRepository;
 
+    private ArrayList<String> links = new ArrayList<>();
+
     @Override
     public PublicChat savePublicChat(Long userId, PublicChat chat) {
-        var user = findUser(userId);
+        User user = findUser(userId);
         chat.setOwner(user);
         chat.setMembers(new HashSet<>(List.of(user)));
+        chat.setLink(LinkGenerator.generate(20));
         return publicChatRepository.save(chat);
     }
 
@@ -49,6 +54,8 @@ public class PublicChatServiceImpl implements PublicChatService {
         // todo other required checks
 
         chat.getMembers().add(user);
+        user.getChats().add(chat);
+        userRepository.save(user);
         return publicChatRepository.save(chat);
     }
 
@@ -66,6 +73,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         } else {
             chat.getMembers().remove(user);
         }
+
         return publicChatRepository.save(chat);
     }
 
@@ -131,4 +139,5 @@ public class PublicChatServiceImpl implements PublicChatService {
             throw new BadRequestException();
         }
     }
+
 }
