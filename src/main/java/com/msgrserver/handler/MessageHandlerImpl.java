@@ -23,15 +23,14 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class MessageHandlerImpl implements MessageHandler{
-
+public class MessageHandlerImpl implements MessageHandler {
     private final MessageService messageService;
-    private final Mapper mapper;
+
 
     public Response sendText(MessageSendTextDto dto) {
         TextMessage newMessage = messageService.saveText(
                 dto.getChatId(),
-                mapper.map(dto, TextMessage.class)
+                Mapper.map(dto, TextMessage.class)
         );
 
         Action action = getMessageReceiveAction(newMessage);
@@ -44,7 +43,7 @@ public class MessageHandlerImpl implements MessageHandler{
     }
 
     private Action getMessageReceiveAction(Message message) {
-        MessageReceiveTextDto newMessageDto = mapper.map(message, MessageReceiveTextDto.class);
+        MessageReceiveTextDto newMessageDto = Mapper.map(message, MessageReceiveTextDto.class);
 
         return Action.builder()
                 .type(ActionType.SEND_TEXT)

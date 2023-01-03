@@ -21,18 +21,16 @@ import java.util.Set;
 public class UserHandlerImpl implements UserHandler {
 
     private final UserService userService;
-    private final Mapper mapper;
-    private final TokenGenerator tokenGenerator;
 
     @Override
     public Response signUp(UserSignUpRequestDto dto) {
         User newUser = userService.saveUser(
-                mapper.map(dto, User.class)
+                Mapper.map(dto, User.class)
         );
 
         UserSignUpResponseDto responseDto = UserSignUpResponseDto.builder()
                 .userId(newUser.getId())
-                .token(tokenGenerator.generateNewToken()).build();
+                .token(TokenGenerator.generateNewToken()).build();
 
         Action action = Action.builder()
                 .type(ActionType.SIGN_UP)
@@ -52,7 +50,7 @@ public class UserHandlerImpl implements UserHandler {
 
         UserSignInResponseDto responseDto = UserSignInResponseDto.builder()
                 .userId(user.getId())
-                .token(tokenGenerator.generateNewToken()).build();
+                .token(TokenGenerator.generateNewToken()).build();
 
         Action action = Action.builder()
                 .type(ActionType.SIGN_IN)
@@ -69,7 +67,8 @@ public class UserHandlerImpl implements UserHandler {
     public Response getUserChats(UserGetChatsRequestDto dto) {
         Set<Chat> chats = userService.getUserChats(dto.getUserId());
         UserGetChatsResponseDto responseDto = UserGetChatsResponseDto.builder()
-                .chats(chats).build();
+//                .chats(chats)
+                .build();
         Action action = Action.builder()
                 .type(ActionType.GET_USER_CHATS)
                 .dto(responseDto).build();

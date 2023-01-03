@@ -2,15 +2,19 @@ package com.msgrserver.model.dto.message;
 
 import com.msgrserver.model.dto.ActionDto;
 import com.msgrserver.model.entity.message.MessageType;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 
-@Setter
+@Value
+@Builder
+@EqualsAndHashCode(callSuper = true)
 public class MessageReceiveTextDto extends ActionDto {
-    private Long senderId;
-    private Long chatId;
-    private String text;
-    private LocalDateTime dateTime;
-    private MessageType messageType;
+    Long senderId;
+    Long chatId;
+    String text;
+    LocalDateTime dateTime;
+    MessageType messageType;
 }

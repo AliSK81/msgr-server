@@ -5,8 +5,13 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import java.time.LocalDateTime;
+
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class MessageReceiveFileDto extends ActionDto {
+public class MessageDto extends ActionDto {
+    String senderName;
+    String text;
+    LocalDateTime dateTime;
 }

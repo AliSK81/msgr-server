@@ -2,15 +2,17 @@ package com.msgrserver.model.entity.message;
 
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+@Data
 @Entity
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@EqualsAndHashCode(callSuper = true)
 public class BinaryMessage extends Message {
     private String name;
     private String path;
