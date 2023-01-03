@@ -1,10 +1,12 @@
 package com.msgrserver.service;
 
+import com.msgrserver.exception.InvalidPasswordException;
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.ChatRepository;
 import com.msgrserver.repository.UserRepository;
+import com.msgrserver.util.PasswordChecking;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +51,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkStrongPassword(String password) {
-        // todo implement
+        if (!PasswordChecking.isValidPassword(password)) {
+            throw new InvalidPasswordException();
+        }
     }
 }
