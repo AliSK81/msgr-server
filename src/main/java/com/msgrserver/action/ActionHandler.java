@@ -5,8 +5,6 @@ import com.msgrserver.model.dto.chat.ChatJoinWithLinkRequestDto;
 import com.msgrserver.handler.ChatHandlerImpl;
 import com.msgrserver.handler.MessageHandler;
 import com.msgrserver.handler.UserHandler;
-import com.msgrserver.model.dto.chat.AddUserByAdminRequestDto;
-import com.msgrserver.model.dto.chat.DeleteUserByAdminRequestDto;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
 import com.msgrserver.model.dto.user.UserGetChatsRequestDto;
 import com.msgrserver.model.dto.user.UserSignInRequestDto;
@@ -33,8 +31,6 @@ public class ActionHandler {
             case SEND_TEXT -> response = messageHandler.sendText((MessageSendTextDto) action.getDto());
             case GET_USER_CHATS -> response = userHandler.getUserChats((UserGetChatsRequestDto) action.getDto());
             case JOIN_CHAT_WITH_LINK -> response = publicChatHandler.joinChatWithLink((ChatJoinWithLinkRequestDto) action.getDto());
-            case ADD_USER_BY_ADMIN -> response = chatHandler.addUserByAdmin((AddUserByAdminRequestDto) action.getDto());
-            case DELETE_USER_BY_ADMIN -> response = chatHandler.deleteUserByAdmin((DeleteUserByAdminRequestDto) action.getDto());
         }
         return response;
     }

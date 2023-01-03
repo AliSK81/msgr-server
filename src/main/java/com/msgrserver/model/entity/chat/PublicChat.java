@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -32,10 +31,4 @@ public class PublicChat extends Chat {
 
     @ManyToMany
     private Set<User> admins;
-
-    public Set<Long> getId(Set<User> users) {
-        Set<Long> usersId = new HashSet<>();
-        users.forEach(user -> usersId.add(user.getId()));
-        return usersId;
-    }
 }

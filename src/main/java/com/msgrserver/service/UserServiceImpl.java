@@ -16,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
+    private ChatRepository chatRepository;
 
     public User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -25,7 +26,6 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) {
         checkUniqueUsername(user.getUsername());
         checkStrongPassword(user.getPassword());
-        user.setAccessAddPublicChat(true);
         return userRepository.save(user);
     }
 
