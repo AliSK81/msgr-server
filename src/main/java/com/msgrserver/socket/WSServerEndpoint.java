@@ -16,9 +16,8 @@ import java.util.logging.Logger;
 )
 public class WSServerEndpoint {
 
-    HashSet<Session> sessions = new HashSet<>();
-
     private static final Logger LOGGER = Logger.getLogger(WSServerEndpoint.class.getName());
+    HashSet<Session> sessions = new HashSet<>();
 
     @OnOpen
     public void onOpen(Session session) {

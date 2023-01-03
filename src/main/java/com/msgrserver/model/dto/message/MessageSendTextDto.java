@@ -1,16 +1,15 @@
 package com.msgrserver.model.dto.message;
 
 import com.msgrserver.model.dto.ActionDto;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
+@Value
 @Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
+@EqualsAndHashCode(callSuper = true)
 public class MessageSendTextDto extends ActionDto {
-    private Long chatId;
-    private Long senderId;
-    private String text;
+    Long chatId;
+    Long senderId;
+    String text;
 }
