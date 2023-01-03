@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class MessageHandlerImpl implements MessageHandler{
+public class MessageHandlerImpl implements MessageHandler {
     private final MessageService messageService;
 
 

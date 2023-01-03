@@ -1,4 +1,5 @@
 package com.msgrserver.socket;
+
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.BadPaddingException;
@@ -8,6 +9,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -17,13 +19,13 @@ public class EncryptDecrypt {
     private static final String SECRET_KEY_1 = "ssdkF$HUy2A#D%kd";
     private static final String SECRET_KEY_2 = "weJiSEvR5yAC5ftB";
 
-    private IvParameterSpec ivParameterSpec;
-    private SecretKeySpec secretKeySpec;
-    private Cipher cipher;
+    private final IvParameterSpec ivParameterSpec;
+    private final SecretKeySpec secretKeySpec;
+    private final Cipher cipher;
 
     public EncryptDecrypt() throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
-        ivParameterSpec = new IvParameterSpec(SECRET_KEY_1.getBytes("UTF-8"));
-        secretKeySpec = new SecretKeySpec(SECRET_KEY_2.getBytes("UTF-8"), "AES");
+        ivParameterSpec = new IvParameterSpec(SECRET_KEY_1.getBytes(StandardCharsets.UTF_8));
+        secretKeySpec = new SecretKeySpec(SECRET_KEY_2.getBytes(StandardCharsets.UTF_8), "AES");
         cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
     }
 

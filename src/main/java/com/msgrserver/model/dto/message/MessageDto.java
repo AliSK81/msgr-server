@@ -1,11 +1,17 @@
 package com.msgrserver.model.dto.message;
 
 import com.msgrserver.model.dto.ActionDto;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 
+@Value
+@Builder
+@EqualsAndHashCode(callSuper = true)
 public class MessageDto extends ActionDto {
-    private String senderName;
-    private String text;
-    private LocalDateTime dateTime;
+    String senderName;
+    String text;
+    LocalDateTime dateTime;
 }

@@ -6,8 +6,6 @@ import jakarta.websocket.Encoder;
 import jakarta.websocket.EndpointConfig;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Map;
-
 @RequiredArgsConstructor
 public class ActionEncoder implements Encoder.Text<Action> {
 

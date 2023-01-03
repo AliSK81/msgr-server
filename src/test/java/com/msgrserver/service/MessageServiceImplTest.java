@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -52,7 +52,7 @@ class MessageServiceImplTest {
                 .type(ChatType.GROUP)
                 .build();
 
-        TextMessage savedMessage = messageService.saveText(1L , textMessage);
+        TextMessage savedMessage = messageService.saveText(1L, textMessage);
 
         assertNotNull(savedMessage.getId());
         assertNotNull(savedMessage.getDateTime());
