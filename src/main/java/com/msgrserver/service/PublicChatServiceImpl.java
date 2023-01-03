@@ -11,6 +11,7 @@ import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
 import com.msgrserver.util.LinkGenerator;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -73,6 +74,45 @@ public class PublicChatServiceImpl implements PublicChatService {
             chat.getMembers().remove(user);
         }
 
+        return publicChatRepository.save(chat);
+    }
+
+    @SneakyThrows
+    @Override
+    public PublicChat addUserByAdmin(Long chatId, Long adminId, Long userId) {
+        PublicChat chat = findPublicChat(chatId);
+        User user = findUser(userId);
+        User admin = findUser(adminId);
+        boolean isAdminOrOwner = chat.getAdmins().contains(admin) || chat.getOwner().equals(admin);
+        if (!(isAdminOrOwner))
+            throw new BadRequestException();
+        if (!(user.getAccessAddPublicChat()))
+            throw new BadRequestException();
+        chat.getMembers().add(user);
+        user.getChats().add(chat);
+        userRepository.save(user);
+        return publicChatRepository.save(chat);
+    }
+
+
+    @SneakyThrows
+    @Override
+    public PublicChat deleteUserByAdmin(Long chatId, Long adminId, Long userId) {
+        PublicChat chat = findPublicChat(chatId);
+        User user = findUser(userId);
+        User admin = findUser(adminId);
+        boolean isAdminOrOwner = chat.getAdmins().contains(admin) || chat.getOwner().equals(admin);
+        if (!(isAdminOrOwner))
+            throw new BadRequestException();
+        if (user.equals(chat.getOwner()))
+            throw new BadRequestException();
+        if (chat.getAdmins().contains(user)) {
+            if (!(chat.getOwner().getId()).equals(adminId))
+                throw new BadRequestException();
+        }
+        chat.getMembers().remove(user);
+        user.getChats().remove(chat);
+        userRepository.save(user);
         return publicChatRepository.save(chat);
     }
 
