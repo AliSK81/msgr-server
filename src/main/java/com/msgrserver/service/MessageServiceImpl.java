@@ -68,6 +68,7 @@ public class MessageServiceImpl implements MessageService {
         boolean isChannel = chat.getType() == ChatType.CHANNEL;
         boolean isValidMsg = !isMember || isChannel && !isOwner && !isAdmin;
 
+        //todo check send message
         if (!isValidMsg) {
             throw new BadRequestException();
         }

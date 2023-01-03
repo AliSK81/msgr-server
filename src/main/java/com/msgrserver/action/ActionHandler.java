@@ -1,5 +1,7 @@
 package com.msgrserver.action;
 
+import com.msgrserver.handler.*;
+import com.msgrserver.model.dto.chat.ChatJoinWithLinkRequestDto;
 import com.msgrserver.handler.ChatHandlerImpl;
 import com.msgrserver.handler.MessageHandler;
 import com.msgrserver.handler.UserHandler;
@@ -18,6 +20,8 @@ public class ActionHandler {
     private final MessageHandler messageHandler;
     private final UserHandler userHandler;
 
+    private final PublicChatHandler publicChatHandler;
+
     public Response handle(Action action) {
         Response response = null;
 
@@ -26,6 +30,7 @@ public class ActionHandler {
             case SIGN_IN -> response = userHandler.signIn((UserSignInRequestDto) action.getDto());
             case SEND_TEXT -> response = messageHandler.sendText((MessageSendTextDto) action.getDto());
             case GET_USER_CHATS -> response = userHandler.getUserChats((UserGetChatsRequestDto) action.getDto());
+            case JOIN_CHAT_WITH_LINK -> response = publicChatHandler.joinChatWithLink((ChatJoinWithLinkRequestDto) action.getDto());
         }
         return response;
     }
