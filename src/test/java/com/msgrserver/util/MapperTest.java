@@ -40,8 +40,9 @@ class MapperTest {
         channel.setMembers(Set.of(pv.getUser1(), pv.getUser2()));
         channel.setOwner(createUser("sorour"));
 
+        // todo convert List<Chat> to List<ChatDto> using converter
         var dto = UserGetChatsResponseDto.builder()
-                .chats(new HashSet<>(List.of(pv, group, channel)))
+//                .chats(new HashSet<>(List.of(pv, group, channel)))
                 .build();
 
         var expectedAction = Action.builder()
@@ -59,7 +60,7 @@ class MapperTest {
     }
 
     private User createUser(String name) {
-        return User.builder().firstName(name).build();
+        return User.builder().name(name).build();
     }
 
     private TextMessage createMessage(String text) {
