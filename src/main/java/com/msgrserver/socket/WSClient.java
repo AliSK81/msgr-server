@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 )
 public class WSClient {
 
-    private static final java.util.logging.Logger LOGGER = Logger.getLogger(WSServerEndpoint.class.getName());
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(WSClient.class.getName());
     private static CountDownLatch latch;
 
     @OnOpen
@@ -66,9 +66,8 @@ public class WSClient {
     public static void main(String[] args) {
         latch = new CountDownLatch(1);
         ClientManager clientManager = ClientManager.createClient();
-        URI uri = null;
         try {
-            uri = new URI("ws://localhost:8086/msgr");
+            URI uri = new URI("ws://localhost:8086/msgr");
             clientManager.connectToServer(WSClient.class, uri);
             latch.await();
         } catch (URISyntaxException | DeploymentException | InterruptedException e) {

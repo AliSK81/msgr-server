@@ -11,8 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserSignUpRequestDto extends ActionDto {
-    private String firstName;
-    private String lastName;
+    private String name;
     private String username;
     private String password;
     private String avatar;
