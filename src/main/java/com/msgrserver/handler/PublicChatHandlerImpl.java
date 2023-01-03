@@ -8,10 +8,12 @@ import com.msgrserver.model.dto.chat.ChatJoinWithLinkResponseDto;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.service.PublicChatService;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Component
 public class PublicChatHandlerImpl implements PublicChatHandler {
     PublicChatService publicChatService;
     PublicChatRepository publicChatRepository;

@@ -2,21 +2,17 @@ package com.msgrserver.model.entity.user;
 
 import com.msgrserver.model.entity.chat.Chat;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
-@Data
 @Entity
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    @ManyToMany(fetch = FetchType.LAZY)
-    Set<Chat> chats;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -26,4 +22,7 @@ public class User {
     private String password;
     private String name;
     private String avatar;
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Chat> chats;
 }

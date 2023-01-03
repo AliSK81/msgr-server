@@ -59,11 +59,11 @@ public class MessageHandlerImpl implements MessageHandler {
 
         if (isPrivate) {
             var chat = (PrivateChat) message.getChat();
-            long receiverId = chat.getReceiverId(message.getSenderId());
+            long receiverId = chat.getReceiver(message.getSenderId());
             receivers = new HashSet<>(List.of(receiverId));
         } else if (isPublic) {
             var chat = (PublicChat) message.getChat();
-            receivers = chat.getMembers().stream()
+            receivers = chat.getUsers().stream()
                     .map(User::getId)
                     .collect(Collectors.toSet());
         } else {
