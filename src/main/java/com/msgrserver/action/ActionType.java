@@ -8,5 +8,5 @@ public enum ActionType {
     UPDATE_PROFILE_PHOTO,
     CREATE_GROUP,
     GET_USER_CHATS,
-    JOIN_CHAT_WITH_LINK;
+    JOIN_CHAT_WITH_LINK,
 }

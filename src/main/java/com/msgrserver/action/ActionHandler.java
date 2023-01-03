@@ -1,7 +1,7 @@
 package com.msgrserver.action;
 
 import com.msgrserver.handler.*;
-import com.msgrserver.model.dto.chat.ChatRequestJoinChatWithLinkDto;
+import com.msgrserver.model.dto.chat.ChatJoinWithLinkRequestDto;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
 import com.msgrserver.model.dto.user.UserGetChatsRequestDto;
 import com.msgrserver.model.dto.user.UserSignInRequestDto;
@@ -17,7 +17,7 @@ public class ActionHandler {
     private final MessageHandler messageHandler;
     private final UserHandler userHandler;
 
-    private final PublicChatHandler publicChat;
+    private final PublicChatHandler publicChatHandler;
 
     public Response handle(Action action) {
         Response response = null;
@@ -27,7 +27,7 @@ public class ActionHandler {
             case SIGN_IN -> response = userHandler.signIn((UserSignInRequestDto) action.getDto());
             case SEND_TEXT -> response = messageHandler.sendText((MessageSendTextDto) action.getDto());
             case GET_USER_CHATS -> response = userHandler.getUserChats((UserGetChatsRequestDto) action.getDto());
-            case JOIN_CHAT_WITH_LINK -> response = publicChat.joinChatWithLink((ChatRequestJoinChatWithLinkDto) action.getDto());
+            case JOIN_CHAT_WITH_LINK -> response = publicChatHandler.joinChatWithLink((ChatJoinWithLinkRequestDto) action.getDto());
         }
         return response;
     }

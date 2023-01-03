@@ -1,8 +1,8 @@
 package com.msgrserver.handler;
 
 import com.msgrserver.action.Response;
-import com.msgrserver.model.dto.chat.ChatRequestJoinChatWithLinkDto;
+import com.msgrserver.model.dto.chat.ChatJoinWithLinkRequestDto;
 
 public interface PublicChatHandler {
-    Response joinChatWithLink(ChatRequestJoinChatWithLinkDto dto);
+    Response joinChatWithLink(ChatJoinWithLinkRequestDto dto);
 }

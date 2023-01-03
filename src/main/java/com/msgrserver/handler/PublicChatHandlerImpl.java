@@ -3,22 +3,23 @@ package com.msgrserver.handler;
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
 import com.msgrserver.action.Response;
-import com.msgrserver.model.dto.chat.ChatRequestJoinChatWithLinkDto;
-import com.msgrserver.model.dto.chat.ChatResponseJoinChatWithLinkDto;
+import com.msgrserver.model.dto.chat.ChatJoinWithLinkRequestDto;
+import com.msgrserver.model.dto.chat.ChatJoinWithLinkResponseDto;
 import com.msgrserver.model.entity.chat.PublicChat;
-import com.msgrserver.service.PublicChatServiceImpl;
+import com.msgrserver.repository.PublicChatRepository;
+import com.msgrserver.service.PublicChatService;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class PublicChatHandlerImpl implements PublicChatHandler {
-    PublicChatServiceImpl publicChatService;
-
+    PublicChatService publicChatService;
+    PublicChatRepository publicChatRepository;
     @Override
-    public Response joinChatWithLink(ChatRequestJoinChatWithLinkDto dto) {
-        PublicChat chat = publicChatService.joinChatWithLink(dto.getLink(), dto.getUserId());
-        ChatResponseJoinChatWithLinkDto responseDto = ChatResponseJoinChatWithLinkDto.builder()
+    public Response joinChatWithLink(ChatJoinWithLinkRequestDto dto) {
+        PublicChat publicChat = publicChatRepository.findPublicChatByLink(dto.getLink());
+        PublicChat chat = publicChatService.joinPublicChat( publicChat.getId(), dto.getUserId());
+        ChatJoinWithLinkResponseDto responseDto = ChatJoinWithLinkResponseDto.builder()
                 .chatId(chat.getId())
                 .userId(dto.getUserId())
                 .build();

@@ -14,5 +14,4 @@ public interface PublicChatService {
 
     PublicChat leavePublicChat(Long chatId, Long userId);
 
-    PublicChat joinChatWithLink(String link, Long userId);
 }

@@ -9,6 +9,7 @@ import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.MessageRepository;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
+import com.msgrserver.util.LinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         User user = findUser(userId);
         chat.setOwner(user);
         chat.setMembers(new HashSet<>(List.of(user)));
-        chat.setLink(createLink());
+        chat.setLink(LinkGenerator.generate(20));
         return publicChatRepository.save(chat);
     }
 
@@ -51,18 +52,6 @@ public class PublicChatServiceImpl implements PublicChatService {
         // todo check user is not banned
         // todo other required checks
 
-        chat.getMembers().add(user);
-        user.getChats().add(chat);
-        userRepository.save(user);
-        return publicChatRepository.save(chat);
-    }
-
-    @Override
-    public PublicChat joinChatWithLink(String link, Long userId) {
-        PublicChat chat = publicChatRepository.findPublicChatByLink(link);
-        User user = findUser(userId);
-        // todo check user is not banned
-        // todo other required checks
         chat.getMembers().add(user);
         user.getChats().add(chat);
         userRepository.save(user);
@@ -111,27 +100,4 @@ public class PublicChatServiceImpl implements PublicChatService {
         }
     }
 
-    private String createLink() {
-        String link = null;
-        boolean isExist = true;
-        while (isExist) {
-            link = randomStr(20);
-            if (!(links.contains(link))) {
-                isExist = false;
-            }
-            links.add(link);
-        }
-        return "@msgrInviteLink." + link; //replace name of app by msgr
-    }
-
-    private String randomStr(int n) {
-        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
-        StringBuilder sb = new StringBuilder(n);
-        for (int i = 0; i < n; i++) {
-            int index = (int) (AlphaNumericString.length() * Math.random());
-            sb.append(AlphaNumericString
-                    .charAt(index));
-        }
-        return sb.toString();
-    }
 }
