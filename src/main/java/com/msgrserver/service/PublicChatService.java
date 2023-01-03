@@ -4,7 +4,7 @@ import com.msgrserver.model.entity.chat.PublicChat;
 
 public interface PublicChatService {
 
-    public PublicChat findPublicChat(Long chatId);
+    PublicChat findPublicChat(Long chatId);
 
     PublicChat savePublicChat(Long userId, PublicChat chat);
 
