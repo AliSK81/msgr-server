@@ -23,11 +23,11 @@ public class ChatHandlerImpl implements ChatHandler {
     PublicChatService publicChatService;
     PublicChat publicChat;
 
-
     @SneakyThrows
     @Override
     public Response addUserByAdmin(AddUserByAdminRequestDto dto) {
         PublicChat chat = publicChatService.addUserByAdmin(dto.getChatId(), dto.getAdminId(), dto.getUserId());
+
         AddUserByAdminResponseDto responseDto = AddUserByAdminResponseDto.builder()
                 .chatId(chat.getId())
                 .userId(dto.getUserId())
@@ -36,7 +36,14 @@ public class ChatHandlerImpl implements ChatHandler {
         Action action = Action.builder()
                 .type(ActionType.ADD_USER_BY_ADMIN)
                 .dto(responseDto).build();
-        Set<Long> receivers = new HashSet<>(publicChat.getId(chat.getMembers()));
+        Set<Long> receivers = new HashSet<>();
+        switch (chat.getType()) {
+            case GROUP -> receivers.addAll(publicChat.getId(chat.getMembers()));
+            case CHANNEL -> {
+                receivers.add(chat.getOwner().getId());
+                receivers.addAll(publicChat.getId(chat.getAdmins()));
+            }
+        }
         return Response.builder()
                 .action(action)
                 .receivers(receivers).build();
@@ -53,7 +60,15 @@ public class ChatHandlerImpl implements ChatHandler {
         Action action = Action.builder()
                 .type(ActionType.DELETE_USER_BY_ADMIN)
                 .dto(responseDto).build();
-        Set<Long> receivers = new HashSet<>(publicChat.getId(chat.getMembers()));
+
+        Set<Long> receivers = new HashSet<>();
+        switch (chat.getType()) {
+            case GROUP -> receivers.addAll(publicChat.getId(chat.getMembers()));
+            case CHANNEL -> {
+                receivers.add(chat.getOwner().getId());
+                receivers.addAll(publicChat.getId(chat.getAdmins()));
+            }
+        }
         return Response.builder()
                 .action(action)
                 .receivers(receivers).build();
