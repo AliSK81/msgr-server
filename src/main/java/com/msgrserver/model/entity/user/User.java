@@ -23,6 +23,7 @@ public class User {
     private String password;
     private String name;
     private String avatar;
+    private Boolean accessAddPublicChat;
 
     @OneToMany(mappedBy = "sender")
     private Set<Message> messages;
