@@ -36,7 +36,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<Chat> getUserChats(Long userId) {
-        return findUser(userId).getChats();
+        return null;
+//        return chatRepository.findChatsByUserId(userId);
     }
 
     @Override

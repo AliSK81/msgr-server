@@ -30,6 +30,7 @@ public class MessageHandlerImpl implements MessageHandler {
     public Response sendText(MessageSendTextDto dto) {
         TextMessage newMessage = messageService.saveText(
                 dto.getChatId(),
+                dto.getSenderId(),
                 Mapper.map(dto, TextMessage.class)
         );
 
@@ -59,11 +60,11 @@ public class MessageHandlerImpl implements MessageHandler {
 
         if (isPrivate) {
             var chat = (PrivateChat) message.getChat();
-            long receiverId = chat.getReceiverId(message.getSenderId());
-            receivers = new HashSet<>(List.of(receiverId));
+            User participant = chat.getParticipant(message.getSender());
+            receivers = new HashSet<>(List.of(participant.getId()));
         } else if (isPublic) {
             var chat = (PublicChat) message.getChat();
-            receivers = chat.getMembers().stream()
+            receivers = chat.getUsers().stream()
                     .map(User::getId)
                     .collect(Collectors.toSet());
         } else {

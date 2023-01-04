@@ -11,28 +11,24 @@ import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.message.BinaryMessage;
 import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.repository.ChatRepository;
-import com.msgrserver.repository.MessageRepository;
-import com.msgrserver.repository.PrivateChatRepository;
-import com.msgrserver.repository.UserRepository;
+import com.msgrserver.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
 public class MessageServiceImpl implements MessageService {
     private final ChatRepository chatRepository;
-    private final PrivateChatRepository privateChatRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
     @Override
-    public TextMessage saveText(Long chatId, TextMessage textMessage) {
+    public TextMessage saveText(Long chatId, Long userId, TextMessage textMessage) {
 
-        User sender = findUser(textMessage.getSenderId());
-
+        User sender = findUser(userId);
         Chat chat = findChat(chatId);
 
         // todo create private chat if not exist
@@ -62,16 +58,23 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private void validatePublicChat(User sender, PublicChat chat) {
-        boolean isMember = chat.getMembers().contains(sender);
-        boolean isOwner = chat.getOwner().equals(sender);
-        boolean isAdmin = chat.getAdmins().contains(sender);
-        boolean isChannel = chat.getType() == ChatType.CHANNEL;
-        boolean isValidMsg = !isMember || isChannel && !isOwner && !isAdmin;
+        Set<User> users = userRepository.findUsersByChatsId(chat.getId());
+        boolean isMember = users.contains(sender);
 
-        //todo check send message
-        if (!isValidMsg) {
+        if (!isMember)
             throw new BadRequestException();
+
+        boolean isChannel = chat.getType() == ChatType.CHANNEL;
+
+        if (isChannel) {
+            boolean isOwner = chat.getOwner().equals(sender);
+            boolean isAdmin = chat.getAdmins().contains(sender);
+
+            if (!isOwner && !isAdmin)
+                throw new BadRequestException();
         }
+
+        //todo check sending message is allowed in chat
     }
 
     private void validatePrivateChat(User sender, PrivateChat chat) {
