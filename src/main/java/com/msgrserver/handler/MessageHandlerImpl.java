@@ -12,6 +12,7 @@ import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.service.MessageService;
+import com.msgrserver.service.UserService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -60,7 +61,7 @@ public class MessageHandlerImpl implements MessageHandler {
 
         if (isPrivate) {
             var chat = (PrivateChat) message.getChat();
-            User participant = chat.getParticipant(message.getSender());
+            User participant = chat.getParticipant(message.getSender().getId());
             receivers = new HashSet<>(List.of(participant.getId()));
         } else if (isPublic) {
             var chat = (PublicChat) message.getChat();

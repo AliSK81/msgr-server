@@ -15,9 +15,9 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class PrivateChat extends Chat {
 
-    public User getParticipant(User user) {
+    public User getParticipant(Long userId) {
         return super.getUsers().stream()
-                .filter(u -> !u.getId().equals(user.getId()))
+                .filter(u -> !u.getId().equals(userId))
                 .findAny()
                 .orElseThrow(UserNotFoundException::new);
     }

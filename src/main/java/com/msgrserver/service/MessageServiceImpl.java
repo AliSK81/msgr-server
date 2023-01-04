@@ -9,6 +9,7 @@ import com.msgrserver.model.entity.chat.ChatType;
 import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.message.BinaryMessage;
+import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.*;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -47,6 +49,13 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public BinaryMessage saveFile(BinaryMessage binaryMessage) {
         return null;
+    }
+
+    @Override
+    public Message getLastMessage(Long chatId) {
+        List<Message> messages = messageRepository.findAll();
+        // todo sort by date time
+        return messages.stream().sorted().findFirst().get();
     }
 
     private Chat findChat(Long chatId) {

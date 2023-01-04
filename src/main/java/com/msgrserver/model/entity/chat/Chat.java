@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import javax.swing.plaf.BorderUIResource;
 import java.util.Set;
 
 @Entity

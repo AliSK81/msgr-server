@@ -12,6 +12,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class BinaryMessage extends Message {
     private String name;
-    private String path;
     private String caption;
+    private Byte[] data;
 }
