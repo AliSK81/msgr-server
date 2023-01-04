@@ -1,18 +1,18 @@
 package com.msgrserver.model.entity.user;
 
 import com.msgrserver.model.entity.chat.Chat;
+import com.msgrserver.model.entity.message.Message;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Set;
 
-@Builder
+@Entity
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-@Entity
-@ToString
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,6 +24,9 @@ public class User {
     private String name;
     private String avatar;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    Set<Chat> chats;
+    @OneToMany(mappedBy = "sender")
+    private Set<Message> messages;
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Chat> chats;
 }

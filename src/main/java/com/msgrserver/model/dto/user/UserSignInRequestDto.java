@@ -1,16 +1,14 @@
 package com.msgrserver.model.dto.user;
 
 import com.msgrserver.model.dto.ActionDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
+@Builder
+@EqualsAndHashCode(callSuper = true)
 public class UserSignInRequestDto extends ActionDto {
-    private String username;
-    private String password;
+    String username;
+    String password;
 }

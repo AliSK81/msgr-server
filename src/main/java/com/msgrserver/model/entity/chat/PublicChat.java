@@ -8,14 +8,12 @@ import lombok.experimental.SuperBuilder;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Setter
-@Getter
 public class PublicChat extends Chat {
-
     private String title;
     private String link;
 
@@ -25,8 +23,9 @@ public class PublicChat extends Chat {
     private User owner;
 
     @ManyToMany
-    private Set<User> members;
-
-    @ManyToMany
+    @JoinTable(
+            name = "admin",
+            joinColumns = @JoinColumn(name = "chat_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> admins;
 }
