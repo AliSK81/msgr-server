@@ -1,9 +1,11 @@
 package com.msgrserver.model.entity.chat;
 
-import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.user.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Set;
@@ -24,11 +26,8 @@ public class Chat {
 
     @ManyToMany
     @JoinTable(
-            name = "chat_users",
+            name = "member",
             joinColumns = @JoinColumn(name = "chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users;
-
-    @OneToMany(mappedBy = "chat")
-    private Set<Message> messages;
 }

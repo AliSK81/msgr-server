@@ -1,6 +1,7 @@
 package com.msgrserver.model.entity.chat;
 
 import com.msgrserver.exception.UserNotFoundException;
+import com.msgrserver.model.entity.user.User;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +15,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class PrivateChat extends Chat {
 
-    public Long getReceiver(Long senderId) {
+    public User getParticipant(User user) {
         return super.getUsers().stream()
-                .filter(user -> !user.getId().equals(senderId))
+                .filter(u -> !u.getId().equals(user.getId()))
                 .findAny()
-                .orElseThrow(UserNotFoundException::new)
-                .getId();
+                .orElseThrow(UserNotFoundException::new);
     }
 }

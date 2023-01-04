@@ -26,10 +26,9 @@ public class MessageServiceImpl implements MessageService {
     private final UserRepository userRepository;
 
     @Override
-    public TextMessage saveText(Long chatId, TextMessage textMessage) {
+    public TextMessage saveText(Long chatId, Long userId, TextMessage textMessage) {
 
-        User sender = findUser(textMessage.getSenderId());
-
+        User sender = findUser(userId);
         Chat chat = findChat(chatId);
 
         // todo create private chat if not exist

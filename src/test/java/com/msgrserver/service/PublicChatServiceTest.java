@@ -46,7 +46,18 @@ class PublicChatServiceTest {
         User user2 = User.builder().id(2L).name("user2").build();
         PublicChat chat = PublicChat.builder().id(1L).owner(user).title("gap1").build();
         PublicChat chat2 = PublicChat.builder().id(2L).owner(user2).title("gap2").build();
-        PrivateChat chat3 = PrivateChat.builder().id(3L).users(Set.of(user, user2)).build();
+
+
+        userRepository.save(user);
+        userRepository.save(user2);
+
+        chat.setAdmins(Set.of(user, user2));
+        chatRepository.save(chat);
+
+        System.out.println(userRepository.findAdminsByChatId(chat.getId()));
+
+//        PrivateChat chat3 = PrivateChat.builder().id(3L).users(Set.of(user, user2)).build();
+//        chatRepository.save(chat3);
 
 
 //        userRepository.save(user);

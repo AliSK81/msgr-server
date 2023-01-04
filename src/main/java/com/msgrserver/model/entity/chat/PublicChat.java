@@ -20,6 +20,10 @@ public class PublicChat extends Chat {
     @ManyToOne
     private User owner;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
+    @JoinTable(
+            name = "admin",
+            joinColumns = @JoinColumn(name = "chat_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> admins;
 }

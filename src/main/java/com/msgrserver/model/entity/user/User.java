@@ -1,6 +1,7 @@
 package com.msgrserver.model.entity.user;
 
 import com.msgrserver.model.entity.chat.Chat;
+import com.msgrserver.model.entity.message.Message;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,9 @@ public class User {
     private String password;
     private String name;
     private String avatar;
+
+    @OneToMany(mappedBy = "sender")
+    private Set<Message> messages;
 
     @ManyToMany(mappedBy = "users")
     private Set<Chat> chats;

@@ -39,20 +39,21 @@ class MessageServiceImplTest {
     @Test
     void saveTextTest() {
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(User.builder().id(1L).build()));
+        User sender = User.builder().id(1L).build();
+        when(userRepository.findById(1L)).thenReturn(Optional.of(sender));
 
         TextMessage textMessage = TextMessage.builder()
-                .senderId(1L)
+                .sender(sender)
                 .text("salam")
                 .build();
 
-        PublicChat publicChat = PublicChat.builder()
+        PublicChat chat = PublicChat.builder()
                 .id(1L)
                 .title("group")
                 .type(ChatType.GROUP)
                 .build();
 
-        TextMessage savedMessage = messageService.saveText(1L, textMessage);
+        TextMessage savedMessage = messageService.saveText(chat.getId(), sender.getId(), textMessage);
 
         assertNotNull(savedMessage.getId());
         assertNotNull(savedMessage.getDateTime());
