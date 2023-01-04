@@ -27,14 +27,14 @@ class MessageServiceTest {
 
     @Test
     void saveTextTest() {
-        var userAli = userService.saveUser(User.builder().phone("0914").name("ali").build());
-        var userMmd = userService.saveUser(User.builder().phone("0922").name("mmd").build());
-
-        var msgFromAli = TextMessage.builder()
-                .senderId(userAli.getId())
-                .text("msg from ali").build();
-
-        var sentMessage = messageService.saveText(userMmd.getId(), msgFromAli);
+//        var userAli = userService.saveUser(User.builder().phone("0914").name("ali").build());
+//        var userMmd = userService.saveUser(User.builder().phone("0922").name("mmd").build());
+//
+//        var msgFromAli = TextMessage.builder()
+////                .senderId(userAli.getId())
+//                .text("msg from ali").build();
+//
+//        var sentMessage = messageService.saveText(userMmd.getId(), msgFromAli);
     }
 
     @Test

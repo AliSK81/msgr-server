@@ -32,7 +32,7 @@ public class PublicChatServiceImpl implements PublicChatService {
     public PublicChat savePublicChat(Long userId, PublicChat chat) {
         User user = findUser(userId);
         chat.setOwner(user);
-        chat.setMembers(new HashSet<>(List.of(user)));
+        chat.setUsers(new HashSet<>(List.of(user)));
         chat.setLink(LinkGenerator.generate(20));
         return publicChatRepository.save(chat);
     }
@@ -53,9 +53,8 @@ public class PublicChatServiceImpl implements PublicChatService {
         // todo check user is not banned
         // todo other required checks
 
-        chat.getMembers().add(user);
-        user.getChats().add(chat);
-        userRepository.save(user);
+        chat.setUsers(userRepository.findUsersByChatsId(chatId));
+        chat.getUsers().add(user);
         return publicChatRepository.save(chat);
     }
 
@@ -69,11 +68,12 @@ public class PublicChatServiceImpl implements PublicChatService {
             deletePublicChat(userId, chatId);
         } else if (isAdmin) {
             chat.getAdmins().remove(user);
-            chat.getMembers().remove(user);
+            chat.setUsers(userRepository.findUsersByChatsId(chatId));
+            chat.getUsers().remove(user);
         } else {
-            chat.getMembers().remove(user);
+            chat.setUsers(userRepository.findUsersByChatsId(chatId));
+            chat.getUsers().remove(user);
         }
-
         return publicChatRepository.save(chat);
     }
 

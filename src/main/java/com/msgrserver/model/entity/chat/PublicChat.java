@@ -1,36 +1,33 @@
 package com.msgrserver.model.entity.chat;
 
 import com.msgrserver.model.entity.user.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
 @Entity
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class PublicChat extends Chat {
-
     private String title;
     private String link;
+
+    private String avatar;
 
     @ManyToOne
     private User owner;
 
     @ManyToMany
-    private Set<User> members;
-
-    @ManyToMany
+    @JoinTable(
+            name = "admin",
+            joinColumns = @JoinColumn(name = "chat_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> admins;
 
     public Set<Long> getId(Set<User> users) {

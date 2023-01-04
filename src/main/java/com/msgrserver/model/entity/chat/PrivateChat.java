@@ -1,27 +1,24 @@
 package com.msgrserver.model.entity.chat;
 
+import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.user.User;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Data
 @Entity
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class PrivateChat extends Chat {
-    @OneToOne
-    private User user1;
-    @OneToOne
-    private User user2;
 
-    public Long getReceiverId(Long senderId) {
-        return user1.getId().equals(senderId) ? user2.getId() : user1.getId();
+    public User getParticipant(Long userId) {
+        return super.getUsers().stream()
+                .filter(u -> !u.getId().equals(userId))
+                .findAny()
+                .orElseThrow(UserNotFoundException::new);
     }
 }

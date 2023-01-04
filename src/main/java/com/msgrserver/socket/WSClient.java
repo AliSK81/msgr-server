@@ -41,13 +41,13 @@ public class WSClient {
         LOGGER.info("[CLIENT]: Connected to server... \n[CLIENT]: Session ID: " + session.getId());
         try {
 
-            var msgFromAli = MessageSendTextDto.builder()
+            MessageSendTextDto msgFromAli = MessageSendTextDto.builder()
                     .senderId(1L)
                     .chatId(2L)
                     .text("msg from ali").build();
 
 
-            var action = Action.builder()
+            Action action = Action.builder()
                     .type(ActionType.SEND_TEXT)
                     .dto(msgFromAli)
                     .build();
