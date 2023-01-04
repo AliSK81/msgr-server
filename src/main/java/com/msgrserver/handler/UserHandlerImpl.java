@@ -95,7 +95,7 @@ public class UserHandlerImpl implements UserHandler {
 
             var lastMessage = messageService.getLastMessage(chat.getId());
             // todo
-            var lastMessageDto = new MessageDto();
+            var lastMessageDto = MessageDto.builder().build();
 
             ChatDto chatDto = ChatDto.builder()
                     .id(chat.getId())
@@ -104,7 +104,7 @@ public class UserHandlerImpl implements UserHandler {
                     .build();
 
             if (chat instanceof PrivateChat privateChat) {
-                User receiver = userService.findUser(privateChat.getReceiverId(senderId));
+                User receiver = privateChat.getParticipant(senderId);
                 chatDto.setAvatar(receiver.getAvatar());
                 chatDto.setTitle(receiver.getName());
 

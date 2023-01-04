@@ -61,7 +61,7 @@ public class MessageHandlerImpl implements MessageHandler {
 
         if (isPrivate) {
             var chat = (PrivateChat) message.getChat();
-            User participant = chat.getParticipant(message.getSender());
+            User participant = chat.getParticipant(message.getSender().getId());
             receivers = new HashSet<>(List.of(participant.getId()));
         } else if (isPublic) {
             var chat = (PublicChat) message.getChat();
