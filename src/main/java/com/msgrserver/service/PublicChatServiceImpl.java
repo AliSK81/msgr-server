@@ -26,7 +26,6 @@ public class PublicChatServiceImpl implements PublicChatService {
     private final UserRepository userRepository;
     private final PublicChatRepository publicChatRepository;
 
-    private ArrayList<String> links = new ArrayList<>();
 
     @Override
     public PublicChat savePublicChat(Long userId, PublicChat chat) {
@@ -88,7 +87,7 @@ public class PublicChatServiceImpl implements PublicChatService {
             throw new BadRequestException();
         if (!(user.getAccessAddPublicChat()))
             throw new BadRequestException();
-        chat.getMembers().add(user);
+        chat.getUsers().add(user);
         user.getChats().add(chat);
         userRepository.save(user);
         return publicChatRepository.save(chat);
@@ -110,7 +109,7 @@ public class PublicChatServiceImpl implements PublicChatService {
             if (!(chat.getOwner().getId()).equals(adminId))
                 throw new BadRequestException();
         }
-        chat.getMembers().remove(user);
+        chat.getUsers().remove(user);
         user.getChats().remove(chat);
         userRepository.save(user);
         return publicChatRepository.save(chat);
