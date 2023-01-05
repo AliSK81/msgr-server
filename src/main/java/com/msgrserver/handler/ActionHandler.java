@@ -19,8 +19,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ActionHandler {
-
-    private final ChatHandlerImpl chatHandler;
     private final MessageHandler messageHandler;
     private final UserHandler userHandler;
 
@@ -36,9 +34,10 @@ public class ActionHandler {
             case GET_USER_CHATS -> actionResult = userHandler.getUserChats((UserGetChatsRequestDto) action.getDto());
             case JOIN_CHAT_WITH_LINK ->
                     actionResult = publicChatHandler.joinChatWithLink((PublicChatJoinWithLinkRequestDto) action.getDto());
-            case ADD_USER_BY_ADMIN -> actionResult = chatHandler.addUserToPublicChat((PublicChatAddUserRequestDto) action.getDto());
+            case ADD_USER_BY_ADMIN ->
+                    actionResult = publicChatHandler.addUserToPublicChat((PublicChatAddUserRequestDto) action.getDto());
             case DELETE_USER_BY_ADMIN ->
-                    actionResult = chatHandler.deleteUserFromPublicChat((PublicChatDeleteUserRequestDto) action.getDto());
+                    actionResult = publicChatHandler.deleteUserFromPublicChat((PublicChatDeleteUserRequestDto) action.getDto());
         }
         return actionResult;
     }
