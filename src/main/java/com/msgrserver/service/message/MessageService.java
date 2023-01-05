@@ -1,4 +1,4 @@
-package com.msgrserver.service;
+package com.msgrserver.service.message;
 
 import com.msgrserver.model.entity.message.BinaryMessage;
 import com.msgrserver.model.entity.message.Message;

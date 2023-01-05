@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Builder
 @Getter
-public class Response {
+public class ActionResult {
     private Action action;
     private Set<Long> receivers;
 }

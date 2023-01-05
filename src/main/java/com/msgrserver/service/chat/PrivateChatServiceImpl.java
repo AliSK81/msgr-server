@@ -1,4 +1,4 @@
-package com.msgrserver.service;
+package com.msgrserver.service.chat;
 
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.chat.PrivateChat;

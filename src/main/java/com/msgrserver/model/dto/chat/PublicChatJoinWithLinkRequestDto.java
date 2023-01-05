@@ -8,8 +8,7 @@ import lombok.Value;
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class DeleteUserByAdminRequestDto extends ActionDto {
-    Long chatId;
-    Long adminId;
+public class PublicChatJoinWithLinkRequestDto extends ActionDto {
     Long userId;
+    String link;
 }
