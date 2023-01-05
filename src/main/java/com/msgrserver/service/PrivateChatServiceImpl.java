@@ -5,11 +5,9 @@ import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PrivateChatRepository;
 import com.msgrserver.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -23,8 +21,7 @@ public class PrivateChatServiceImpl implements PrivateChatService {
         User user1 = findUser(user1Id);
         User user2 = findUser(user2Id);
 
-        PrivateChat chat = PrivateChat.builder()
-                .users(Set.of(user1, user2)).build();
+        PrivateChat chat = PrivateChat.builder().users(Set.of(user1, user2)).build();
 
         return privateChatRepository.save(chat);
     }

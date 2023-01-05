@@ -17,10 +17,11 @@ import java.util.Set;
 public class PublicChatHandlerImpl implements PublicChatHandler {
     PublicChatService publicChatService;
     PublicChatRepository publicChatRepository;
+
     @Override
     public Response joinChatWithLink(ChatJoinWithLinkRequestDto dto) {
         PublicChat publicChat = publicChatRepository.findPublicChatByLink(dto.getLink());
-        PublicChat chat = publicChatService.joinPublicChat( publicChat.getId(), dto.getUserId());
+        PublicChat chat = publicChatService.joinPublicChat(publicChat.getId(), dto.getUserId());
         ChatJoinWithLinkResponseDto responseDto = ChatJoinWithLinkResponseDto.builder()
                 .chatId(chat.getId())
                 .userId(dto.getUserId())

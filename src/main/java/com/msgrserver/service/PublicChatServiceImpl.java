@@ -3,7 +3,7 @@ package com.msgrserver.service;
 import com.msgrserver.exception.BadRequestException;
 import com.msgrserver.exception.ChatNotFoundException;
 import com.msgrserver.exception.UserNotFoundException;
-import com.msgrserver.model.entity.chat.Chat;
+import com.msgrserver.exception.UserPrivacySettingsException;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.MessageRepository;
@@ -11,12 +11,11 @@ import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
 import com.msgrserver.util.LinkGenerator;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -37,9 +36,14 @@ public class PublicChatServiceImpl implements PublicChatService {
     }
 
     @Override
-    public void deletePublicChat(Long userId, Long chatId) {
-        Chat chat = findPublicChat(chatId);
-        checkUserIsOwner(userId, chat);
+    public void deletePublicChat(Long chatId, Long userId) {
+        PublicChat chat = findPublicChat(chatId);
+        User user = findUser(userId);
+
+        if (!chat.getOwner().equals(user))
+            throw new BadRequestException();
+
+        // todo check if delete users and admin is needed
         messageRepository.deleteMessagesByChatId(chatId);
         publicChatRepository.deleteById(chatId);
     }
@@ -52,7 +56,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         // todo check user is not banned
         // todo other required checks
 
-        chat.setUsers(userRepository.findUsersByChatsId(chatId));
+        chat.setUsers(userRepository.findUsersByChatId(chatId));
         chat.getUsers().add(user);
         return publicChatRepository.save(chat);
     }
@@ -61,57 +65,76 @@ public class PublicChatServiceImpl implements PublicChatService {
     public PublicChat leavePublicChat(Long chatId, Long userId) {
         PublicChat chat = findPublicChat(chatId);
         User user = findUser(userId);
-        boolean isAdmin = chat.getAdmins().contains(user);
+
         boolean isOwner = chat.getOwner().getId().equals(userId);
+
         if (isOwner) {
-            deletePublicChat(userId, chatId);
-        } else if (isAdmin) {
-            chat.getAdmins().remove(user);
-            chat.setUsers(userRepository.findUsersByChatsId(chatId));
-            chat.getUsers().remove(user);
+            deletePublicChat(chatId, userId);
+
         } else {
-            chat.setUsers(userRepository.findUsersByChatsId(chatId));
+            Set<User> admins = userRepository.findAdminsByChatId(chatId);
+            boolean isAdmin = admins.contains(user);
+
+            if (isAdmin) {
+                chat.setAdmins(admins);
+                chat.getAdmins().remove(user);
+            }
+
+            chat.setUsers(userRepository.findUsersByChatId(chatId));
             chat.getUsers().remove(user);
         }
+
         return publicChatRepository.save(chat);
     }
 
-    @SneakyThrows
     @Override
-    public PublicChat addUserByAdmin(Long chatId, Long adminId, Long userId) {
+    public PublicChat addUserToPublicChat(Long chatId, Long adderId, Long userId) {
         PublicChat chat = findPublicChat(chatId);
         User user = findUser(userId);
-        User admin = findUser(adminId);
-        boolean isAdminOrOwner = chat.getAdmins().contains(admin) || chat.getOwner().equals(admin);
-        if (!(isAdminOrOwner))
+        User adder = findUser(adderId);
+
+        boolean isAdmin = userRepository.findAdminsByChatId(chatId).contains(adder);
+        boolean isOwner = chat.getOwner().equals(adder);
+
+        if (!isOwner && !isAdmin)
             throw new BadRequestException();
-        if (!(user.getAccessAddPublicChat()))
-            throw new BadRequestException();
+
+        if (!user.getAccessAddPublicChat())
+            throw new UserPrivacySettingsException();
+
+        chat.setUsers(userRepository.findUsersByChatId(chatId));
         chat.getUsers().add(user);
-        user.getChats().add(chat);
-        userRepository.save(user);
         return publicChatRepository.save(chat);
     }
 
-
-    @SneakyThrows
     @Override
-    public PublicChat deleteUserByAdmin(Long chatId, Long adminId, Long userId) {
+    public PublicChat deleteUserFromPublicChat(Long chatId, Long deleterId, Long userId) {
         PublicChat chat = findPublicChat(chatId);
         User user = findUser(userId);
-        User admin = findUser(adminId);
-        boolean isAdminOrOwner = chat.getAdmins().contains(admin) || chat.getOwner().equals(admin);
-        if (!(isAdminOrOwner))
+        User deleter = findUser(deleterId);
+
+        Set<User> admins = userRepository.findAdminsByChatId(chatId);
+
+        if (chat.getOwner().equals(user))
             throw new BadRequestException();
-        if (user.equals(chat.getOwner()))
+
+        boolean isOwner = chat.getOwner().equals(deleter);
+        boolean isAdmin = admins.contains(deleter);
+
+        if (!isOwner && !isAdmin)
             throw new BadRequestException();
-        if (chat.getAdmins().contains(user)) {
-            if (!(chat.getOwner().getId()).equals(adminId))
-                throw new BadRequestException();
-        }
+
+        if (!isOwner && admins.contains(user))
+            throw new BadRequestException();
+
+        chat.setUsers(userRepository.findUsersByChatId(chatId));
         chat.getUsers().remove(user);
-        user.getChats().remove(chat);
-        userRepository.save(user);
+
+        if (admins.contains(user)) {
+            chat.setAdmins(admins);
+            chat.getAdmins().remove(user);
+        }
+
         return publicChatRepository.save(chat);
     }
 
@@ -123,20 +146,6 @@ public class PublicChatServiceImpl implements PublicChatService {
 
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-    }
-
-
-    private void checkUserIsOwner(Long userId, Chat chat) {
-        User owner = ((PublicChat) chat).getOwner();
-        if (!(owner.getId().equals(userId))) {
-            throw new BadRequestException();
-        }
-    }
-
-    private void checkChatIsPublic(Chat chat) {
-        if (!(chat instanceof PublicChat)) {
-            throw new BadRequestException();
-        }
     }
 
 }
