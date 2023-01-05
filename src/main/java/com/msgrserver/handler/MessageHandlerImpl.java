@@ -12,7 +12,6 @@ import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.service.MessageService;
-import com.msgrserver.service.UserService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

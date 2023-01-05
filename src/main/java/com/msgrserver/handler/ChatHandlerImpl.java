@@ -8,6 +8,7 @@ import com.msgrserver.model.dto.chat.AddUserByAdminResponseDto;
 import com.msgrserver.model.dto.chat.DeleteUserByAdminRequestDto;
 import com.msgrserver.model.dto.chat.DeleteUserByAdminResponseDto;
 import com.msgrserver.model.entity.chat.PublicChat;
+import com.msgrserver.model.entity.user.User;
 import com.msgrserver.service.PublicChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -26,7 +27,7 @@ public class ChatHandlerImpl implements ChatHandler {
     @SneakyThrows
     @Override
     public Response addUserByAdmin(AddUserByAdminRequestDto dto) {
-        PublicChat chat = publicChatService.addUserByAdmin(dto.getChatId(), dto.getAdminId(), dto.getUserId());
+        PublicChat chat = publicChatService.addUserToPublicChat(dto.getChatId(), dto.getAdminId(), dto.getUserId());
 
         AddUserByAdminResponseDto responseDto = AddUserByAdminResponseDto.builder()
                 .chatId(chat.getId())
@@ -41,7 +42,7 @@ public class ChatHandlerImpl implements ChatHandler {
 
     @Override
     public Response deleteUserByAdmin(DeleteUserByAdminRequestDto dto) {
-        PublicChat chat = publicChatService.deleteUserByAdmin(dto.getChatId(), dto.getAdminId(), dto.getUserId());
+        PublicChat chat = publicChatService.deleteUserFromPublicChat(dto.getChatId(), dto.getAdminId(), dto.getUserId());
         DeleteUserByAdminResponseDto responseDto = DeleteUserByAdminResponseDto.builder()
                 .chatId(chat.getId())
                 .userId(dto.getUserId())
@@ -57,10 +58,10 @@ public class ChatHandlerImpl implements ChatHandler {
     private Response getResponse(PublicChat chat, Action action) {
         Set<Long> receivers = new HashSet<>();
         switch (chat.getType()) {
-            case GROUP -> receivers.addAll(publicChat.getId(chat.getUsers()));
+            case GROUP -> receivers.addAll(chat.getUsers().stream().map(User::getId).toList());
             case CHANNEL -> {
                 receivers.add(chat.getOwner().getId());
-                receivers.addAll(publicChat.getId(chat.getAdmins()));
+                receivers.addAll(chat.getAdmins().stream().map(User::getId).toList());
             }
         }
         return Response.builder()

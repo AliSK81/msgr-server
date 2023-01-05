@@ -1,11 +1,10 @@
 package com.msgrserver.model.entity.user;
 
-import com.msgrserver.model.entity.chat.Chat;
-import com.msgrserver.model.entity.message.Message;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
-
-import java.util.Set;
 
 @Entity
 @Getter
@@ -24,10 +23,4 @@ public class User {
     private String name;
     private String avatar;
     private Boolean accessAddPublicChat;
-
-    @OneToMany(mappedBy = "sender")
-    private Set<Message> messages;
-
-    @ManyToMany(mappedBy = "users")
-    private Set<Chat> chats;
 }

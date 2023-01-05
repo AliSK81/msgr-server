@@ -7,16 +7,19 @@ import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.ChatRepository;
 import com.msgrserver.repository.UserRepository;
 import com.msgrserver.util.PasswordChecking;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
+    private final ChatRepository chatRepository;
+
+    @Override
     public User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
@@ -36,8 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<Chat> getUserChats(Long userId) {
-        return null;
-//        return chatRepository.findChatsByUserId(userId);
+        return chatRepository.findChatsByUsersId(userId);
     }
 
     @Override
