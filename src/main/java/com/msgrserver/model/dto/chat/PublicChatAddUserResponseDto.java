@@ -8,6 +8,8 @@ import lombok.Value;
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ChatGetPublicProfileRequestDto extends ActionDto {
+public class PublicChatAddUserResponseDto extends ActionDto {
     Long chatId;
+    Long adminId;
+    Long userId;
 }

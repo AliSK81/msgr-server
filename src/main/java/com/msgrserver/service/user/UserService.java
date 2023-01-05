@@ -1,4 +1,4 @@
-package com.msgrserver.service;
+package com.msgrserver.service.user;
 
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.user.User;

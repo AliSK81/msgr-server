@@ -7,6 +7,7 @@ import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.ChatRepository;
 import com.msgrserver.repository.MessageRepository;
 import com.msgrserver.repository.UserRepository;
+import com.msgrserver.service.message.MessageServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

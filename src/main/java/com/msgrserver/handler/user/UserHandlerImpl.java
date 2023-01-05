@@ -1,8 +1,8 @@
-package com.msgrserver.handler;
+package com.msgrserver.handler.user;
 
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
-import com.msgrserver.action.Response;
+import com.msgrserver.action.ActionResult;
 import com.msgrserver.model.dto.chat.ChatDto;
 import com.msgrserver.model.dto.message.MessageDto;
 import com.msgrserver.model.dto.user.*;
@@ -10,8 +10,8 @@ import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.service.MessageService;
-import com.msgrserver.service.UserService;
+import com.msgrserver.service.message.MessageService;
+import com.msgrserver.service.user.UserService;
 import com.msgrserver.util.Mapper;
 import com.msgrserver.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class UserHandlerImpl implements UserHandler {
     private final MessageService messageService;
 
     @Override
-    public Response signUp(UserSignUpRequestDto dto) {
+    public ActionResult signUp(UserSignUpRequestDto dto) {
         User newUser = userService.saveUser(
                 Mapper.map(dto, User.class)
         );
@@ -44,13 +44,13 @@ public class UserHandlerImpl implements UserHandler {
 
         Set<Long> receivers = new HashSet<>(List.of(newUser.getId()));
 
-        return Response.builder()
+        return ActionResult.builder()
                 .action(action)
                 .receivers(receivers).build();
     }
 
     @Override
-    public Response signIn(UserSignInRequestDto dto) {
+    public ActionResult signIn(UserSignInRequestDto dto) {
 
         User user = userService.findUser(dto.getUsername(), dto.getPassword());
 
@@ -64,13 +64,13 @@ public class UserHandlerImpl implements UserHandler {
 
         Set<Long> receivers = new HashSet<>(List.of(user.getId()));
 
-        return Response.builder()
+        return ActionResult.builder()
                 .action(action)
                 .receivers(receivers).build();
     }
 
     @Override
-    public Response getUserChats(UserGetChatsRequestDto dto) {
+    public ActionResult getUserChats(UserGetChatsRequestDto dto) {
         Set<Chat> chats = userService.getUserChats(dto.getUserId());
 
         Set<ChatDto> chatDtos = convert(dto.getUserId(), chats);
@@ -83,7 +83,7 @@ public class UserHandlerImpl implements UserHandler {
 
         Set<Long> receivers = new HashSet<>(List.of(dto.getUserId()));
 
-        return Response.builder()
+        return ActionResult.builder()
                 .action(action)
                 .receivers(receivers).build();
     }

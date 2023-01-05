@@ -1,4 +1,4 @@
-package com.msgrserver.service;
+package com.msgrserver.service.chat;
 
 import com.msgrserver.exception.BadRequestException;
 import com.msgrserver.exception.ChatNotFoundException;

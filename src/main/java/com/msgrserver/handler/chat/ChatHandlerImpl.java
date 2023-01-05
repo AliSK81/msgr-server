@@ -1,17 +1,16 @@
-package com.msgrserver.handler;
+package com.msgrserver.handler.chat;
 
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
-import com.msgrserver.action.Response;
-import com.msgrserver.model.dto.chat.AddUserByAdminRequestDto;
-import com.msgrserver.model.dto.chat.AddUserByAdminResponseDto;
-import com.msgrserver.model.dto.chat.DeleteUserByAdminRequestDto;
-import com.msgrserver.model.dto.chat.DeleteUserByAdminResponseDto;
+import com.msgrserver.action.ActionResult;
+import com.msgrserver.model.dto.chat.PublicChatAddUserRequestDto;
+import com.msgrserver.model.dto.chat.PublicChatAddUserResponseDto;
+import com.msgrserver.model.dto.chat.PublicChatDeleteUserRequestDto;
+import com.msgrserver.model.dto.chat.PublicChatDeleteUserResponseDto;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.service.PublicChatService;
+import com.msgrserver.service.chat.PublicChatService;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -21,15 +20,13 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ChatHandlerImpl implements ChatHandler {
 
-    PublicChatService publicChatService;
-    PublicChat publicChat;
+    private final PublicChatService publicChatService;
 
-    @SneakyThrows
     @Override
-    public Response addUserByAdmin(AddUserByAdminRequestDto dto) {
+    public ActionResult addUserToPublicChat(PublicChatAddUserRequestDto dto) {
         PublicChat chat = publicChatService.addUserToPublicChat(dto.getChatId(), dto.getAdminId(), dto.getUserId());
 
-        AddUserByAdminResponseDto responseDto = AddUserByAdminResponseDto.builder()
+        PublicChatAddUserResponseDto responseDto = PublicChatAddUserResponseDto.builder()
                 .chatId(chat.getId())
                 .userId(dto.getUserId())
                 .adminId(dto.getAdminId())
@@ -41,9 +38,9 @@ public class ChatHandlerImpl implements ChatHandler {
     }
 
     @Override
-    public Response deleteUserByAdmin(DeleteUserByAdminRequestDto dto) {
+    public ActionResult deleteUserFromPublicChat(PublicChatDeleteUserRequestDto dto) {
         PublicChat chat = publicChatService.deleteUserFromPublicChat(dto.getChatId(), dto.getAdminId(), dto.getUserId());
-        DeleteUserByAdminResponseDto responseDto = DeleteUserByAdminResponseDto.builder()
+        PublicChatDeleteUserResponseDto responseDto = PublicChatDeleteUserResponseDto.builder()
                 .chatId(chat.getId())
                 .userId(dto.getUserId())
                 .adminId(dto.getAdminId())
@@ -55,7 +52,7 @@ public class ChatHandlerImpl implements ChatHandler {
         return getResponse(chat, action);
     }
 
-    private Response getResponse(PublicChat chat, Action action) {
+    private ActionResult getResponse(PublicChat chat, Action action) {
         Set<Long> receivers = new HashSet<>();
         switch (chat.getType()) {
             case GROUP -> receivers.addAll(chat.getUsers().stream().map(User::getId).toList());
@@ -64,7 +61,7 @@ public class ChatHandlerImpl implements ChatHandler {
                 receivers.addAll(chat.getAdmins().stream().map(User::getId).toList());
             }
         }
-        return Response.builder()
+        return ActionResult.builder()
                 .action(action)
                 .receivers(receivers).build();
     }

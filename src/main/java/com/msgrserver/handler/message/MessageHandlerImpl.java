@@ -1,8 +1,8 @@
-package com.msgrserver.handler;
+package com.msgrserver.handler.message;
 
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
-import com.msgrserver.action.Response;
+import com.msgrserver.action.ActionResult;
 import com.msgrserver.exception.NotImplementedException;
 import com.msgrserver.model.dto.message.MessageReceiveTextDto;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
@@ -11,7 +11,7 @@ import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.service.MessageService;
+import com.msgrserver.service.message.MessageService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class MessageHandlerImpl implements MessageHandler {
     private final MessageService messageService;
 
 
-    public Response sendText(MessageSendTextDto dto) {
+    public ActionResult sendText(MessageSendTextDto dto) {
         TextMessage newMessage = messageService.saveText(
                 dto.getChatId(),
                 dto.getSenderId(),
@@ -37,7 +37,7 @@ public class MessageHandlerImpl implements MessageHandler {
         Action action = getMessageReceiveAction(newMessage);
         Set<Long> receivers = getMessageReceivers(newMessage);
 
-        return Response.builder()
+        return ActionResult.builder()
                 .receivers(receivers)
                 .action(action)
                 .build();
