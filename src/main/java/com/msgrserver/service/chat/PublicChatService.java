@@ -6,7 +6,7 @@ public interface PublicChatService {
 
     PublicChat findPublicChat(Long chatId);
 
-    PublicChat savePublicChat(Long userId, PublicChat chat);
+    PublicChat createPublicChat(Long userId, PublicChat chat);
 
     void deletePublicChat(Long userId, Long chatId);
 

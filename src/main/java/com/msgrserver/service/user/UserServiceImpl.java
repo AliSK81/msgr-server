@@ -28,7 +28,9 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) {
         checkUniqueUsername(user.getUsername());
         checkStrongPassword(user.getPassword());
-        user.setAccessAddPublicChat(true);
+        user.setAllowedAddGroup(true);
+        user.setVisibleAvatar(true);
+        user.setVisiblePhone(false);
         return userRepository.save(user);
     }
 

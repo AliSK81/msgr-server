@@ -27,11 +27,12 @@ public class PublicChatServiceImpl implements PublicChatService {
 
 
     @Override
-    public PublicChat savePublicChat(Long userId, PublicChat chat) {
+    public PublicChat createPublicChat(Long userId, PublicChat chat) {
         User user = findUser(userId);
         chat.setOwner(user);
         chat.setUsers(new HashSet<>(List.of(user)));
         chat.setLink(LinkGenerator.generate(20));
+        chat.setAllowedInvite(false);
         return publicChatRepository.save(chat);
     }
 
@@ -99,7 +100,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         if (!isOwner && !isAdmin)
             throw new BadRequestException();
 
-        if (!user.getAccessAddPublicChat())
+        if (!user.isAllowedAddGroup())
             throw new UserPrivacySettingsException();
 
         chat.setUsers(userRepository.findUsersByChatId(chatId));

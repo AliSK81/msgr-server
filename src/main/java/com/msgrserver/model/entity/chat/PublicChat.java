@@ -19,8 +19,8 @@ import java.util.Set;
 public class PublicChat extends Chat {
     private String title;
     private String link;
-
     private String avatar;
+    private boolean allowedInvite;
 
     @ManyToOne
     private User owner;
