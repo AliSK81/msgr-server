@@ -71,7 +71,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         boolean isOwner = chat.getOwner().getId().equals(userId);
 
         if (isOwner) {
-            deletePublicChat(chatId, userId); //to do check for replace an admin
+            deletePublicChat(chatId, userId); //todo check for replace an admin
 
         } else {
             Set<User> admins = userRepository.findAdminsByChatId(chatId);
