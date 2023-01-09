@@ -6,7 +6,6 @@ import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.exception.UserPrivacySettingsException;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.repository.ChatRepository;
 import com.msgrserver.repository.MessageRepository;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
@@ -25,7 +24,6 @@ public class PublicChatServiceImpl implements PublicChatService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private final PublicChatRepository publicChatRepository;
-    private final ChatRepository chatRepository;
 
 
     @Override
