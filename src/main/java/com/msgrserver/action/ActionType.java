@@ -17,4 +17,5 @@ public enum ActionType {
     SELECT_NEW_ADMIN_PUBLIC_CHAT,
 
     DELETE_ADMIN_PUBLIC_CHAT,
+    DELETE_PUBLIC_CHAT,
 }

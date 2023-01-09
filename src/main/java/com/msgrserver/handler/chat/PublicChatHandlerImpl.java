@@ -53,7 +53,19 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
 
     @Override
     public ActionResult deletePublicChat(PublicChatDeleteRequestDto dto) {
-        return null;//todo write or combine ?
+        publicChatService.deletePublicChat(dto.getUserId() , dto.getChatId());
+        PublicChatDeleteResponseDto responseDto=PublicChatDeleteResponseDto.builder()
+                .chatId(dto.getChatId())
+                .build();
+        Action action = Action.builder()
+                .type(ActionType.DELETE_PUBLIC_CHAT)
+                .dto(responseDto)
+                .build();
+        Set<Long> receivers = new HashSet<>();//todo use getResponse function after merge
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers)
+                .build();
     }
 
     @Override
@@ -91,6 +103,5 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                 .receivers(receivers)
                 .build();
     }
-
 
 }
