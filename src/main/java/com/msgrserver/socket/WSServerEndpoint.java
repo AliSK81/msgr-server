@@ -1,8 +1,8 @@
 package com.msgrserver.socket;
 
 import com.msgrserver.action.Action;
-import com.msgrserver.action.ActionHandler;
-import com.msgrserver.action.Response;
+import com.msgrserver.action.ActionResult;
+import com.msgrserver.handler.ActionHandler;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class WSServerEndpoint {
     public void onMessage(Session session, Action action) throws IOException {
         LOGGER.info("[FROM CLIENT]: " + action + ", Session ID: " + session.getId());
 
-        Response response = actionHandler.handle(action);
+        ActionResult response = actionHandler.handle(action);
 
         for (long receiverId : response.getReceivers()) {
             Session receiver = sessions.get(receiverId);
