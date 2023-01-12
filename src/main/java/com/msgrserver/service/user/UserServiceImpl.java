@@ -1,21 +1,25 @@
-package com.msgrserver.service;
+package com.msgrserver.service.user;
 
+import com.msgrserver.exception.InvalidPasswordException;
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.ChatRepository;
 import com.msgrserver.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import com.msgrserver.util.PasswordChecker;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
-    private ChatRepository chatRepository;
+    private final UserRepository userRepository;
 
+    private final ChatRepository chatRepository;
+
+    @Override
     public User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
@@ -24,6 +28,7 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) {
         checkUniqueUsername(user.getUsername());
         checkStrongPassword(user.getPassword());
+        user.setAccessAddPublicChat(true);
         return userRepository.save(user);
     }
 
@@ -34,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<Chat> getUserChats(Long userId) {
-        return findUser(userId).getChats();
+        return chatRepository.findChatsByUsersId(userId);
     }
 
     @Override
@@ -49,6 +54,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkStrongPassword(String password) {
-        // todo implement
+        if (!PasswordChecker.isStrong(password)) {
+            throw new InvalidPasswordException();
+        }
     }
 }

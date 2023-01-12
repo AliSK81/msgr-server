@@ -1,18 +1,17 @@
 package com.msgrserver.model.entity.user;
 
-import com.msgrserver.model.entity.chat.Chat;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
 
-import java.util.Set;
-
-@Builder
+@Entity
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-@Entity
-@ToString
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,10 +20,7 @@ public class User {
     private String email;
     private String username;
     private String password;
-    private String firstName;
-    private String lastName;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    Set<Chat> chats;
+    private String name;
     private String avatar;
+    private Boolean accessAddPublicChat;
 }

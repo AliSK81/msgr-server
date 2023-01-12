@@ -18,8 +18,22 @@ import java.util.logging.Logger;
 )
 public class WSClient {
 
-    private static final java.util.logging.Logger LOGGER = Logger.getLogger(WSServerEndpoint.class.getName());
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(WSClient.class.getName());
     private static CountDownLatch latch;
+
+    public static void main(String[] args) {
+        latch = new CountDownLatch(1);
+        ClientManager clientManager = ClientManager.createClient();
+        try {
+            URI uri = new URI("ws://localhost:8086/msgr");
+            clientManager.connectToServer(WSClient.class, uri);
+            latch.await();
+        } catch (URISyntaxException | DeploymentException | InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @OnOpen
     public void onOpen(Session session) throws IOException {
@@ -27,13 +41,13 @@ public class WSClient {
         LOGGER.info("[CLIENT]: Connected to server... \n[CLIENT]: Session ID: " + session.getId());
         try {
 
-            var msgFromAli = MessageSendTextDto.builder()
+            MessageSendTextDto msgFromAli = MessageSendTextDto.builder()
                     .senderId(1L)
                     .chatId(2L)
                     .text("msg from ali").build();
 
 
-            var action = Action.builder()
+            Action action = Action.builder()
                     .type(ActionType.SEND_TEXT)
                     .dto(msgFromAli)
                     .build();
@@ -61,21 +75,6 @@ public class WSClient {
     @OnError
     public void onError(Session session, Throwable err) {
         LOGGER.info("[CLIENT]: Error!, Session ID: " + session.getId() + ", " + err.getMessage());
-    }
-
-    public static void main(String[] args) {
-        latch = new CountDownLatch(1);
-        ClientManager clientManager = ClientManager.createClient();
-        URI uri = null;
-        try {
-            uri = new URI("ws://localhost:8086/msgr");
-            clientManager.connectToServer(WSClient.class, uri);
-            latch.await();
-        } catch (URISyntaxException | DeploymentException | InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

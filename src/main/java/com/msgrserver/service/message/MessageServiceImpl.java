@@ -1,4 +1,4 @@
-package com.msgrserver.service;
+package com.msgrserver.service.message;
 
 
 import com.msgrserver.exception.BadRequestException;
@@ -9,38 +9,37 @@ import com.msgrserver.model.entity.chat.ChatType;
 import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.message.BinaryMessage;
+import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.ChatRepository;
 import com.msgrserver.repository.MessageRepository;
-import com.msgrserver.repository.PrivateChatRepository;
 import com.msgrserver.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
-@AllArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
     private final ChatRepository chatRepository;
-    private final PrivateChatRepository privateChatRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
     @Override
-    public TextMessage saveText(Long chatId, TextMessage textMessage) {
+    public TextMessage saveText(Long chatId, Long senderId, TextMessage textMessage) {
 
-        User sender = findUser(textMessage.getSenderId());
-
+        User sender = findUser(senderId);
         Chat chat = findChat(chatId);
 
         // todo create private chat if not exist
 
         if (chat instanceof PublicChat) {
-            validatePublicChat(sender, (PublicChat) chat);
+            checkPublicChatAccess(sender, (PublicChat) chat);
         } else if (chat instanceof PrivateChat) {
-            validatePrivateChat(sender, (PrivateChat) chat);
+            checkPrivateChatAccess(sender, (PrivateChat) chat);
         }
 
         textMessage.setDateTime(LocalDateTime.now());
@@ -53,6 +52,11 @@ public class MessageServiceImpl implements MessageService {
         return null;
     }
 
+    @Override
+    public Message getLastMessage(Long chatId) {
+        return messageRepository.getLastMessageByChatId(chatId);
+    }
+
     private Chat findChat(Long chatId) {
         return chatRepository.findById(chatId).orElseThrow(ChatNotFoundException::new);
     }
@@ -61,19 +65,29 @@ public class MessageServiceImpl implements MessageService {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
 
-    private void validatePublicChat(User sender, PublicChat chat) {
-        boolean isMember = chat.getMembers().contains(sender);
-        boolean isOwner = chat.getOwner().equals(sender);
-        boolean isAdmin = chat.getAdmins().contains(sender);
-        boolean isChannel = chat.getType() == ChatType.CHANNEL;
-        boolean isValidMsg = !isMember || isChannel && !isOwner && !isAdmin;
+    private void checkPublicChatAccess(User sender, PublicChat chat) {
+        Set<User> users = userRepository.findUsersByChatId(chat.getId());
+        boolean isMember = users.contains(sender);
 
-        if (!isValidMsg) {
+        if (!isMember)
             throw new BadRequestException();
+
+        boolean isChannel = chat.getType() == ChatType.CHANNEL;
+
+        if (isChannel) {
+            Set<User> admins = userRepository.findAdminsByChatId(chat.getId());
+
+            boolean isOwner = chat.getOwner().equals(sender);
+            boolean isAdmin = admins.contains(sender);
+
+            if (!isOwner && !isAdmin)
+                throw new BadRequestException();
         }
+
+        //todo check sending message is allowed in chat
     }
 
-    private void validatePrivateChat(User sender, PrivateChat chat) {
+    private void checkPrivateChatAccess(User sender, PrivateChat chat) {
 
         // todo check sender is not blocked by receiver user
     }

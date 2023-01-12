@@ -1,10 +1,10 @@
-package com.msgrserver.service;
+package com.msgrserver.service.chat;
 
 import com.msgrserver.model.entity.chat.PublicChat;
 
 public interface PublicChatService {
 
-    public PublicChat findPublicChat(Long chatId);
+    PublicChat findPublicChat(Long chatId);
 
     PublicChat savePublicChat(Long userId, PublicChat chat);
 
@@ -14,4 +14,7 @@ public interface PublicChatService {
 
     PublicChat leavePublicChat(Long chatId, Long userId);
 
+    PublicChat addUserToPublicChat(Long chatId, Long adminId, Long userId);
+
+    PublicChat deleteUserFromPublicChat(Long chatId, Long adminId, Long userId);
 }

@@ -10,14 +10,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ActionDecoder implements Decoder.Text<Action> {
 
-    private final Mapper mapper;
-
     @Override
     public Action decode(String jsonMessage) {
         try {
             EncryptDecrypt encryptDecrypt = new EncryptDecrypt();
             String decrypt = encryptDecrypt.decrypt(jsonMessage);
-            return mapper.fromJson(decrypt, Action.class);
+            return Mapper.fromJson(decrypt, Action.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
