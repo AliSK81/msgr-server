@@ -1,4 +1,4 @@
-package com.msgrserver.model.dto.message;
+package com.msgrserver.model.dto.message.response;
 
 import com.msgrserver.model.dto.ActionDto;
 import com.msgrserver.model.entity.message.MessageType;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class MessageReceiveTextDto extends ActionDto {
+public class MessageSendTextResponseDto extends ActionDto {
     Long senderId;
     Long chatId;
     String text;

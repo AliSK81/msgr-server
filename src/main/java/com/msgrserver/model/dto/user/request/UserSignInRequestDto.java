@@ -1,4 +1,4 @@
-package com.msgrserver.model.dto.message;
+package com.msgrserver.model.dto.user.request;
 
 import com.msgrserver.model.dto.ActionDto;
 import lombok.Builder;
@@ -8,5 +8,7 @@ import lombok.Value;
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class MessageReceiveFileDto extends ActionDto {
+public class UserSignInRequestDto extends ActionDto {
+    String username;
+    String password;
 }

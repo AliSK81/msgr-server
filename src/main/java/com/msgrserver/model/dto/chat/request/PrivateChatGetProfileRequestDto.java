@@ -1,7 +1,6 @@
-package com.msgrserver.model.dto.chat;
+package com.msgrserver.model.dto.chat.request;
 
 import com.msgrserver.model.dto.ActionDto;
-import com.msgrserver.model.dto.user.UserDto;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -9,6 +8,7 @@ import lombok.Value;
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class PrivateChatGetProfileResponseDto extends ActionDto {
-    UserDto user;
+public class PrivateChatGetProfileRequestDto extends ActionDto {
+    Long userId;
+    String username;
 }

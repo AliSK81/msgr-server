@@ -42,7 +42,7 @@ class UserServiceTest {
 
         chatDtos.forEach(chatDto -> {
             Chat chat = null;
-            if(chat.getType() == ChatType.PRIVATE) {
+            if (chat.getType() == ChatType.PRIVATE) {
                 chat = Mapper.map(chatDto, PublicChat.class);
             } else {
                 chat = Mapper.map(chat, PrivateChat.class);
@@ -51,7 +51,7 @@ class UserServiceTest {
             User sender = Mapper.map(chatDto.getLastMessage().getSender(), User.class);
 
             Message message = null;
-            if(chatDto.getLastMessage().getMessageType() == MessageType.TEXT) {
+            if (chatDto.getLastMessage().getMessageType() == MessageType.TEXT) {
                 message = Mapper.map(chatDto.getLastMessage(), TextMessage.class);
                 message.setChat(chat);
                 message.setSender(sender);

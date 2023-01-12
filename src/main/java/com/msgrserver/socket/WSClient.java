@@ -2,7 +2,7 @@ package com.msgrserver.socket;
 
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
-import com.msgrserver.model.dto.message.MessageSendTextDto;
+import com.msgrserver.model.dto.message.request.MessageSendTextRequestDto;
 import jakarta.websocket.*;
 import org.glassfish.tyrus.client.ClientManager;
 
@@ -41,7 +41,7 @@ public class WSClient {
         LOGGER.info("[CLIENT]: Connected to server... \n[CLIENT]: Session ID: " + session.getId());
         try {
 
-            MessageSendTextDto msgFromAli = MessageSendTextDto.builder()
+            MessageSendTextRequestDto msgFromAli = MessageSendTextRequestDto.builder()
                     .senderId(1L)
                     .chatId(2L)
                     .text("msg from ali").build();

@@ -1,8 +1,10 @@
-package com.msgrserver.model.dto.chat;
+package com.msgrserver.model.dto.chat.response;
 
 import com.msgrserver.model.dto.ActionDto;
 import com.msgrserver.model.dto.user.UserDto;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 import java.util.Set;
 

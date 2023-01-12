@@ -1,10 +1,10 @@
 package com.msgrserver.handler.chat;
 
 import com.msgrserver.action.Action;
-import com.msgrserver.action.ActionType;
 import com.msgrserver.action.ActionResult;
-import com.msgrserver.model.dto.chat.PublicChatJoinWithLinkRequestDto;
-import com.msgrserver.model.dto.chat.PublicChatJoinWithLinkResponseDto;
+import com.msgrserver.action.ActionType;
+import com.msgrserver.model.dto.chat.request.PublicChatJoinWithLinkRequestDto;
+import com.msgrserver.model.dto.chat.response.PublicChatJoinWithLinkResponseDto;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.service.chat.PublicChatService;

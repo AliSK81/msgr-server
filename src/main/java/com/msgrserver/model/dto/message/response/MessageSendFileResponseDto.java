@@ -1,4 +1,4 @@
-package com.msgrserver.model.dto.message;
+package com.msgrserver.model.dto.message.response;
 
 import com.msgrserver.model.dto.ActionDto;
 import lombok.Builder;
@@ -8,8 +8,5 @@ import lombok.Value;
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class MessageSendTextDto extends ActionDto {
-    Long chatId;
-    Long senderId;
-    String text;
+public class MessageSendFileResponseDto extends ActionDto {
 }

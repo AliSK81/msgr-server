@@ -3,7 +3,7 @@ package com.msgrserver.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
-import com.msgrserver.model.dto.user.UserSignInResponseDto;
+import com.msgrserver.model.dto.user.response.UserSignInResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,16 +4,20 @@ import com.msgrserver.model.dto.ActionDto;
 import com.msgrserver.model.dto.message.MessageDto;
 import com.msgrserver.model.entity.chat.ChatType;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
-@Setter
-@Getter
+import java.util.Set;
+
+@Value
 @Builder
+@EqualsAndHashCode(callSuper = true)
 public class ChatDto extends ActionDto {
-    private Long id;
-    private String title;
-    private ChatType chatType;
-    private String avatar;
-    private MessageDto lastMessage;
+    Long id;
+    ChatType type;
+    String title;
+    String link;
+    String avatar;
+    boolean allowedInvite;
+    MessageDto lastMessage;
 }

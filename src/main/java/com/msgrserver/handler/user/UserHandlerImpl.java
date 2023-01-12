@@ -1,11 +1,16 @@
 package com.msgrserver.handler.user;
 
 import com.msgrserver.action.Action;
-import com.msgrserver.action.ActionType;
 import com.msgrserver.action.ActionResult;
+import com.msgrserver.action.ActionType;
 import com.msgrserver.model.dto.chat.ChatDto;
 import com.msgrserver.model.dto.message.MessageDto;
-import com.msgrserver.model.dto.user.*;
+import com.msgrserver.model.dto.user.request.UserGetChatsRequestDto;
+import com.msgrserver.model.dto.user.request.UserSignInRequestDto;
+import com.msgrserver.model.dto.user.request.UserSignUpRequestDto;
+import com.msgrserver.model.dto.user.response.UserGetChatsResponseDto;
+import com.msgrserver.model.dto.user.response.UserSignInResponseDto;
+import com.msgrserver.model.dto.user.response.UserSignUpResponseDto;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.chat.PublicChat;
@@ -94,13 +99,12 @@ public class UserHandlerImpl implements UserHandler {
         for (Chat chat : chats) {
 
             var lastMessage = messageService.getLastMessage(chat.getId());
-            // todo
-            var lastMessageDto = MessageDto.builder().build();
+            var lastMessageDto = Mapper.map(lastMessage, MessageDto.class);
 
             ChatDto chatDto = ChatDto.builder()
                     .id(chat.getId())
                     .lastMessage(lastMessageDto)
-                    .chatType(chat.getType())
+                    .type(chat.getType())
                     .build();
 
             if (chat instanceof PrivateChat privateChat) {

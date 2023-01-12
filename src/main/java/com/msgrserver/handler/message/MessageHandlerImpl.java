@@ -1,11 +1,11 @@
 package com.msgrserver.handler.message;
 
 import com.msgrserver.action.Action;
-import com.msgrserver.action.ActionType;
 import com.msgrserver.action.ActionResult;
+import com.msgrserver.action.ActionType;
 import com.msgrserver.exception.NotImplementedException;
-import com.msgrserver.model.dto.message.MessageReceiveTextDto;
-import com.msgrserver.model.dto.message.MessageSendTextDto;
+import com.msgrserver.model.dto.message.request.MessageSendTextRequestDto;
+import com.msgrserver.model.dto.message.response.MessageSendTextResponseDto;
 import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.message.Message;
@@ -27,7 +27,7 @@ public class MessageHandlerImpl implements MessageHandler {
     private final MessageService messageService;
 
 
-    public ActionResult sendText(MessageSendTextDto dto) {
+    public ActionResult sendText(MessageSendTextRequestDto dto) {
         TextMessage newMessage = messageService.saveText(
                 dto.getChatId(),
                 dto.getSenderId(),
@@ -44,7 +44,7 @@ public class MessageHandlerImpl implements MessageHandler {
     }
 
     private Action getMessageReceiveAction(Message message) {
-        MessageReceiveTextDto newMessageDto = Mapper.map(message, MessageReceiveTextDto.class);
+        MessageSendTextResponseDto newMessageDto = Mapper.map(message, MessageSendTextResponseDto.class);
 
         return Action.builder()
                 .type(ActionType.SEND_TEXT)

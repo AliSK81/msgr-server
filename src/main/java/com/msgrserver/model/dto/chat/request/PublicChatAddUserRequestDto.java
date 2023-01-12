@@ -1,4 +1,4 @@
-package com.msgrserver.model.dto.chat;
+package com.msgrserver.model.dto.chat.request;
 
 import com.msgrserver.model.dto.ActionDto;
 import lombok.Builder;
@@ -8,7 +8,8 @@ import lombok.Value;
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class PublicChatJoinWithLinkResponseDto extends ActionDto {
+public class PublicChatAddUserRequestDto extends ActionDto {
     Long chatId;
+    Long adderId;
     Long userId;
 }

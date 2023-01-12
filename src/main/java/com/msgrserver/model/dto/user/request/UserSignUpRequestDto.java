@@ -1,4 +1,4 @@
-package com.msgrserver.model.dto.user;
+package com.msgrserver.model.dto.user.request;
 
 import com.msgrserver.model.dto.ActionDto;
 import lombok.Builder;
@@ -8,7 +8,9 @@ import lombok.Value;
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class UserSignInRequestDto extends ActionDto {
+public class UserSignUpRequestDto extends ActionDto {
+    String name;
     String username;
     String password;
+    String avatar;
 }

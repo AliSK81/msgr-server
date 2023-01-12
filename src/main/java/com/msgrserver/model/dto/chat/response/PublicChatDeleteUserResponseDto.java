@@ -1,4 +1,4 @@
-package com.msgrserver.model.dto.user;
+package com.msgrserver.model.dto.chat.response;
 
 import com.msgrserver.model.dto.ActionDto;
 import lombok.Builder;
@@ -8,7 +8,8 @@ import lombok.Value;
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class UserSignInResponseDto extends ActionDto {
+public class PublicChatDeleteUserResponseDto extends ActionDto {
+    Long chatId;
+    Long adminId;
     Long userId;
-    String token;
 }
