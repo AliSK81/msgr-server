@@ -69,7 +69,6 @@ public class WSServerEndpoint {
         }
 
 
-
     }
 
     @OnMessage
@@ -86,11 +85,8 @@ public class WSServerEndpoint {
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
         LOGGER.info("[SERVER]: Session " + session.getId() + " closed, because " + closeReason);
+        sessions.values().forEach(s -> s.remove(session));
     }
-
-//    private boolean requiresToken(Action action) {
-//        return action.getType() != ActionType.SIGN_IN && action.getType() != ActionType.SIGN_UP;
-//    }
 
     @PostConstruct
     public void start() {
