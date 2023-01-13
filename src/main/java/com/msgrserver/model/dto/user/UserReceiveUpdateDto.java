@@ -2,14 +2,14 @@ package com.msgrserver.model.dto.user;
 
 import com.msgrserver.model.dto.ActionDto;
 import com.msgrserver.model.dto.chat.ChatReceiveProfileUpdateDto;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.*;
 
 import java.util.Set;
 
-@Value
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class UserReceiveUpdateDto extends ActionDto {
 

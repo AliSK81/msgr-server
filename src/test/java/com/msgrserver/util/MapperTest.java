@@ -23,7 +23,7 @@ class MapperTest {
     @Test
     void toJsonAndFromJsonTest() throws JsonProcessingException {
         // arrange
-        var dto = UserSignInResponseDto.builder().user(null).build();
+        var dto = UserSignInResponseDto.builder().build();
 
         var expectedAction = Action.builder()
                 .type(ActionType.GET_USER_CHATS)

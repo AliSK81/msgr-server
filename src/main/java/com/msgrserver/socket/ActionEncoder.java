@@ -11,8 +11,8 @@ public class ActionEncoder implements Encoder.Text<Action> {
     public String encode(Action action) {
         try {
             String jsonMessage = Mapper.toJson(action);
-//            EncryptDecrypt encryptDecrypt = new EncryptDecrypt();
-            return jsonMessage;
+            EncryptDecrypt encryptDecrypt = new EncryptDecrypt();
+            return encryptDecrypt.encrypt(jsonMessage);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
