@@ -3,14 +3,14 @@ package com.msgrserver.model.dto.message;
 import com.msgrserver.model.dto.ActionDto;
 import com.msgrserver.model.dto.user.UserDto;
 import com.msgrserver.model.entity.message.MessageType;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Value
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class MessageDto extends ActionDto {
     Long id;

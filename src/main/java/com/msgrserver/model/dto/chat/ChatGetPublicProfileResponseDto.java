@@ -6,8 +6,10 @@ import lombok.*;
 
 import java.util.Set;
 
-@Value
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ChatGetPublicProfileResponseDto extends ActionDto {
     Set<UserDto> members;

@@ -1,12 +1,12 @@
 package com.msgrserver.model.dto.user;
 
 import com.msgrserver.model.dto.ActionDto;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.*;
 
-@Value
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class UserSignInResponseDto extends ActionDto {
     Long id;

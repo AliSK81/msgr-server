@@ -14,7 +14,7 @@ import java.util.Set;
 public class Mapper {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final ModelMapper modelMapper = new ModelMapper();
+//    private static final ModelMapper modelMapper = new ModelMapper();
 
     static {
         objectMapper.findAndRegisterModules();
@@ -28,8 +28,8 @@ public class Mapper {
     }
 
     public static <T> T map(Object fromValue, Class<T> toValueType) {
-        return modelMapper.map(fromValue, toValueType);
-//        return objectMapper.convertValue(fromValue, toValueType);
+//        return modelMapper.map(fromValue, toValueType);
+        return objectMapper.convertValue(fromValue, toValueType);
     }
 
     public static String toJson(Object value) throws JsonProcessingException {
