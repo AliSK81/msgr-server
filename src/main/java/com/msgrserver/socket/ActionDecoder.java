@@ -5,17 +5,15 @@ import com.msgrserver.action.Action;
 import com.msgrserver.util.Mapper;
 import jakarta.websocket.Decoder;
 import jakarta.websocket.EndpointConfig;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class ActionDecoder implements Decoder.Text<Action> {
 
     @Override
     public Action decode(String jsonMessage) {
         try {
-            EncryptDecrypt encryptDecrypt = new EncryptDecrypt();
-            String decrypt = encryptDecrypt.decrypt(jsonMessage);
-            return Mapper.fromJson(decrypt, Action.class);
+//            EncryptDecrypt encryptDecrypt = new EncryptDecrypt();
+//            String decrypt = encryptDecrypt.decrypt(jsonMessage);
+            return Mapper.fromJson(jsonMessage, Action.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -9,6 +9,5 @@ import lombok.Value;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class UserSignInResponseDto extends ActionDto {
-    Long userId;
-    String token;
+    Long id;
 }

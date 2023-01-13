@@ -23,12 +23,11 @@ class MapperTest {
     @Test
     void toJsonAndFromJsonTest() throws JsonProcessingException {
         // arrange
-        var dto = UserSignInResponseDto.builder().userId(1L).token("token").build();
+        var dto = UserSignInResponseDto.builder().user(null).build();
 
         var expectedAction = Action.builder()
                 .type(ActionType.GET_USER_CHATS)
-                .dto(dto)
-                .token("test-token").build();
+                .dto(dto).build();
 
         // act
         String json = Mapper.toJson(expectedAction);
