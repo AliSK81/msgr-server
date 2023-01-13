@@ -3,8 +3,12 @@ package com.msgrserver.socket;
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
+import com.msgrserver.model.dto.user.UserSignInRequestDto;
+import com.msgrserver.model.dto.user.UserSignUpRequestDto;
+import com.msgrserver.util.TokenGenerator;
 import jakarta.websocket.*;
 import org.glassfish.tyrus.client.ClientManager;
+import org.springframework.boot.logging.LogLevel;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,17 +20,22 @@ import java.util.logging.Logger;
         encoders = {ActionEncoder.class},
         decoders = {ActionDecoder.class}
 )
-public class WSClient {
+public class WSClientEndpoint {
 
-    private static final java.util.logging.Logger LOGGER = Logger.getLogger(WSClient.class.getName());
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(WSClientEndpoint.class.getName());
     private static CountDownLatch latch;
 
+
     public static void main(String[] args) {
+        start();
+    }
+
+    public static void start() {
         latch = new CountDownLatch(1);
         ClientManager clientManager = ClientManager.createClient();
         try {
             URI uri = new URI("ws://localhost:8086/msgr");
-            clientManager.connectToServer(WSClient.class, uri);
+            clientManager.connectToServer(WSClientEndpoint.class, uri);
             latch.await();
         } catch (URISyntaxException | DeploymentException | InterruptedException e) {
             e.printStackTrace();
@@ -36,21 +45,37 @@ public class WSClient {
     }
 
     @OnOpen
-    public void onOpen(Session session) throws IOException {
+    public void onOpen(Session session) {
 
         LOGGER.info("[CLIENT]: Connected to server... \n[CLIENT]: Session ID: " + session.getId());
         try {
 
-            MessageSendTextDto msgFromAli = MessageSendTextDto.builder()
-                    .senderId(1L)
-                    .chatId(2L)
-                    .text("msg from ali").build();
-
-
             Action action = Action.builder()
-                    .type(ActionType.SEND_TEXT)
-                    .dto(msgFromAli)
+                    .type(ActionType.SIGN_IN)
+                    .dto(UserSignInRequestDto.builder()
+                            .username("user")
+                            .password("pass")
+                            .build())
                     .build();
+
+//            Action action = Action.builder()
+//                    .type(ActionType.SIGN_UP)
+//                    .dto(UserSignUpRequestDto.builder()
+//                            .name("name")
+//                            .username("user")
+//                            .password("pass")
+//                            .build()).build();
+
+//            MessageSendTextDto msgFromAli = MessageSendTextDto.builder()
+//                    .senderId(1L)
+//                    .chatId(2L)
+//                    .text("msg from ali").build();
+//
+//
+//            Action action = Action.builder()
+//                    .type(ActionType.SEND_TEXT)
+//                    .dto(msgFromAli)
+//                    .build();
 
 
             session.getBasicRemote().sendObject(action);
@@ -74,7 +99,8 @@ public class WSClient {
 
     @OnError
     public void onError(Session session, Throwable err) {
-        LOGGER.info("[CLIENT]: Error!, Session ID: " + session.getId() + ", " + err.getMessage());
+        LOGGER.warning("[CLIENT]: Error!, Session ID: " + session.getId() + ", " + err.getMessage());
+        err.printStackTrace();
     }
 
 }

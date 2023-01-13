@@ -10,5 +10,4 @@ import lombok.Value;
 @EqualsAndHashCode(callSuper = true)
 public class UserSignUpResponseDto extends ActionDto {
     Long userId;
-    String token;
 }

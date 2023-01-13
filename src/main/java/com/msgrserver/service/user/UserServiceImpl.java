@@ -2,6 +2,7 @@ package com.msgrserver.service.user;
 
 import com.msgrserver.exception.InvalidPasswordException;
 import com.msgrserver.exception.UserNotFoundException;
+import com.msgrserver.exception.UsernameAlreadyTakenException;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.ChatRepository;
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) {
         checkUniqueUsername(user.getUsername());
-        checkStrongPassword(user.getPassword());
+//        checkStrongPassword(user.getPassword());
         user.setAccessAddPublicChat(true);
         return userRepository.save(user);
     }
@@ -49,8 +50,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkUniqueUsername(String username) {
-        userRepository.findUserByUsername(username)
-                .orElseThrow(UserNotFoundException::new);
+        boolean userExist = userRepository.findUserByUsername(username).isPresent();
+        if (userExist){
+            throw new UsernameAlreadyTakenException();
+        }
     }
 
     private void checkStrongPassword(String password) {

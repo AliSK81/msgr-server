@@ -1,8 +1,8 @@
 package com.msgrserver.handler.user;
 
 import com.msgrserver.action.Action;
-import com.msgrserver.action.ActionType;
 import com.msgrserver.action.ActionResult;
+import com.msgrserver.action.ActionType;
 import com.msgrserver.model.dto.chat.ChatDto;
 import com.msgrserver.model.dto.message.MessageDto;
 import com.msgrserver.model.dto.user.*;
@@ -10,7 +10,9 @@ import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
+import com.msgrserver.model.entity.user.UserSession;
 import com.msgrserver.service.message.MessageService;
+import com.msgrserver.service.user.SessionService;
 import com.msgrserver.service.user.UserService;
 import com.msgrserver.util.Mapper;
 import com.msgrserver.util.TokenGenerator;
@@ -27,6 +29,7 @@ public class UserHandlerImpl implements UserHandler {
 
     private final UserService userService;
     private final MessageService messageService;
+    private final SessionService sessionService;
 
     @Override
     public ActionResult signUp(UserSignUpRequestDto dto) {
@@ -34,17 +37,26 @@ public class UserHandlerImpl implements UserHandler {
                 Mapper.map(dto, User.class)
         );
 
+        UserSession session = UserSession.builder()
+                .id(TokenGenerator.generateNewToken())
+                .user(newUser)
+                .build();
+
+        sessionService.saveUserSession(session);
+
         UserSignUpResponseDto responseDto = UserSignUpResponseDto.builder()
                 .userId(newUser.getId())
-                .token(TokenGenerator.generateNewToken()).build();
+                .build();
 
         Action action = Action.builder()
                 .type(ActionType.SIGN_UP)
+                .token(session.getId())
                 .dto(responseDto).build();
 
-        Set<Long> receivers = new HashSet<>(List.of(newUser.getId()));
+        Set<Long> receivers = Set.of(newUser.getId());
 
         return ActionResult.builder()
+                .user(newUser)
                 .action(action)
                 .receivers(receivers).build();
     }
@@ -54,17 +66,26 @@ public class UserHandlerImpl implements UserHandler {
 
         User user = userService.findUser(dto.getUsername(), dto.getPassword());
 
+        UserSession session = UserSession.builder()
+                .id(TokenGenerator.generateNewToken())
+                .user(user)
+                .build();
+
+        sessionService.saveUserSession(session);
+
         UserSignInResponseDto responseDto = UserSignInResponseDto.builder()
-                .userId(user.getId())
-                .token(TokenGenerator.generateNewToken()).build();
+                .id(user.getId())
+                .build();
 
         Action action = Action.builder()
                 .type(ActionType.SIGN_IN)
+                .token(session.getId())
                 .dto(responseDto).build();
 
-        Set<Long> receivers = new HashSet<>(List.of(user.getId()));
+        Set<Long> receivers = Set.of(user.getId());
 
         return ActionResult.builder()
+                .user(user)
                 .action(action)
                 .receivers(receivers).build();
     }
