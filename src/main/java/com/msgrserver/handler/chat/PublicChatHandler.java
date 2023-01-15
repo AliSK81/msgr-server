@@ -1,12 +1,18 @@
 package com.msgrserver.handler.chat;
 
 import com.msgrserver.action.ActionResult;
-import com.msgrserver.model.dto.chat.PublicChatAddUserRequestDto;
-import com.msgrserver.model.dto.chat.PublicChatDeleteUserRequestDto;
-import com.msgrserver.model.dto.chat.PublicChatJoinWithLinkRequestDto;
+import com.msgrserver.model.dto.chat.*;
 
 public interface PublicChatHandler {
     ActionResult joinChatWithLink(PublicChatJoinWithLinkRequestDto dto);
+
+    ActionResult leavePublicChat(PublicChatLeaveRequestDto dto);
+
+    ActionResult deletePublicChat(PublicChatDeleteRequestDto dto);
+
+    ActionResult selectNewAdminPublicChat(PublicChatSelectNewAdminRequestDto dto);
+
+    ActionResult deleteAdminPublicChat(PublicChatDeleteAdminRequestDto dto);
 
     ActionResult addUserToPublicChat(PublicChatAddUserRequestDto dto);
 

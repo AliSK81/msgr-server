@@ -69,7 +69,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         boolean isOwner = chat.getOwner().getId().equals(userId);
 
         if (isOwner) {
-            deletePublicChat(chatId, userId);
+            deletePublicChat(chatId, userId); //todo check for replace an admin
 
         } else {
             Set<User> admins = userRepository.findAdminsByChatId(chatId);
@@ -135,6 +135,52 @@ public class PublicChatServiceImpl implements PublicChatService {
             chat.getAdmins().remove(user);
         }
 
+        return publicChatRepository.save(chat);
+    }
+
+    @Override
+    public PublicChat selectNewAdminPublicChat(Long chatId, Long selectorId, Long userId) {
+        PublicChat chat = findPublicChat(chatId);
+        User user = findUser(userId);
+        User selector = findUser(selectorId);
+        chat.setAdmins(userRepository.findAdminsByChatId(chatId));
+        chat.setUsers(userRepository.findUsersByChatId(chatId));
+        boolean isMember = chat.getUsers().contains(user);
+        boolean isAdmin = chat.getAdmins().contains(user);
+        boolean isOwner = chat.getOwner().equals(user);
+
+        if (!chat.getOwner().equals(selector))
+            throw new BadRequestException();
+
+        if (!isMember)
+            throw new BadRequestException();
+
+        if (isOwner || isAdmin)
+            throw new BadRequestException();
+
+        chat.getAdmins().add(user);
+        return publicChatRepository.save(chat);
+    }
+
+    @Override
+    public PublicChat deleteAdminPublicChat(Long chatId, Long selectorId, Long adminId) {
+        PublicChat chat = findPublicChat(chatId);
+        User admin = findUser(adminId);
+        User selector = findUser(selectorId);
+        chat.setAdmins(userRepository.findAdminsByChatId(chatId));
+
+        if (!chat.getOwner().equals(selector))
+            throw new BadRequestException();
+
+        if (chat.getOwner().equals(admin))
+            throw new BadRequestException();
+
+        boolean isAdmin = chat.getAdmins().contains(admin);
+
+        if (!isAdmin)
+            throw new BadRequestException();
+
+        chat.getAdmins().remove(admin);
         return publicChatRepository.save(chat);
     }
 
