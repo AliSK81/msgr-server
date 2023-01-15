@@ -49,9 +49,15 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
+    @Override
+    public User getProfile(String username) {
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
     private void checkUniqueUsername(String username) {
         boolean userExist = userRepository.findUserByUsername(username).isPresent();
-        if (userExist){
+        if (userExist) {
             throw new UsernameAlreadyTakenException();
         }
     }
