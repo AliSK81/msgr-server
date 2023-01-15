@@ -2,14 +2,14 @@ package com.msgrserver.model.dto.user;
 
 import com.msgrserver.model.dto.ActionDto;
 import com.msgrserver.model.dto.chat.ChatDto;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.*;
 
 import java.util.Set;
 
-@Value
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class UserGetChatsResponseDto extends ActionDto {
     Set<ChatDto> chats;

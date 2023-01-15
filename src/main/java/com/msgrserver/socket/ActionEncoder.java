@@ -4,9 +4,7 @@ import com.msgrserver.action.Action;
 import com.msgrserver.util.Mapper;
 import jakarta.websocket.Encoder;
 import jakarta.websocket.EndpointConfig;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class ActionEncoder implements Encoder.Text<Action> {
 
     @Override
