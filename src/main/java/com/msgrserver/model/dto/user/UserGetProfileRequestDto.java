@@ -1,0 +1,14 @@
+package com.msgrserver.model.dto.user;
+
+import com.msgrserver.model.dto.ActionDto;
+import lombok.*;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class UserGetProfileRequestDto extends ActionDto {
+    String username;
+    Long userId;
+}

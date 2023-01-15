@@ -15,4 +15,6 @@ public interface UserService {
     Set<Chat> getUserChats(Long userId);
 
     User findUser(String username, String password);
+
+    User getProfile(String username);
 }

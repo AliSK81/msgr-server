@@ -109,6 +109,26 @@ public class UserHandlerImpl implements UserHandler {
                 .receivers(receivers).build();
     }
 
+    @Override
+    public ActionResult getUserProfile(UserGetProfileRequestDto dto) {
+        User user = userService.getProfile(dto.getUsername());
+        UserDto userDto = Mapper.map(user, UserDto.class);
+        if (!(user.getVisibleAvatar()))
+            userDto.setAvatar(null);
+        UserGetProfileResponseDto responseDto = UserGetProfileResponseDto.builder()
+                .userDto(userDto)
+                .build();
+
+        Action action = Action.builder()
+                .type(ActionType.GET_USER_PROFILE)
+                .dto(responseDto)
+                .build();
+        Set<Long> receivers = new HashSet<>(List.of(dto.getUserId()));
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers).build();
+    }
+
     private Set<ChatDto> convert(Long senderId, Set<Chat> chats) {
         Set<ChatDto> chatDtos = new HashSet<>();
 

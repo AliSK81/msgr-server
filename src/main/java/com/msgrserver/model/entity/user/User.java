@@ -23,4 +23,5 @@ public class User {
     private String name;
     private String avatar;
     private Boolean accessAddPublicChat;
+    private Boolean visibleAvatar;
 }
