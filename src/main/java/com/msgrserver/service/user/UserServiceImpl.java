@@ -49,9 +49,22 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
+    @Override
+    public User editProfile(User userInput) {
+        User user = userRepository.findById(userInput.getId()).orElseThrow(UserNotFoundException::new);
+        user.setId(userInput.getId());
+        user.setName(userInput.getName());
+        user.setAvatar(userInput.getAvatar());
+        user.setUsername(userInput.getUsername());
+        user.setEmail(userInput.getEmail());
+        user.setAccessAddPublicChat(userInput.getAccessAddPublicChat());
+        //todo add user.setVisibleAvatar(userInput.getVisibleAvatar) after merge
+        return userRepository.save(user);
+    }
+
     private void checkUniqueUsername(String username) {
         boolean userExist = userRepository.findUserByUsername(username).isPresent();
-        if (userExist){
+        if (userExist) {
             throw new UsernameAlreadyTakenException();
         }
     }
@@ -61,4 +74,5 @@ public class UserServiceImpl implements UserService {
             throw new InvalidPasswordException();
         }
     }
+
 }

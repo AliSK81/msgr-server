@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -92,7 +93,6 @@ public class PublicChatServiceImpl implements PublicChatService {
         PublicChat chat = findPublicChat(chatId);
         User user = findUser(userId);
         User adder = findUser(adderId);
-
         boolean isAdmin = userRepository.findAdminsByChatId(chatId).contains(adder);
         boolean isOwner = chat.getOwner().equals(adder);
 
@@ -101,7 +101,6 @@ public class PublicChatServiceImpl implements PublicChatService {
 
         if (!user.getAccessAddPublicChat())
             throw new UserPrivacySettingsException();
-
         chat.setUsers(userRepository.findUsersByChatId(chatId));
         chat.getUsers().add(user);
         return publicChatRepository.save(chat);
@@ -182,6 +181,30 @@ public class PublicChatServiceImpl implements PublicChatService {
 
         chat.getAdmins().remove(admin);
         return publicChatRepository.save(chat);
+    }
+
+    @Override
+    public PublicChat editProfilePublicChat(PublicChat publicChat, Long editorId) {
+        PublicChat chat= publicChatRepository.getReferenceById(publicChat.getId());
+        Set<User> admins=userRepository.findAdminsByChatId(chat.getId());
+        Set<Long> adminIds = admins.stream().map(User::getId).collect(Collectors.toSet());
+        boolean isAdmin=adminIds.contains(editorId);
+        boolean isOwner=chat.getOwner().getId().equals(editorId);
+        if (!isAdmin && !isOwner)
+        {
+            throw new BadRequestException();
+        }
+        else
+        {
+            chat.setAvatar(publicChat.getAvatar());
+            chat.setTitle(publicChat.getTitle());
+        }
+        return publicChatRepository.save(chat);
+    }
+
+    @Override
+    public Set<User> getChatMembers(Long chatId) {
+        return userRepository.findUsersByChatId(chatId);
     }
 
 
