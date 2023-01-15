@@ -4,7 +4,6 @@ import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionRequest;
 import com.msgrserver.action.ActionResult;
 import com.msgrserver.exception.NotImplementedException;
-import com.msgrserver.handler.chat.ChatHandler;
 import com.msgrserver.handler.chat.PublicChatHandler;
 import com.msgrserver.handler.message.MessageHandler;
 import com.msgrserver.handler.user.UserHandler;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ActionHandlerImpl implements ActionHandler {
 
-    private final ChatHandler chatHandler;
     private final MessageHandler messageHandler;
     private final UserHandler userHandler;
     private final PublicChatHandler publicChatHandler;
@@ -52,9 +50,9 @@ public class ActionHandlerImpl implements ActionHandler {
                     case JOIN_CHAT_WITH_LINK ->
                             actionResult = publicChatHandler.joinChatWithLink((PublicChatJoinWithLinkRequestDto) action.getDto());
                     case ADD_USER_BY_ADMIN ->
-                            actionResult = chatHandler.addUserToPublicChat((PublicChatAddUserRequestDto) action.getDto());
+                            actionResult = publicChatHandler.addUserToPublicChat((PublicChatAddUserRequestDto) action.getDto());
                     case DELETE_USER_BY_ADMIN ->
-                            actionResult = chatHandler.deleteUserFromPublicChat((PublicChatDeleteUserRequestDto) action.getDto());
+                            actionResult = publicChatHandler.deleteUserFromPublicChat((PublicChatDeleteUserRequestDto) action.getDto());
                     default -> throw new NotImplementedException();
                 }
 
@@ -62,16 +60,5 @@ public class ActionHandlerImpl implements ActionHandler {
                 return actionResult;
             }
         }
-
-//        switch (action.getType()) {
-//            case SIGN_UP -> actionResult = userHandler.signUp((UserSignUpRequestDto) action.getDto());
-//            case SIGN_IN -> actionResult = userHandler.signIn((UserSignInRequestDto) action.getDto());
-//            case SEND_TEXT -> actionResult = messageHandler.sendText((MessageSendTextDto) action.getDto());
-//            case GET_USER_CHATS -> actionResult = userHandler.getUserChats((UserGetChatsRequestDto) action.getDto());
-//            case JOIN_CHAT_WITH_LINK -> actionResult = publicChatHandler.joinChatWithLink((PublicChatJoinWithLinkRequestDto) action.getDto());
-//            case ADD_USER_BY_ADMIN -> actionResult = chatHandler.addUserToPublicChat((PublicChatAddUserRequestDto) action.getDto());
-//            case DELETE_USER_BY_ADMIN -> actionResult = chatHandler.deleteUserFromPublicChat((PublicChatDeleteUserRequestDto) action.getDto());
-//        }
-//        return actionResult;
     }
 }
