@@ -8,6 +8,7 @@ import com.msgrserver.handler.chat.PublicChatHandler;
 import com.msgrserver.handler.message.MessageHandler;
 import com.msgrserver.handler.user.UserHandler;
 import com.msgrserver.model.dto.chat.PublicChatAddUserRequestDto;
+import com.msgrserver.model.dto.chat.PublicChatCreateRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatDeleteUserRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatJoinWithLinkRequestDto;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
@@ -45,14 +46,15 @@ public class ActionHandlerImpl implements ActionHandler {
 
                 switch (action.getType()) {
                     case SEND_TEXT -> actionResult = messageHandler.sendText((MessageSendTextDto) action.getDto());
-                    case GET_USER_CHATS ->
-                            actionResult = userHandler.getUserChats(userId);
+                    case GET_USER_CHATS -> actionResult = userHandler.getUserChats(userId);
                     case JOIN_CHAT_WITH_LINK ->
                             actionResult = publicChatHandler.joinChatWithLink((PublicChatJoinWithLinkRequestDto) action.getDto());
                     case ADD_USER_BY_ADMIN ->
                             actionResult = publicChatHandler.addUserToPublicChat((PublicChatAddUserRequestDto) action.getDto());
                     case DELETE_USER_BY_ADMIN ->
                             actionResult = publicChatHandler.deleteUserFromPublicChat((PublicChatDeleteUserRequestDto) action.getDto());
+                    case CREATE_PUBLIC_CHAT ->
+                            actionResult = publicChatHandler.createPublicChat(userId, (PublicChatCreateRequestDto) action.getDto());
                     default -> throw new NotImplementedException();
                 }
 
