@@ -91,10 +91,10 @@ public class UserHandlerImpl implements UserHandler {
     }
 
     @Override
-    public ActionResult getUserChats(UserGetChatsRequestDto dto) {
-        Set<Chat> chats = userService.getUserChats(dto.getUserId());
+    public ActionResult getUserChats(Long userId) {
+        Set<Chat> chats = userService.getUserChats(userId);
 
-        Set<ChatDto> chatDtos = convert(dto.getUserId(), chats);
+        Set<ChatDto> chatDtos = convert(userId, chats);
 
         UserGetChatsResponseDto responseDto = UserGetChatsResponseDto.builder()
                 .chats(chatDtos).build();
@@ -102,7 +102,7 @@ public class UserHandlerImpl implements UserHandler {
                 .type(ActionType.GET_USER_CHATS)
                 .dto(responseDto).build();
 
-        Set<Long> receivers = new HashSet<>(List.of(dto.getUserId()));
+        Set<Long> receivers = Set.of(userId);
 
         return ActionResult.builder()
                 .action(action)
