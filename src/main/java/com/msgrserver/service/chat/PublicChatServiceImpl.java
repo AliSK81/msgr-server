@@ -28,11 +28,17 @@ public class PublicChatServiceImpl implements PublicChatService {
 
 
     @Override
-    public PublicChat savePublicChat(Long userId, PublicChat chat) {
-        User user = findUser(userId);
-        chat.setOwner(user);
-        chat.setUsers(new HashSet<>(List.of(user)));
+    public PublicChat createPublicChat(Long creatorId, PublicChat chat, Set<Long> initMemberIds) {
+        User creator = findUser(creatorId);
+        chat.setOwner(creator);
+        chat.setUsers(new HashSet<>(List.of(creator)));
         chat.setLink(LinkGenerator.generate(20));
+        initMemberIds.forEach(id -> {
+            User user = findUser(id);
+            if (user.getAccessAddPublicChat()) {
+                chat.getUsers().add(user);
+            }
+        });
         return publicChatRepository.save(chat);
     }
 
@@ -185,17 +191,14 @@ public class PublicChatServiceImpl implements PublicChatService {
 
     @Override
     public PublicChat editProfilePublicChat(PublicChat publicChat, Long editorId) {
-        PublicChat chat= publicChatRepository.getReferenceById(publicChat.getId());
-        Set<User> admins=userRepository.findAdminsByChatId(chat.getId());
+        PublicChat chat = publicChatRepository.getReferenceById(publicChat.getId());
+        Set<User> admins = userRepository.findAdminsByChatId(chat.getId());
         Set<Long> adminIds = admins.stream().map(User::getId).collect(Collectors.toSet());
-        boolean isAdmin=adminIds.contains(editorId);
-        boolean isOwner=chat.getOwner().getId().equals(editorId);
-        if (!isAdmin && !isOwner)
-        {
+        boolean isAdmin = adminIds.contains(editorId);
+        boolean isOwner = chat.getOwner().getId().equals(editorId);
+        if (!isAdmin && !isOwner) {
             throw new BadRequestException();
-        }
-        else
-        {
+        } else {
             chat.setAvatar(publicChat.getAvatar());
             chat.setTitle(publicChat.getTitle());
         }
