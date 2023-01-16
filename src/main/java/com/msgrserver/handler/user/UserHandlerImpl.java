@@ -146,7 +146,7 @@ public class UserHandlerImpl implements UserHandler {
 
             if (chat instanceof PrivateChat privateChat) {
                 User receiver = privateChat.getParticipant(senderId);
-                chatDto.setAvatar(receiver.getAvatar());
+//                chatDto.setAvatar(receiver.getAvatar());
                 chatDto.setTitle(receiver.getName());
 
             } else if (chat instanceof PublicChat publicChat) {

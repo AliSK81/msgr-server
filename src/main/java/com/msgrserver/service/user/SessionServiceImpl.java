@@ -4,6 +4,8 @@ import com.msgrserver.exception.InvalidSessionException;
 import com.msgrserver.model.entity.user.UserSession;
 import com.msgrserver.repository.SessionRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -13,6 +15,7 @@ import java.util.Set;
 public class SessionServiceImpl implements SessionService {
 
     private final SessionRepository sessionRepository;
+//    private Hibernate. session;
 
     public UserSession saveUserSession(UserSession userSession) {
         if (sessionRepository.findById(userSession.getId()).isPresent()) {

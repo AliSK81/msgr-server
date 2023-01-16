@@ -1,9 +1,6 @@
 package com.msgrserver.model.entity.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -21,7 +18,9 @@ public class User {
     private String username;
     private String password;
     private String name;
-    private String avatar;
+    @Lob
+    @Column(name = "avatar", columnDefinition="BLOB")
+    private Byte[] avatar;
     private Boolean accessAddPublicChat;
     private Boolean visibleAvatar;
 }
