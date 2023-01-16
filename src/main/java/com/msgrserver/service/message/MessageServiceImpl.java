@@ -29,7 +29,7 @@ public class MessageServiceImpl implements MessageService {
     private final UserRepository userRepository;
 
     @Override
-    public TextMessage saveText(Long chatId, Long senderId, TextMessage textMessage) {
+    public TextMessage createText(Long chatId, Long senderId, TextMessage textMessage) {
 
         User sender = findUser(senderId);
         Chat chat = findChat(chatId);
@@ -42,6 +42,8 @@ public class MessageServiceImpl implements MessageService {
             checkPrivateChatAccess(sender, (PrivateChat) chat);
         }
 
+        textMessage.setSender(sender);
+        textMessage.setChat(chat);
         textMessage.setDateTime(LocalDateTime.now());
 
         return messageRepository.save(textMessage);

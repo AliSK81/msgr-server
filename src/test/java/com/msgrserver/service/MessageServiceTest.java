@@ -46,7 +46,7 @@ class MessageServiceTest {
 
         TextMessage message = TextMessage.builder().text("salam").build();
 
-        TextMessage savedText = messageService.saveText(chat.getId(), user.getId(), message);
+        TextMessage savedText = messageService.createText(chat.getId(), user.getId(), message);
 
         assertNotNull(savedText.getDateTime());
         verify(messageRepository).save(savedText);

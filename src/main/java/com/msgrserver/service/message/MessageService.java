@@ -6,7 +6,7 @@ import com.msgrserver.model.entity.message.TextMessage;
 
 public interface MessageService {
 
-    TextMessage saveText(Long chatId, Long senderId, TextMessage textMessage);
+    TextMessage createText(Long chatId, Long senderId, TextMessage textMessage);
 
     BinaryMessage saveFile(BinaryMessage binaryMessage);
 

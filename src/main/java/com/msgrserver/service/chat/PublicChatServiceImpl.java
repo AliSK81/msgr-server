@@ -1,11 +1,11 @@
 package com.msgrserver.service.chat;
 
-import com.msgrserver.exception.BadRequestException;
-import com.msgrserver.exception.ChatNotFoundException;
-import com.msgrserver.exception.UserNotFoundException;
-import com.msgrserver.exception.UserPrivacySettingsException;
+import com.msgrserver.exception.*;
+import com.msgrserver.model.entity.chat.Member;
+import com.msgrserver.model.entity.chat.MemberId;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
+import com.msgrserver.repository.MemberRepository;
 import com.msgrserver.repository.MessageRepository;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
@@ -13,8 +13,6 @@ import com.msgrserver.util.LinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,21 +23,44 @@ public class PublicChatServiceImpl implements PublicChatService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private final PublicChatRepository publicChatRepository;
+    private final MemberRepository memberRepository;
 
 
     @Override
     public PublicChat createPublicChat(Long creatorId, PublicChat chat, Set<Long> initMemberIds) {
         User creator = findUser(creatorId);
         chat.setOwner(creator);
-        chat.setUsers(new HashSet<>(List.of(creator)));
+
+        PublicChat createdChat = publicChatRepository.save(chat);
+
+        Member owner = createMember(createdChat.getId(), creatorId, true, true);
+
+        chat.setMembers(Set.of(owner));
+
         chat.setLink(LinkGenerator.generate(20));
+
         initMemberIds.forEach(id -> {
             User user = findUser(id);
+
             if (user.isAllowedInvite()) {
-                chat.getUsers().add(user);
+                Member member = createMember(createdChat.getId(), user.getId(), false, true);
+                createdChat.getMembers().add(member);
             }
         });
         return publicChatRepository.save(chat);
+    }
+
+    private Member createMember(Long chatId, Long userId, boolean allowedInvite, boolean allowedMessage) {
+        MemberId memberId = MemberId.builder()
+                .chatId(chatId)
+                .userId(userId)
+                .build();
+
+        return Member.builder()
+                .id(memberId)
+                .allowedInvite(allowedInvite)
+                .allowedMessage(allowedMessage)
+                .build();
     }
 
     @Override
@@ -63,8 +84,11 @@ public class PublicChatServiceImpl implements PublicChatService {
         // todo check user is not banned
         // todo other required checks
 
-        chat.setUsers(userRepository.findUsersByChatId(chatId));
-        chat.getUsers().add(user);
+        chat.setMembers(memberRepository.findMembersByChatId(chatId));
+        MemberId memberId = MemberId.builder().userId(userId).chatId(chatId).build();
+        Member member = findMember(memberId);
+        chat.getMembers().add(member);
+
         return publicChatRepository.save(chat);
     }
 
@@ -87,8 +111,10 @@ public class PublicChatServiceImpl implements PublicChatService {
                 chat.getAdmins().remove(user);
             }
 
-            chat.setUsers(userRepository.findUsersByChatId(chatId));
-            chat.getUsers().remove(user);
+            chat.setMembers(memberRepository.findMembersByChatId(chatId));
+            MemberId memberId = MemberId.builder().userId(userId).chatId(chatId).build();
+            Member member = findMember(memberId);
+            chat.getMembers().remove(member);
         }
 
         return publicChatRepository.save(chat);
@@ -99,6 +125,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         PublicChat chat = findPublicChat(chatId);
         User user = findUser(userId);
         User adder = findUser(adderId);
+
         boolean isAdmin = userRepository.findAdminsByChatId(chatId).contains(adder);
         boolean isOwner = chat.getOwner().equals(adder);
 
@@ -107,8 +134,12 @@ public class PublicChatServiceImpl implements PublicChatService {
 
         if (!user.isAllowedInvite())
             throw new UserPrivacySettingsException();
-        chat.setUsers(userRepository.findUsersByChatId(chatId));
-        chat.getUsers().add(user);
+
+        chat.setMembers(memberRepository.findMembersByChatId(chatId));
+        MemberId memberId = MemberId.builder().userId(userId).chatId(chatId).build();
+        Member member = findMember(memberId);
+        chat.getMembers().add(member);
+
         return publicChatRepository.save(chat);
     }
 
@@ -132,8 +163,10 @@ public class PublicChatServiceImpl implements PublicChatService {
         if (!isOwner && admins.contains(user))
             throw new BadRequestException();
 
-        chat.setUsers(userRepository.findUsersByChatId(chatId));
-        chat.getUsers().remove(user);
+        chat.setMembers(memberRepository.findMembersByChatId(chatId));
+        MemberId memberId = MemberId.builder().userId(userId).chatId(chatId).build();
+        Member member = findMember(memberId);
+        chat.getMembers().remove(member);
 
         if (admins.contains(user)) {
             chat.setAdmins(admins);
@@ -148,9 +181,13 @@ public class PublicChatServiceImpl implements PublicChatService {
         PublicChat chat = findPublicChat(chatId);
         User user = findUser(userId);
         User selector = findUser(selectorId);
+
         chat.setAdmins(userRepository.findAdminsByChatId(chatId));
-        chat.setUsers(userRepository.findUsersByChatId(chatId));
-        boolean isMember = chat.getUsers().contains(user);
+        chat.setMembers(memberRepository.findMembersByChatId(chatId));
+        MemberId memberId = MemberId.builder().userId(userId).chatId(chatId).build();
+        Member member = findMember(memberId);
+
+        boolean isMember = chat.getMembers().contains(member);
         boolean isAdmin = chat.getAdmins().contains(user);
         boolean isOwner = chat.getOwner().equals(user);
 
@@ -194,14 +231,17 @@ public class PublicChatServiceImpl implements PublicChatService {
         PublicChat chat = publicChatRepository.getReferenceById(publicChat.getId());
         Set<User> admins = userRepository.findAdminsByChatId(chat.getId());
         Set<Long> adminIds = admins.stream().map(User::getId).collect(Collectors.toSet());
+
         boolean isAdmin = adminIds.contains(editorId);
         boolean isOwner = chat.getOwner().getId().equals(editorId);
+
         if (!isAdmin && !isOwner) {
             throw new BadRequestException();
         } else {
             chat.setAvatar(publicChat.getAvatar());
             chat.setTitle(publicChat.getTitle());
         }
+
         return publicChatRepository.save(chat);
     }
 
@@ -218,6 +258,10 @@ public class PublicChatServiceImpl implements PublicChatService {
 
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    }
+
+    private Member findMember(MemberId memberId) {
+        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     }
 
 }

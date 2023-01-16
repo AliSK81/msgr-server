@@ -24,10 +24,10 @@ public class Chat {
 
     private ChatType type;
 
-    @ManyToMany
-    @JoinTable(
-            name = "member",
-            joinColumns = @JoinColumn(name = "chat_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> users;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "member",
+//            joinColumns = @JoinColumn(name = "chat_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id"))
+//    private Set<User> users;
 }

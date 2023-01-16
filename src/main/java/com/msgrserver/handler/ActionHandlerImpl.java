@@ -49,7 +49,7 @@ public class ActionHandlerImpl implements ActionHandler {
                 switch (action.getType()) {
 
                     case SEND_TEXT ->
-                            actionResult = messageHandler.sendText((MessageSendTextDto) action.getDto());
+                            actionResult = messageHandler.sendText(userId, (MessageSendTextDto) action.getDto());
 
                     case GET_USER_CHATS ->
                             actionResult = userHandler.getUserChats(userId);

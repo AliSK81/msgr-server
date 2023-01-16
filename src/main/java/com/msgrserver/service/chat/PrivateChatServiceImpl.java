@@ -1,5 +1,6 @@
 package com.msgrserver.service.chat;
 
+import com.msgrserver.exception.ChatNotFoundException;
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.user.User;
@@ -7,8 +8,6 @@ import com.msgrserver.repository.PrivateChatRepository;
 import com.msgrserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +20,22 @@ public class PrivateChatServiceImpl implements PrivateChatService {
         User user1 = findUser(user1Id);
         User user2 = findUser(user2Id);
 
-        PrivateChat chat = PrivateChat.builder().users(Set.of(user1, user2)).build();
+        PrivateChat chat = PrivateChat.builder().user1(user1).user2(user2).build();
 
         return privateChatRepository.save(chat);
     }
 
-    public User findUser(Long userId) {
+    @Override
+    public PrivateChat findPrivateChat(Long chatId) {
+        return privateChatRepository.findById(chatId).orElseThrow(ChatNotFoundException::new);
+    }
+
+    @Override
+    public PrivateChat findPrivateChat(Long user1Id, Long user2Id) {
+        return privateChatRepository.findPrivateChatByUser1IdAndUser2Id(user1Id, user2Id).orElseThrow(ChatNotFoundException::new);
+    }
+
+    private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
 }

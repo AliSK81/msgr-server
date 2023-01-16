@@ -1,23 +1,25 @@
 package com.msgrserver.handler.message;
 
 import com.msgrserver.action.Action;
-import com.msgrserver.action.ActionType;
 import com.msgrserver.action.ActionResult;
+import com.msgrserver.action.ActionType;
+import com.msgrserver.exception.BadRequestException;
+import com.msgrserver.exception.ChatNotFoundException;
 import com.msgrserver.exception.NotImplementedException;
 import com.msgrserver.model.dto.message.MessageReceiveTextDto;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
+import com.msgrserver.model.entity.chat.Member;
+import com.msgrserver.model.entity.chat.MemberId;
 import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.message.TextMessage;
-import com.msgrserver.model.entity.user.User;
+import com.msgrserver.service.chat.PrivateChatService;
 import com.msgrserver.service.message.MessageService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,12 +27,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MessageHandlerImpl implements MessageHandler {
     private final MessageService messageService;
+    private final PrivateChatService privateChatService;
 
+    public ActionResult sendText(Long senderId, MessageSendTextDto dto) {
 
-    public ActionResult sendText(MessageSendTextDto dto) {
-        TextMessage newMessage = messageService.saveText(
-                dto.getChatId(),
-                dto.getSenderId(),
+        Long chatId = dto.getChatId();
+        Long receiverId = dto.getReceiverId();
+
+        if (receiverId != null) {
+            if (chatId != null)
+                throw new BadRequestException();
+
+            PrivateChat chat;
+            try {
+                chat = privateChatService.findPrivateChat(senderId, receiverId);
+            } catch (ChatNotFoundException ex) {
+                chat = privateChatService.createPrivateChat(senderId, receiverId);
+            }
+            chatId = chat.getId();
+        }
+
+        TextMessage newMessage = messageService.createText(
+                chatId,
+                senderId,
                 Mapper.map(dto, TextMessage.class)
         );
 
@@ -60,12 +79,13 @@ public class MessageHandlerImpl implements MessageHandler {
 
         if (isPrivate) {
             var chat = (PrivateChat) message.getChat();
-            User participant = chat.getParticipant(message.getSender().getId());
-            receivers = new HashSet<>(List.of(participant.getId()));
+            receivers = Set.of(chat.getUser1().getId(), chat.getUser2().getId());
+
         } else if (isPublic) {
             var chat = (PublicChat) message.getChat();
-            receivers = chat.getUsers().stream()
-                    .map(User::getId)
+            receivers = chat.getMembers().stream()
+                    .map(Member::getId)
+                    .map(MemberId::getUserId)
                     .collect(Collectors.toSet());
         } else {
             throw new NotImplementedException();
