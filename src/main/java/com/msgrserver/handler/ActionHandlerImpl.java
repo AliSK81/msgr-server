@@ -11,6 +11,7 @@ import com.msgrserver.model.dto.chat.PublicChatAddUserRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatDeleteUserRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatJoinWithLinkRequestDto;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
+import com.msgrserver.model.dto.user.UserEditProfileRequestDto;
 import com.msgrserver.model.dto.user.UserSignInRequestDto;
 import com.msgrserver.model.dto.user.UserSignUpRequestDto;
 import com.msgrserver.model.dto.user.UserViewProfileRequestDto;
@@ -63,6 +64,9 @@ public class ActionHandlerImpl implements ActionHandler {
 
                     case DELETE_USER_BY_ADMIN ->
                             actionResult = publicChatHandler.deleteUserFromPublicChat(userId, (PublicChatDeleteUserRequestDto) action.getDto());
+
+                    case EDIT_PROFILE ->
+                            actionResult = userHandler.editProfile(userId, (UserEditProfileRequestDto) action.getDto());
 
                     default -> throw new NotImplementedException();
                 }
