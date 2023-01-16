@@ -112,13 +112,13 @@ public class UserHandlerImpl implements UserHandler {
     @Override
     public ActionResult editProfile(Long userId, UserEditProfileRequestDto dto) {
         User userSend = Mapper.map(dto, User.class);
-        userSend.setAccessAddPublicChat(dto.getAccessAddPublicChat());
-        userSend.setVisibleAvatar(dto.getVisibleAvatar());
+        userSend.setAllowedInvite(dto.isAccessAddPublicChat());
+        userSend.setVisibleAvatar(dto.isVisibleAvatar());
         User user = userService.editProfile(userSend, userId);
         UserEditProfileResponseDto responseDto = UserEditProfileResponseDto.builder()
                 .userDto(Mapper.map(user, UserDto.class))
-                .accessAddPublicChat(user.getAccessAddPublicChat())
-                .visibleAvatar(user.getVisibleAvatar())
+                .accessAddPublicChat(user.isAllowedInvite())
+                .visibleAvatar(user.isVisibleAvatar())
                 .build();
         Action action = Action.builder()
                 .type(ActionType.EDIT_PROFILE)
@@ -135,12 +135,12 @@ public class UserHandlerImpl implements UserHandler {
         User user = userService.findUser(dto.getUsername());
 
         UserDto userDto = Mapper.map(user, UserDto.class);
-        if (!user.getVisibleAvatar()){
+        if (!user.isVisibleAvatar()){
             userDto.setAvatar(null);
         }
 
         UserViewProfileResponseDto responseDto = UserViewProfileResponseDto.builder()
-                .userDto(userDto)
+                .user(userDto)
                 .build();
 
         Action action = Action.builder()
