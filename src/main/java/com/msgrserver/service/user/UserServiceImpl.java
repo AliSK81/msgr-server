@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userInput.getUsername());
         user.setEmail(userInput.getEmail());
         user.setAccessAddPublicChat(userInput.getAccessAddPublicChat());
-        //todo add user.setVisibleAvatar(userInput.getVisibleAvatar) after merge
+        user.setVisibleAvatar(userInput.getVisibleAvatar());
         return userRepository.save(user);
     }
 
