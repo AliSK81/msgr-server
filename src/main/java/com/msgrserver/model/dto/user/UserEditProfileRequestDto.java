@@ -11,6 +11,6 @@ import lombok.*;
 
 public class UserEditProfileRequestDto extends ActionDto {
     UserDto userDto;
-    Boolean accessAddPublicChat;
-    Boolean visibleAvatar;
+    boolean accessAddPublicChat;
+    boolean visibleAvatar;
 }

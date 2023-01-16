@@ -9,5 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class UserViewProfileResponseDto extends ActionDto {
-    UserDto userDto;
+    UserDto user;
 }

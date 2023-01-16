@@ -35,7 +35,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         chat.setLink(LinkGenerator.generate(20));
         initMemberIds.forEach(id -> {
             User user = findUser(id);
-            if (user.getAccessAddPublicChat()) {
+            if (user.isAllowedInvite()) {
                 chat.getUsers().add(user);
             }
         });
@@ -105,7 +105,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         if (!isOwner && !isAdmin)
             throw new BadRequestException();
 
-        if (!user.getAccessAddPublicChat())
+        if (!user.isAllowedInvite())
             throw new UserPrivacySettingsException();
         chat.setUsers(userRepository.findUsersByChatId(chatId));
         chat.getUsers().add(user);

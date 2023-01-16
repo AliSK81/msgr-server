@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) {
         checkUniqueUsername(user.getUsername());
 //        checkStrongPassword(user.getPassword());
-        user.setAccessAddPublicChat(true);
+        user.setAllowedInvite(true);
         return userRepository.save(user);
     }
 
@@ -63,8 +63,8 @@ public class UserServiceImpl implements UserService {
         user.setAvatar(userInput.getAvatar());
         user.setUsername(userInput.getUsername());
         user.setEmail(userInput.getEmail());
-        user.setAccessAddPublicChat(user.getAccessAddPublicChat());
-        user.setVisibleAvatar(user.getVisibleAvatar());
+        user.setAllowedInvite(user.isAllowedInvite());
+        user.setVisibleAvatar(user.isVisibleAvatar());
         return userRepository.save(user);
     }
 
