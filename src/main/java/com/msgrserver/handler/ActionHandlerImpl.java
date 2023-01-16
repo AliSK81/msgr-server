@@ -45,6 +45,7 @@ public class ActionHandlerImpl implements ActionHandler {
                 Long userId = session.getUser().getId();
 
                 switch (action.getType()) {
+
                     case SEND_TEXT ->
                             actionResult = messageHandler.sendText((MessageSendTextDto) action.getDto());
 
@@ -55,13 +56,13 @@ public class ActionHandlerImpl implements ActionHandler {
                             actionResult = userHandler.getUserProfile(userId, (UserViewProfileRequestDto) action.getDto());
 
                     case JOIN_CHAT_WITH_LINK ->
-                            actionResult = publicChatHandler.joinChatWithLink((PublicChatJoinWithLinkRequestDto) action.getDto());
+                            actionResult = publicChatHandler.joinChatWithLink(userId, (PublicChatJoinWithLinkRequestDto) action.getDto());
 
                     case ADD_USER_BY_ADMIN ->
-                            actionResult = publicChatHandler.addUserToPublicChat((PublicChatAddUserRequestDto) action.getDto());
+                            actionResult = publicChatHandler.addUserToPublicChat(userId, (PublicChatAddUserRequestDto) action.getDto());
 
                     case DELETE_USER_BY_ADMIN ->
-                            actionResult = publicChatHandler.deleteUserFromPublicChat((PublicChatDeleteUserRequestDto) action.getDto());
+                            actionResult = publicChatHandler.deleteUserFromPublicChat(userId, (PublicChatDeleteUserRequestDto) action.getDto());
 
                     default -> throw new NotImplementedException();
                 }
