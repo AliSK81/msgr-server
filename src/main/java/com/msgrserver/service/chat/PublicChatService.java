@@ -1,6 +1,9 @@
 package com.msgrserver.service.chat;
 
 import com.msgrserver.model.entity.chat.PublicChat;
+import com.msgrserver.model.entity.user.User;
+
+import java.util.Set;
 
 public interface PublicChatService {
 
@@ -21,4 +24,8 @@ public interface PublicChatService {
     PublicChat selectNewAdminPublicChat(Long chatId, Long selectorId, Long userId);
 
     PublicChat deleteAdminPublicChat(Long chatId, Long selectorId, Long userId);
+
+    PublicChat editProfilePublicChat(PublicChat publicChat, Long editorId);
+
+    Set<User> getChatMembers(Long chatId);
 }

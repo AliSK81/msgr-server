@@ -8,10 +8,12 @@ import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.service.chat.PublicChatService;
+import com.msgrserver.util.Mapper;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class PublicChatHandlerImpl implements PublicChatHandler {
@@ -63,6 +65,22 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
         return getResponse(chat, action);
     }
 
+    @Override
+    public ActionResult editProfilePublicChat(PublicChatEditProfileRequestDto dto) {
+        PublicChat chat1 = Mapper.map(dto, PublicChat.class);
+        PublicChat chat = publicChatService.editProfilePublicChat(chat1, dto.getEditorId());
+        PublicChatEditProfileResponseDto responseDto = PublicChatEditProfileResponseDto.builder()
+                .chatDto(Mapper.map(chat, ChatDto.class))
+                .build();
+        Action action = Action.builder()
+                .type(ActionType.EDIT_PROFILE_PUBLIC_CHAT)
+                .dto(responseDto).build();
+        Set<Long> receivers = publicChatService.getChatMembers(chat.getId()).stream().map(User::getId).collect(Collectors.toSet());
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers).build();
+    }
+
     private ActionResult getResponse(PublicChat chat, Action action) {
         Set<Long> receivers = new HashSet<>();
         switch (chat.getType()) {
@@ -95,8 +113,8 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
 
     @Override
     public ActionResult deletePublicChat(PublicChatDeleteRequestDto dto) {
-        publicChatService.deletePublicChat(dto.getUserId() , dto.getChatId());
-        PublicChatDeleteResponseDto responseDto=PublicChatDeleteResponseDto.builder()
+        publicChatService.deletePublicChat(dto.getUserId(), dto.getChatId());
+        PublicChatDeleteResponseDto responseDto = PublicChatDeleteResponseDto.builder()
                 .chatId(dto.getChatId())
                 .build();
         Action action = Action.builder()

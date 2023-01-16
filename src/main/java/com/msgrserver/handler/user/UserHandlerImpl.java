@@ -110,6 +110,23 @@ public class UserHandlerImpl implements UserHandler {
     }
 
     @Override
+    public ActionResult editProfile(UserEditProfileRequestDto dto) {
+        User userSend = Mapper.map(dto, User.class);
+        User user = userService.editProfile(userSend);
+        UserEditProfileResponseDto responseDto = UserEditProfileResponseDto.builder()
+                .userEditProfileDto(Mapper.map(user, UserEditProfileDto.class))
+                .build();
+        Action action = Action.builder()
+                .type(ActionType.EDIT_PROFILE)
+                .dto(responseDto)
+                .build();
+        Set<Long> receivers = new HashSet<>(List.of(dto.getUserEditProfileDto().getUserDto().getId()));
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers).build();
+    }
+
+    @Override
     public ActionResult getUserProfile(UserGetProfileRequestDto dto) {
         User user = userService.getProfile(dto.getUsername());
         UserDto userDto = Mapper.map(user, UserDto.class);
