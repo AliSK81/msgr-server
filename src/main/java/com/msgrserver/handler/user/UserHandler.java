@@ -1,6 +1,7 @@
 package com.msgrserver.handler.user;
 
 import com.msgrserver.action.ActionResult;
+import com.msgrserver.model.dto.user.*;
 import com.msgrserver.model.dto.user.UserEditProfileRequestDto;
 import com.msgrserver.model.dto.user.UserGetChatsRequestDto;
 import com.msgrserver.model.dto.user.UserSignInRequestDto;
@@ -15,4 +16,5 @@ public interface UserHandler {
     ActionResult getUserChats(UserGetChatsRequestDto dto);
 
     ActionResult editProfile(UserEditProfileRequestDto dto);
+    ActionResult getUserProfile(UserGetProfileRequestDto dto);
 }

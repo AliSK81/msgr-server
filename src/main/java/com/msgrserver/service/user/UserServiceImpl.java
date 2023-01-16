@@ -50,6 +50,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getProfile(String username) {
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
     public User editProfile(User userInput) {
         User user = userRepository.findById(userInput.getId()).orElseThrow(UserNotFoundException::new);
         user.setId(userInput.getId());
@@ -64,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
     private void checkUniqueUsername(String username) {
         boolean userExist = userRepository.findUserByUsername(username).isPresent();
-        if (userExist) {
+        if (userExist){
             throw new UsernameAlreadyTakenException();
         }
     }
@@ -74,5 +80,4 @@ public class UserServiceImpl implements UserService {
             throw new InvalidPasswordException();
         }
     }
-
 }
