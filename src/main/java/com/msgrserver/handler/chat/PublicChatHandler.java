@@ -19,4 +19,6 @@ public interface PublicChatHandler {
     ActionResult deleteUserFromPublicChat(Long deleterId, PublicChatDeleteUserRequestDto dto);
 
     ActionResult editProfilePublicChat(PublicChatEditProfileRequestDto dto);
+
+    ActionResult createPublicChat(Long creatorId, PublicChatCreateRequestDto dto);
 }

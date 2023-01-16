@@ -4,6 +4,7 @@ import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
 import com.msgrserver.action.ActionResult;
 import com.msgrserver.model.dto.chat.*;
+import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PublicChatRepository;
@@ -74,6 +75,22 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                 .build();
         Action action = Action.builder()
                 .type(ActionType.EDIT_PROFILE_PUBLIC_CHAT)
+                .dto(responseDto).build();
+        Set<Long> receivers = publicChatService.getChatMembers(chat.getId()).stream().map(User::getId).collect(Collectors.toSet());
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers).build();
+    }
+
+    @Override
+    public ActionResult createPublicChat(Long creatorId, PublicChatCreateRequestDto dto) {
+        PublicChat chatSend = Mapper.map(dto.getChatDto(), PublicChat.class);
+        PublicChat chat = publicChatService.createPublicChat(creatorId, chatSend, dto.getInitMemberIds());
+        PublicChatCreateResponseDto responseDto = PublicChatCreateResponseDto.builder()
+                .chatDto(Mapper.map(chat, ChatDto.class))
+                .build();
+        Action action = Action.builder()
+                .type(ActionType.CREATE_PUBLIC_CHAT)
                 .dto(responseDto).build();
         Set<Long> receivers = publicChatService.getChatMembers(chat.getId()).stream().map(User::getId).collect(Collectors.toSet());
         return ActionResult.builder()
