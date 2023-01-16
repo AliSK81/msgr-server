@@ -8,7 +8,6 @@ import com.msgrserver.handler.chat.PublicChatHandler;
 import com.msgrserver.handler.message.MessageHandler;
 import com.msgrserver.handler.user.UserHandler;
 import com.msgrserver.model.dto.chat.PublicChatAddUserRequestDto;
-import com.msgrserver.model.dto.chat.PublicChatCreateRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatDeleteUserRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatJoinWithLinkRequestDto;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
@@ -69,8 +68,6 @@ public class ActionHandlerImpl implements ActionHandler {
                     case EDIT_PROFILE ->
                             actionResult = userHandler.editProfile(userId, (UserEditProfileRequestDto) action.getDto());
 
-                    case CREATE_PUBLIC_CHAT ->
-                            actionResult = publicChatHandler.createPublicChat(userId, (PublicChatCreateRequestDto) action.getDto());
                     default -> throw new NotImplementedException();
                 }
 

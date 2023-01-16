@@ -9,7 +9,7 @@ public interface PublicChatService {
 
     PublicChat findPublicChat(Long chatId);
 
-    PublicChat createPublicChat(Long creatorId, PublicChat chat , Set<Long> initMemberIds);
+    PublicChat savePublicChat(Long userId, PublicChat chat);
 
     void deletePublicChat(Long userId, Long chatId);
 
