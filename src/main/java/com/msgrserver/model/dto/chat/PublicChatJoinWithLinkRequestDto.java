@@ -9,6 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class PublicChatJoinWithLinkRequestDto extends ActionDto {
-    Long userId;
     String link;
 }

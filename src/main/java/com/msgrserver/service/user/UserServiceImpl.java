@@ -50,27 +50,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getProfile(String username) {
+    public User findUser(String username) {
         return userRepository.findUserByUsername(username)
                 .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
-    public User editProfile(User userInput) {
-        User user = userRepository.findById(userInput.getId()).orElseThrow(UserNotFoundException::new);
+    public User editProfile(User userInput, Long userId) {
+        User user = findUser(userId);
         user.setId(userInput.getId());
         user.setName(userInput.getName());
         user.setAvatar(userInput.getAvatar());
         user.setUsername(userInput.getUsername());
         user.setEmail(userInput.getEmail());
-        user.setAccessAddPublicChat(userInput.getAccessAddPublicChat());
-        user.setVisibleAvatar(userInput.getVisibleAvatar());
+        user.setAccessAddPublicChat(user.getAccessAddPublicChat());
+        user.setVisibleAvatar(user.getVisibleAvatar());
         return userRepository.save(user);
     }
 
     private void checkUniqueUsername(String username) {
         boolean userExist = userRepository.findUserByUsername(username).isPresent();
-        if (userExist){
+        if (userExist) {
             throw new UsernameAlreadyTakenException();
         }
     }
