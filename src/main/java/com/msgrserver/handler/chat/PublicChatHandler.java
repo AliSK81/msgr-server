@@ -4,7 +4,7 @@ import com.msgrserver.action.ActionResult;
 import com.msgrserver.model.dto.chat.*;
 
 public interface PublicChatHandler {
-    ActionResult joinChatWithLink(Long userId, PublicChatJoinWithLinkRequestDto dto);
+    ActionResult joinChatWithLink(PublicChatJoinWithLinkRequestDto dto);
 
     ActionResult leavePublicChat(PublicChatLeaveRequestDto dto);
 
@@ -14,9 +14,11 @@ public interface PublicChatHandler {
 
     ActionResult deleteAdminPublicChat(PublicChatDeleteAdminRequestDto dto);
 
-    ActionResult addUserToPublicChat(Long adminId, PublicChatAddUserRequestDto dto);
+    ActionResult addUserToPublicChat(PublicChatAddUserRequestDto dto);
 
     ActionResult deleteUserFromPublicChat(Long deleterId, PublicChatDeleteUserRequestDto dto);
 
     ActionResult editProfilePublicChat(PublicChatEditProfileRequestDto dto);
+
+    ActionResult createPublicChat(Long creatorId, PublicChatCreateRequestDto dto);
 }
