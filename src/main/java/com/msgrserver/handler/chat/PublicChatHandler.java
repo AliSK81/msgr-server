@@ -4,7 +4,7 @@ import com.msgrserver.action.ActionResult;
 import com.msgrserver.model.dto.chat.*;
 
 public interface PublicChatHandler {
-    ActionResult joinChatWithLink(PublicChatJoinWithLinkRequestDto dto);
+    ActionResult joinChatWithLink(Long userId, PublicChatJoinWithLinkRequestDto dto);
 
     ActionResult leavePublicChat(PublicChatLeaveRequestDto dto);
 

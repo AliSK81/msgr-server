@@ -21,13 +21,13 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     PublicChatRepository publicChatRepository;
 
     @Override
-    public ActionResult joinChatWithLink(PublicChatJoinWithLinkRequestDto dto) {
+    public ActionResult joinChatWithLink(Long userId, PublicChatJoinWithLinkRequestDto dto) {
         PublicChat publicChat = publicChatRepository.findPublicChatByLink(dto.getLink());
-        PublicChat chat = publicChatService.joinPublicChat(publicChat.getId(), dto.getUserId());
+        PublicChat chat = publicChatService.joinPublicChat(publicChat.getId(), userId);
 
         PublicChatJoinWithLinkResponseDto responseDto = PublicChatJoinWithLinkResponseDto.builder()
                 .chatId(chat.getId())
-                .userId(dto.getUserId())
+                .userId(userId)
                 .build();
         Action action = Action.builder()
                 .type(ActionType.JOIN_CHAT_WITH_LINK)
