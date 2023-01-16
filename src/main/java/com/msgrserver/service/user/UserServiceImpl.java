@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getProfile(String username) {
+    public User findUser(String username) {
         return userRepository.findUserByUsername(username)
                 .orElseThrow(UserNotFoundException::new);
     }

@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class UserGetProfileResponseDto extends ActionDto {
+public class UserViewProfileResponseDto extends ActionDto {
     UserDto userDto;
 }
