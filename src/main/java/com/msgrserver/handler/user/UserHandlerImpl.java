@@ -131,20 +131,25 @@ public class UserHandlerImpl implements UserHandler {
     }
 
     @Override
-    public ActionResult getUserProfile(UserGetProfileRequestDto dto) {
-        User user = userService.getProfile(dto.getUsername());
+    public ActionResult getUserProfile(Long viewerId, UserViewProfileRequestDto dto) {
+        User user = userService.findUser(dto.getUsername());
+
         UserDto userDto = Mapper.map(user, UserDto.class);
-        if (!(user.getVisibleAvatar()))
+        if (!user.getVisibleAvatar()){
             userDto.setAvatar(null);
-        UserGetProfileResponseDto responseDto = UserGetProfileResponseDto.builder()
+        }
+
+        UserViewProfileResponseDto responseDto = UserViewProfileResponseDto.builder()
                 .userDto(userDto)
                 .build();
 
         Action action = Action.builder()
-                .type(ActionType.GET_USER_PROFILE)
+                .type(ActionType.VIEW_USER_PROFILE)
                 .dto(responseDto)
                 .build();
-        Set<Long> receivers = new HashSet<>(List.of(dto.getUserId()));
+
+        Set<Long> receivers = Set.of(viewerId);
+
         return ActionResult.builder()
                 .action(action)
                 .receivers(receivers).build();

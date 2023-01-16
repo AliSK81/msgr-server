@@ -8,7 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class UserGetProfileRequestDto extends ActionDto {
+public class UserViewProfileRequestDto extends ActionDto {
     String username;
-    Long userId;
 }

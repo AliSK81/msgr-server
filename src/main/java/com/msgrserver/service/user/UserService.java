@@ -16,7 +16,7 @@ public interface UserService {
 
     User findUser(String username, String password);
 
-    User getProfile(String username);
+    User findUser(String username);
 
     User editProfile(User user, Long userId);
 }
