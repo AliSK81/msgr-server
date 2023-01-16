@@ -10,5 +10,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 
 public class UserEditProfileResponseDto extends ActionDto {
-    UserEditProfileDto userEditProfileDto;
+    UserDto userDto;
+    Boolean accessAddPublicChat;
+    Boolean visibleAvatar;
 }

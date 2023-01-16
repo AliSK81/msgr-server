@@ -14,7 +14,7 @@ public interface UserHandler {
 
     ActionResult getUserChats(Long userId);
 
-    ActionResult editProfile(UserEditProfileRequestDto dto);
+    ActionResult editProfile(Long userId, UserEditProfileRequestDto dto);
 
     ActionResult getUserProfile(UserGetProfileRequestDto dto);
 }

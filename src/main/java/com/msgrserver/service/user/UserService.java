@@ -18,5 +18,5 @@ public interface UserService {
 
     User getProfile(String username);
 
-    User editProfile(User user);
+    User editProfile(User user, Long userId);
 }
