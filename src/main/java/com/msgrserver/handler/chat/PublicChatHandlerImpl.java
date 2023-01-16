@@ -36,13 +36,13 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     }
 
     @Override
-    public ActionResult addUserToPublicChat(PublicChatAddUserRequestDto dto) {
-        PublicChat chat = publicChatService.addUserToPublicChat(dto.getChatId(), dto.getAdminId(), dto.getUserId());
+    public ActionResult addUserToPublicChat(Long adminId, PublicChatAddUserRequestDto dto) {
+        PublicChat chat = publicChatService.addUserToPublicChat(dto.getChatId(), adminId, dto.getUserId());
 
         PublicChatAddUserResponseDto responseDto = PublicChatAddUserResponseDto.builder()
                 .chatId(chat.getId())
                 .userId(dto.getUserId())
-                .adminId(dto.getAdminId())
+                .adminId(adminId)
                 .build();
         Action action = Action.builder()
                 .type(ActionType.ADD_USER_BY_ADMIN)
@@ -51,12 +51,12 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     }
 
     @Override
-    public ActionResult deleteUserFromPublicChat(PublicChatDeleteUserRequestDto dto) {
-        PublicChat chat = publicChatService.deleteUserFromPublicChat(dto.getChatId(), dto.getAdminId(), dto.getUserId());
+    public ActionResult deleteUserFromPublicChat(Long deleterId, PublicChatDeleteUserRequestDto dto) {
+        PublicChat chat = publicChatService.deleteUserFromPublicChat(dto.getChatId(), deleterId, dto.getUserId());
         PublicChatDeleteUserResponseDto responseDto = PublicChatDeleteUserResponseDto.builder()
                 .chatId(chat.getId())
                 .userId(dto.getUserId())
-                .adminId(dto.getAdminId())
+                .deleterId(deleterId)
                 .build();
         Action action = Action.builder()
                 .type(ActionType.DELETE_USER_BY_ADMIN)
