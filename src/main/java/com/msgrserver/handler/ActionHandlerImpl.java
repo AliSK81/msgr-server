@@ -11,7 +11,6 @@ import com.msgrserver.model.dto.chat.PublicChatAddUserRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatDeleteUserRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatJoinWithLinkRequestDto;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
-import com.msgrserver.model.dto.user.UserGetChatsRequestDto;
 import com.msgrserver.model.dto.user.UserSignInRequestDto;
 import com.msgrserver.model.dto.user.UserSignUpRequestDto;
 import com.msgrserver.model.entity.user.UserSession;
@@ -42,11 +41,12 @@ public class ActionHandlerImpl implements ActionHandler {
             default -> {
                 ActionResult actionResult;
                 UserSession session = sessionService.findUserSession(action.getToken());
+                Long userId = session.getUser().getId();
 
                 switch (action.getType()) {
                     case SEND_TEXT -> actionResult = messageHandler.sendText((MessageSendTextDto) action.getDto());
                     case GET_USER_CHATS ->
-                            actionResult = userHandler.getUserChats((UserGetChatsRequestDto) action.getDto());
+                            actionResult = userHandler.getUserChats(userId);
                     case JOIN_CHAT_WITH_LINK ->
                             actionResult = publicChatHandler.joinChatWithLink((PublicChatJoinWithLinkRequestDto) action.getDto());
                     case ADD_USER_BY_ADMIN ->
