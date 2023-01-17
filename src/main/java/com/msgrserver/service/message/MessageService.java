@@ -8,7 +8,9 @@ public interface MessageService {
 
     TextMessage createText(Long chatId, Long senderId, TextMessage textMessage);
 
-    BinaryMessage saveFile(BinaryMessage binaryMessage);
+    BinaryMessage saveFile(Byte[] data, String name, String caption);
+
+    Byte[] recoveryFile(Long id);
 
     Message getLastMessage(Long chatId);
 

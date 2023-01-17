@@ -51,8 +51,21 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public BinaryMessage saveFile(BinaryMessage binaryMessage) {
-        return null;
+    public BinaryMessage saveFile(Byte[] data, String name, String caption) {
+        BinaryMessage binaryMessage = BinaryMessage.builder()
+                .name(name)
+                .caption(caption)
+                .data(data).build();
+        return messageRepository.save(binaryMessage);
+    }
+
+    @Override
+    public Byte[] recoveryFile(Long id) {
+        Message message = messageRepository.findMessageById(id);
+
+        if (message instanceof BinaryMessage) {
+            return ((BinaryMessage) message).getData();
+        } else throw new BadRequestException();
     }
 
     @Override
