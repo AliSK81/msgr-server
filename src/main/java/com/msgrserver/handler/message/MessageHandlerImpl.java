@@ -5,9 +5,7 @@ import com.msgrserver.action.ActionResult;
 import com.msgrserver.action.ActionType;
 import com.msgrserver.exception.NotImplementedException;
 import com.msgrserver.model.dto.chat.ChatDto;
-import com.msgrserver.model.dto.message.MessageDto;
-import com.msgrserver.model.dto.message.MessageSendTextRequestDto;
-import com.msgrserver.model.dto.message.MessageSendTextResponseDto;
+import com.msgrserver.model.dto.message.*;
 import com.msgrserver.model.dto.user.UserDto;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PrivateChat;
@@ -122,5 +120,27 @@ public class MessageHandlerImpl implements MessageHandler {
         }
 
         return receivers;
+    }
+
+    @Override
+    public ActionResult deleteMessage(Long userId, MessageDeleteRequestDto dto) {
+        Message message = messageService.findMessage(dto.getMessageId());
+        Set<Long> receivers = getMessageReceivers(message);
+
+        Long chatId = messageService.deleteMessage(userId, dto.getMessageId());
+
+        MessageDeleteResponseDto responseDto = MessageDeleteResponseDto.builder()
+                .messageId(dto.getMessageId())
+                .chatId(chatId).build();
+
+        Action action = Action.builder()
+                .dto(responseDto)
+                .type(ActionType.DELETE_MESSAGE)
+                .build();
+
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers)
+                .build();
     }
 }

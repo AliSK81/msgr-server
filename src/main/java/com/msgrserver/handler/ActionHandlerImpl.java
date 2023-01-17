@@ -9,6 +9,7 @@ import com.msgrserver.handler.chat.PublicChatHandler;
 import com.msgrserver.handler.message.MessageHandler;
 import com.msgrserver.handler.user.UserHandler;
 import com.msgrserver.model.dto.chat.*;
+import com.msgrserver.model.dto.message.MessageDeleteRequestDto;
 import com.msgrserver.model.dto.message.MessageSendTextRequestDto;
 import com.msgrserver.model.dto.user.UserEditProfileRequestDto;
 import com.msgrserver.model.dto.user.UserSignInRequestDto;
@@ -50,8 +51,7 @@ public class ActionHandlerImpl implements ActionHandler {
                     case SEND_TEXT ->
                             actionResult = messageHandler.sendText(userId, (MessageSendTextRequestDto) action.getDto());
 
-                    case GET_USER_CHATS ->
-                            actionResult = userHandler.getUserChats(userId);
+                    case GET_USER_CHATS -> actionResult = userHandler.getUserChats(userId);
 
                     case VIEW_USER_PROFILE ->
                             actionResult = userHandler.getUserProfile(userId, (UserViewProfileRequestDto) action.getDto());
@@ -76,6 +76,9 @@ public class ActionHandlerImpl implements ActionHandler {
 
                     case DELETE_CHAT ->
                             actionResult = chatHandler.deleteChat(userId, (ChatDeleteRequestDto) action.getDto());
+
+                    case DELETE_MESSAGE ->
+                            actionResult = messageHandler.deleteMessage(userId, (MessageDeleteRequestDto) action.getDto());
 
                     default -> throw new NotImplementedException();
                 }
