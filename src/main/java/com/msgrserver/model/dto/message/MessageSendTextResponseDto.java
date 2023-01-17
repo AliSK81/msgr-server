@@ -2,6 +2,7 @@ package com.msgrserver.model.dto.message;
 
 import com.msgrserver.model.dto.ActionDto;
 import com.msgrserver.model.dto.chat.ChatDto;
+import com.msgrserver.model.dto.user.UserDto;
 import lombok.*;
 
 @Data
@@ -11,5 +12,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class MessageSendTextResponseDto extends ActionDto {
     ChatDto chat;
-    Long receiverId;
+    UserDto user;
+    MessageDto message;
 }

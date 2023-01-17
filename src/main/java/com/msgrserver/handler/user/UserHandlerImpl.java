@@ -8,6 +8,7 @@ import com.msgrserver.model.dto.message.MessageDto;
 import com.msgrserver.model.dto.user.*;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PrivateChat;
+import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.model.entity.user.UserSession;
 import com.msgrserver.service.message.MessageService;
@@ -16,7 +17,9 @@ import com.msgrserver.service.user.UserService;
 import com.msgrserver.util.Mapper;
 import com.msgrserver.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -92,10 +95,7 @@ public class UserHandlerImpl implements UserHandler {
 
     @Override
     public ActionResult getUserChats(Long userId) {
-        Set<Chat> chats = userService.getUserChats(userId);
-
-        UserGetChatsResponseDto responseDto = UserGetChatsResponseDto.builder()
-                .chats(convert(userId, chats)).build();
+        UserGetChatsResponseDto responseDto = generateGetUserChatsResponse(userId);
 
         Action action = Action.builder()
                 .type(ActionType.GET_USER_CHATS)
@@ -152,32 +152,47 @@ public class UserHandlerImpl implements UserHandler {
                 .receivers(receivers).build();
     }
 
-    private Set<ChatDto> convert(Long userId, Set<Chat> chats) {
+    UserGetChatsResponseDto generateGetUserChatsResponse(Long userId) {
+        Set<ChatDto> chats = new HashSet<>();
+        Set<UserDto> users = new HashSet<>();
+        Set<MessageDto> messages = new HashSet<>();
 
-        return chats.stream().map(chat -> {
+        userService.getUserChats(userId).forEach(chat -> {
+
             ChatDto chatDto = Mapper.map(chat, ChatDto.class);
+            chats.add(chatDto);
 
             if (chat instanceof PrivateChat privateChat) {
-                chatDto.setOwnerId(privateChat.getParticipant(userId).getId());
+                User user = privateChat.getParticipant(userId);
+                chatDto.setUser1Id(userId);
+                chatDto.setUser2Id(user.getId());
+
+                UserDto userDto = Mapper.map(user, UserDto.class);
+                users.add(userDto);
             }
 
             var lastMessage = messageService.getLastMessage(chat.getId());
 
-            if(lastMessage != null) {
+            if (lastMessage != null) {
+                if (chat instanceof PublicChat) {
+                    UserDto userDto = Mapper.map(lastMessage.getSender(), UserDto.class);
+                    users.add(userDto);
+                }
+
                 MessageDto messageDto = Mapper.map(lastMessage, MessageDto.class);
-
-                User sender = lastMessage.getSender();
-                UserDto userDto = Mapper.map(sender, UserDto.class);
-
-                messageDto.setSender(userDto);
-                chatDto.setLastMessage(messageDto);
+                messageDto.setSenderId(lastMessage.getSender().getId());
+                messageDto.setChatId(lastMessage.getChat().getId());
+                messages.add(messageDto);
             }
+        });
 
-            return chatDto;
-
-        }).collect(Collectors.toSet());
-
+        return UserGetChatsResponseDto.builder()
+                .chats(chats)
+                .users(users)
+                .messages(messages)
+                .build();
     }
+
 }
 
 

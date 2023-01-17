@@ -24,7 +24,10 @@ import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -35,7 +38,6 @@ public class MessageHandlerImpl implements MessageHandler {
     private final PublicChatService publicChatService;
     private final UserService userService;
     private final ChatService chatService;
-
 
 
     public ActionResult sendText(Long senderId, MessageSendTextRequestDto dto) {
@@ -62,7 +64,7 @@ public class MessageHandlerImpl implements MessageHandler {
                 Mapper.map(dto, TextMessage.class)
         );
 
-        Action action = getMessageReceiveAction(senderId, chatId, newMessage);
+        Action action = getMessageReceiveAction(newMessage);
         Set<Long> receivers = getMessageReceivers(newMessage);
 
         return ActionResult.builder()
@@ -71,25 +73,29 @@ public class MessageHandlerImpl implements MessageHandler {
                 .build();
     }
 
-    private Action getMessageReceiveAction(Long senderId, Long chatId, Message message) {
+    private Action getMessageReceiveAction(Message message) {
 
-        User sender = userService.findUser(senderId);
-        Chat chat = chatService.findChat(chatId);
+        User sender = message.getSender();
+        Chat chat = message.getChat();
 
         ChatDto chatDto = Mapper.map(chat, ChatDto.class);
-        MessageDto messageDto = Mapper.map(message, MessageDto.class);
         UserDto userDto = Mapper.map(sender, UserDto.class);
+        MessageDto messageDto = Mapper.map(message, MessageDto.class);
 
-        messageDto.setSender(userDto);
-        chatDto.setLastMessage(messageDto);
+        messageDto.setSenderId(sender.getId());
+        messageDto.setChatId(chat.getId());
+
+        if (chat instanceof PrivateChat privateChat) {
+            User receiver = privateChat.getParticipant(sender.getId());
+            chatDto.setUser1Id(sender.getId());
+            chatDto.setUser2Id(receiver.getId());
+        }
 
         MessageSendTextResponseDto newMessageDto = MessageSendTextResponseDto.builder()
                 .chat(chatDto)
+                .user(userDto)
+                .message(messageDto)
                 .build();
-
-        if(chat instanceof PrivateChat privateChat) {;
-            chatDto.setOwnerId(privateChat.getParticipant(senderId).getId());
-        }
 
         return Action.builder()
                 .type(ActionType.SEND_TEXT)

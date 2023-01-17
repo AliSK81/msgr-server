@@ -8,12 +8,10 @@ import com.msgrserver.model.dto.chat.ChatDeleteResponseDto;
 import com.msgrserver.model.dto.chat.ChatGetMessagesRequestDto;
 import com.msgrserver.model.dto.chat.ChatGetMessagesResponseDto;
 import com.msgrserver.model.dto.message.MessageDto;
+import com.msgrserver.model.dto.user.UserDto;
 import com.msgrserver.model.entity.chat.Chat;
-import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.chat.PublicChat;
-import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.repository.ChatRepository;
 import com.msgrserver.repository.UserRepository;
 import com.msgrserver.service.chat.ChatService;
 import com.msgrserver.util.Mapper;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -34,13 +31,22 @@ public class ChatHandlerImpl implements ChatHandler {
     @Override
     public ActionResult getChatMessages(Long userId, ChatGetMessagesRequestDto dto) {
 
-        Set<Message> messages = chatService.getChatMessages(dto.getChatId());
+        Set<MessageDto> messages = new HashSet<>();
+        Set<UserDto> users = new HashSet<>();
+
+        chatService.getChatMessages(dto.getChatId()).forEach(message -> {
+            MessageDto messageDto = Mapper.map(message, MessageDto.class);
+            messageDto.setSenderId(message.getSender().getId());
+            messageDto.setChatId(message.getChat().getId());
+            UserDto userDto = Mapper.map(message.getSender(), UserDto.class);
+            messages.add(messageDto);
+            users.add(userDto);
+        });
 
         ChatGetMessagesResponseDto responseDto = ChatGetMessagesResponseDto.builder()
-                .chatId(dto.getChatId())
-                .messages(messages.stream()
-                        .map(message -> Mapper.map(message, MessageDto.class))
-                        .collect(Collectors.toSet())).build();
+                .users(users)
+                .messages(messages)
+                .build();
 
         Action action = Action.builder()
                 .type(ActionType.GET_CHAT_MESSAGES)

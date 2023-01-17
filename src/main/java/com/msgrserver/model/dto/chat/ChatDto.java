@@ -16,5 +16,6 @@ public class ChatDto extends ActionDto {
     private String title;
     private ChatType type;
     private String avatar;
-    private MessageDto lastMessage;
+    private Long user1Id;
+    private Long user2Id;
 }
