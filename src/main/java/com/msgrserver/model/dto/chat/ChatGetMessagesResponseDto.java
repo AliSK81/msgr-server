@@ -12,5 +12,6 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ChatGetMessagesResponseDto extends ActionDto {
+    Long chatId;
     Set<MessageDto> messages;
 }
