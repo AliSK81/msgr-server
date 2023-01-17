@@ -4,7 +4,6 @@ import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
 import com.msgrserver.action.ActionResult;
 import com.msgrserver.model.dto.chat.*;
-import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PublicChatRepository;
@@ -101,7 +100,7 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     private ActionResult getResponse(PublicChat chat, Action action) {
         Set<Long> receivers = new HashSet<>();
         switch (chat.getType()) {
-            case GROUP -> receivers.addAll(chat.getUsers().stream().map(User::getId).toList());
+            case GROUP -> receivers.addAll(chat.getMembers().stream().map(User::getId).toList());
             case CHANNEL -> {
                 receivers.add(chat.getOwner().getId());
                 receivers.addAll(chat.getAdmins().stream().map(User::getId).toList());

@@ -5,8 +5,6 @@ import com.msgrserver.model.dto.user.UserDto;
 import com.msgrserver.model.entity.message.MessageType;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -18,6 +16,6 @@ public class MessageDto extends ActionDto {
     String text;
     String name;
     String caption;
-    LocalDateTime dateTime;
+    Long date;
     MessageType messageType;
 }

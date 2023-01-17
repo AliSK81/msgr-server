@@ -2,13 +2,9 @@ package com.msgrserver.socket;
 
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionType;
-import com.msgrserver.model.dto.message.MessageSendTextDto;
 import com.msgrserver.model.dto.user.UserSignInRequestDto;
-import com.msgrserver.model.dto.user.UserSignUpRequestDto;
-import com.msgrserver.util.TokenGenerator;
 import jakarta.websocket.*;
 import org.glassfish.tyrus.client.ClientManager;
-import org.springframework.boot.logging.LogLevel;
 
 import java.io.IOException;
 import java.net.URI;

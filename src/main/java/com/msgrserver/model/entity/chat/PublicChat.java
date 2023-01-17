@@ -31,4 +31,11 @@ public class PublicChat extends Chat {
             joinColumns = @JoinColumn(name = "chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> admins;
+
+    @ManyToMany
+    @JoinTable(
+            name = "member",
+            joinColumns = @JoinColumn(name = "chat_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> members;
 }

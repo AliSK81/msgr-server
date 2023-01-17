@@ -4,14 +4,12 @@ import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionRequest;
 import com.msgrserver.action.ActionResult;
 import com.msgrserver.exception.NotImplementedException;
+import com.msgrserver.handler.chat.ChatHandler;
 import com.msgrserver.handler.chat.PublicChatHandler;
 import com.msgrserver.handler.message.MessageHandler;
 import com.msgrserver.handler.user.UserHandler;
-import com.msgrserver.model.dto.chat.PublicChatAddUserRequestDto;
-import com.msgrserver.model.dto.chat.PublicChatCreateRequestDto;
-import com.msgrserver.model.dto.chat.PublicChatDeleteUserRequestDto;
-import com.msgrserver.model.dto.chat.PublicChatJoinWithLinkRequestDto;
-import com.msgrserver.model.dto.message.MessageSendTextDto;
+import com.msgrserver.model.dto.chat.*;
+import com.msgrserver.model.dto.message.MessageSendTextRequestDto;
 import com.msgrserver.model.dto.user.UserEditProfileRequestDto;
 import com.msgrserver.model.dto.user.UserSignInRequestDto;
 import com.msgrserver.model.dto.user.UserSignUpRequestDto;
@@ -29,6 +27,7 @@ public class ActionHandlerImpl implements ActionHandler {
     private final UserHandler userHandler;
     private final PublicChatHandler publicChatHandler;
     private final SessionService sessionService;
+    private final ChatHandler chatHandler;
 
     public ActionResult handle(ActionRequest request) {
 
@@ -49,7 +48,7 @@ public class ActionHandlerImpl implements ActionHandler {
                 switch (action.getType()) {
 
                     case SEND_TEXT ->
-                            actionResult = messageHandler.sendText((MessageSendTextDto) action.getDto());
+                            actionResult = messageHandler.sendText(userId, (MessageSendTextRequestDto) action.getDto());
 
                     case GET_USER_CHATS ->
                             actionResult = userHandler.getUserChats(userId);
@@ -71,6 +70,9 @@ public class ActionHandlerImpl implements ActionHandler {
 
                     case CREATE_PUBLIC_CHAT ->
                             actionResult = publicChatHandler.createPublicChat(userId, (PublicChatCreateRequestDto) action.getDto());
+
+                    case GET_CHAT_MESSAGES ->
+                            actionResult = chatHandler.getChatMessages(userId, (ChatGetMessagesRequestDto) action.getDto());
 
                     default -> throw new NotImplementedException();
                 }

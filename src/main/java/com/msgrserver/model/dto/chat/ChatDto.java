@@ -12,6 +12,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class ChatDto extends ActionDto {
     private Long id;
+    private Long ownerId;
     private String title;
     private ChatType chatType;
     private String avatar;
