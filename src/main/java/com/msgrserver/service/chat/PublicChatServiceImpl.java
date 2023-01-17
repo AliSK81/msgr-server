@@ -22,10 +22,9 @@ import java.util.stream.Collectors;
 @Service
 public class PublicChatServiceImpl implements PublicChatService {
 
-    private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private final PublicChatRepository publicChatRepository;
-
+    private final ChatService chatService;
 
     @Override
     public PublicChat createPublicChat(Long creatorId, PublicChat chat, Set<Long> initMemberIds) {
@@ -40,19 +39,6 @@ public class PublicChatServiceImpl implements PublicChatService {
             }
         });
         return publicChatRepository.save(chat);
-    }
-
-    @Override
-    public void deletePublicChat(Long chatId, Long userId) {
-        PublicChat chat = findPublicChat(chatId);
-        User user = findUser(userId);
-
-        if (!chat.getOwner().equals(user))
-            throw new BadRequestException();
-
-        // todo check if delete users and admin is needed
-        messageRepository.deleteMessagesByChatId(chatId);
-        publicChatRepository.deleteById(chatId);
     }
 
     @Override
@@ -76,7 +62,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         boolean isOwner = chat.getOwner().getId().equals(userId);
 
         if (isOwner) {
-            deletePublicChat(chatId, userId); //todo check for replace an admin
+            chatService.deleteChat(chatId, userId);//todo check for replace an admin
 
         } else {
             Set<User> admins = userRepository.findAdminsByChatId(chatId);

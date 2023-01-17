@@ -13,4 +13,5 @@ public interface ChatService {
 
     boolean isChatParticipant(Long chatId, Long userId);
 
+    void deleteChat(Long userId, Long chatId);
 }

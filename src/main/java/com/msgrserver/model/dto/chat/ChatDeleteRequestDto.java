@@ -8,6 +8,6 @@ import lombok.Value;
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class PublicChatDeleteResponseDto extends ActionDto {
+public class ChatDeleteRequestDto extends ActionDto {
     Long chatId;
 }
