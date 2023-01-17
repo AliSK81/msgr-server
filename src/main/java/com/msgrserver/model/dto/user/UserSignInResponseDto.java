@@ -9,5 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class UserSignInResponseDto extends ActionDto {
-    Long id;
+    Long userId;
 }

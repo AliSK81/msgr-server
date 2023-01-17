@@ -74,7 +74,7 @@ public class UserHandlerImpl implements UserHandler {
         sessionService.saveUserSession(session);
 
         UserSignInResponseDto responseDto = UserSignInResponseDto.builder()
-                .id(user.getId())
+                .userId(user.getId())
                 .build();
 
         Action action = Action.builder()
