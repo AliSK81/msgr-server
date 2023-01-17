@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +71,10 @@ public class MessageServiceImpl implements MessageService {
 
     private void checkPublicChatAccess(User sender, PublicChat chat) {
         Set<User> users = userRepository.findMembersByChatId(chat.getId());
-        boolean isMember = users.contains(sender);
+        boolean isMember = users.stream()
+                .map(User::getId)
+                .collect(Collectors.toSet())
+                .contains(sender.getId());
 
         if (!isMember)
             throw new BadRequestException();
