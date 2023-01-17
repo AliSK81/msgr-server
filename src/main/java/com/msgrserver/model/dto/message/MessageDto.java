@@ -1,7 +1,6 @@
 package com.msgrserver.model.dto.message;
 
 import com.msgrserver.model.dto.ActionDto;
-import com.msgrserver.model.dto.user.UserDto;
 import com.msgrserver.model.entity.message.MessageType;
 import lombok.*;
 
@@ -12,10 +11,11 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class MessageDto extends ActionDto {
     Long id;
-    UserDto sender;
+    Long senderId;
+    Long chatId;
     String text;
     String name;
     String caption;
     Long date;
-    MessageType messageType;
+    MessageType type;
 }

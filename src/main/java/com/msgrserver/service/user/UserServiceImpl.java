@@ -4,7 +4,6 @@ import com.msgrserver.exception.InvalidPasswordException;
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.exception.UsernameAlreadyTakenException;
 import com.msgrserver.model.entity.chat.Chat;
-import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PrivateChatRepository;
@@ -45,9 +44,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Set<Chat> getUserChats(Long userId) {
         Set<PublicChat> publicChats = new HashSet<>(publicChatRepository.findPublicChatsByMembersId(userId));
-        Set<PrivateChat> privateChats = privateChatRepository.findPrivateChatsByUserId(userId);
         Set<Chat> chats = new HashSet<>(publicChats);
-        chats.addAll(privateChats);
+        chats.addAll(privateChatRepository.findPrivateChatsByUser1Id(userId));
+        chats.addAll(privateChatRepository.findPrivateChatsByUser2Id(userId));
         return chats;
     }
 
