@@ -13,6 +13,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     Set<Message> findMessagesByChatId(Long chatId);
 
+    Message findMessageById(Long id);
+
     @Query(value = "SELECT m FROM Message m WHERE m.chat.id = ?1 " +
             "AND m.dateTime = (SELECT MAX(dateTime) FROM Message WHERE chat.id = ?1)")
     Message getLastMessageByChatId(Long chatId);
