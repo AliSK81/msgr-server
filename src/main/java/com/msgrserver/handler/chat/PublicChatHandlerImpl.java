@@ -128,23 +128,6 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     }
 
     @Override
-    public ActionResult deletePublicChat(PublicChatDeleteRequestDto dto) {
-        publicChatService.deletePublicChat(dto.getUserId(), dto.getChatId());
-        PublicChatDeleteResponseDto responseDto = PublicChatDeleteResponseDto.builder()
-                .chatId(dto.getChatId())
-                .build();
-        Action action = Action.builder()
-                .type(ActionType.DELETE_PUBLIC_CHAT)
-                .dto(responseDto)
-                .build();
-        Set<Long> receivers = new HashSet<>();//todo use getResponse function after merge
-        return ActionResult.builder()
-                .action(action)
-                .receivers(receivers)
-                .build();
-    }
-
-    @Override
     public ActionResult selectNewAdminPublicChat(PublicChatSelectNewAdminRequestDto dto) {
         PublicChat chat = publicChatService.selectNewAdminPublicChat(dto.getChatId(), dto.getSelectorId(), dto.getUserId());
         PublicChatSelectNewAdminResponseDto responseDto = PublicChatSelectNewAdminResponseDto.builder()

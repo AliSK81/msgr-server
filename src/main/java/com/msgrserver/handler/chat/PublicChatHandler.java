@@ -8,7 +8,6 @@ public interface PublicChatHandler {
 
     ActionResult leavePublicChat(PublicChatLeaveRequestDto dto);
 
-    ActionResult deletePublicChat(PublicChatDeleteRequestDto dto);
 
     ActionResult selectNewAdminPublicChat(PublicChatSelectNewAdminRequestDto dto);
 
