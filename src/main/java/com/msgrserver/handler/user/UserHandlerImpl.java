@@ -8,7 +8,6 @@ import com.msgrserver.model.dto.message.MessageDto;
 import com.msgrserver.model.dto.user.*;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PrivateChat;
-import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.model.entity.user.UserSession;
 import com.msgrserver.service.message.MessageService;
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -94,19 +94,16 @@ public class UserHandlerImpl implements UserHandler {
     public ActionResult getUserChats(Long userId) {
         Set<Chat> chats = userService.getUserChats(userId);
 
-        Set<ChatDto> chatDtos = convert(userId, chats);
-
         UserGetChatsResponseDto responseDto = UserGetChatsResponseDto.builder()
-                .chats(chatDtos).build();
+                .chats(convert(userId, chats)).build();
+
         Action action = Action.builder()
                 .type(ActionType.GET_USER_CHATS)
                 .dto(responseDto).build();
 
-        Set<Long> receivers = Set.of(userId);
-
         return ActionResult.builder()
                 .action(action)
-                .receivers(receivers).build();
+                .receivers(Set.of(userId)).build();
     }
 
     @Override
@@ -135,7 +132,7 @@ public class UserHandlerImpl implements UserHandler {
         User user = userService.findUser(dto.getUsername());
 
         UserDto userDto = Mapper.map(user, UserDto.class);
-        if (!user.isVisibleAvatar()){
+        if (!user.isVisibleAvatar()) {
             userDto.setAvatar(null);
         }
 
@@ -155,35 +152,31 @@ public class UserHandlerImpl implements UserHandler {
                 .receivers(receivers).build();
     }
 
-    private Set<ChatDto> convert(Long senderId, Set<Chat> chats) {
-        Set<ChatDto> chatDtos = new HashSet<>();
+    private Set<ChatDto> convert(Long userId, Set<Chat> chats) {
 
-        for (Chat chat : chats) {
-
-            var lastMessage = messageService.getLastMessage(chat.getId());
-            // todo
-            var lastMessageDto = MessageDto.builder().build();
-
-            ChatDto chatDto = ChatDto.builder()
-                    .id(chat.getId())
-                    .lastMessage(lastMessageDto)
-                    .chatType(chat.getType())
-                    .build();
+        return chats.stream().map(chat -> {
+            ChatDto chatDto = Mapper.map(chat, ChatDto.class);
 
             if (chat instanceof PrivateChat privateChat) {
-                User receiver = privateChat.getParticipant(senderId);
-                chatDto.setAvatar(receiver.getAvatar());
-                chatDto.setTitle(receiver.getName());
-
-            } else if (chat instanceof PublicChat publicChat) {
-                chatDto.setAvatar(publicChat.getAvatar());
-                chatDto.setTitle(publicChat.getTitle());
+                chatDto.setOwnerId(privateChat.getParticipant(userId).getId());
             }
 
-            chatDtos.add(chatDto);
-        }
+            var lastMessage = messageService.getLastMessage(chat.getId());
 
-        return chatDtos;
+            if(lastMessage != null) {
+                MessageDto messageDto = Mapper.map(lastMessage, MessageDto.class);
+
+                User sender = lastMessage.getSender();
+                UserDto userDto = Mapper.map(sender, UserDto.class);
+
+                messageDto.setSender(userDto);
+                chatDto.setLastMessage(messageDto);
+            }
+
+            return chatDto;
+
+        }).collect(Collectors.toSet());
+
     }
 }
 
