@@ -18,7 +18,6 @@ import com.msgrserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @Service
@@ -29,7 +28,7 @@ public class MessageServiceImpl implements MessageService {
     private final UserRepository userRepository;
 
     @Override
-    public TextMessage saveText(Long chatId, Long senderId, TextMessage textMessage) {
+    public TextMessage createText(Long chatId, Long senderId, TextMessage textMessage) {
 
         User sender = findUser(senderId);
         Chat chat = findChat(chatId);
@@ -42,7 +41,11 @@ public class MessageServiceImpl implements MessageService {
             checkPrivateChatAccess(sender, (PrivateChat) chat);
         }
 
-        textMessage.setDateTime(LocalDateTime.now());
+        textMessage.setSender(sender);
+        textMessage.setChat(chat);
+
+        textMessage.setDate(System.currentTimeMillis());
+        textMessage.setId(null);
 
         return messageRepository.save(textMessage);
     }
@@ -66,7 +69,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private void checkPublicChatAccess(User sender, PublicChat chat) {
-        Set<User> users = userRepository.findUsersByChatId(chat.getId());
+        Set<User> users = userRepository.findMembersByChatId(chat.getId());
         boolean isMember = users.contains(sender);
 
         if (!isMember)

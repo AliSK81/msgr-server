@@ -4,21 +4,25 @@ import com.msgrserver.exception.InvalidPasswordException;
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.exception.UsernameAlreadyTakenException;
 import com.msgrserver.model.entity.chat.Chat;
+import com.msgrserver.model.entity.chat.PrivateChat;
+import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.repository.ChatRepository;
+import com.msgrserver.repository.PrivateChatRepository;
+import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
 import com.msgrserver.util.PasswordChecker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-
-    private final ChatRepository chatRepository;
+    private final PrivateChatRepository privateChatRepository;
+    private final PublicChatRepository publicChatRepository;
 
     @Override
     public User findUser(Long userId) {
@@ -40,7 +44,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<Chat> getUserChats(Long userId) {
-        return chatRepository.findChatsByUsersId(userId);
+        Set<PublicChat> publicChats = new HashSet<>(publicChatRepository.findPublicChatsByMembersId(userId));
+        Set<PrivateChat> privateChats = privateChatRepository.findPrivateChatsByUserId(userId);
+        Set<Chat> chats = new HashSet<>(publicChats);
+        chats.addAll(privateChats);
+        return chats;
     }
 
     @Override

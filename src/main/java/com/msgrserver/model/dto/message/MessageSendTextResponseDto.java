@@ -1,6 +1,7 @@
 package com.msgrserver.model.dto.message;
 
 import com.msgrserver.model.dto.ActionDto;
+import com.msgrserver.model.dto.chat.ChatDto;
 import lombok.*;
 
 @Data
@@ -8,8 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class MessageSendTextDto extends ActionDto {
-    Long chatId;
-    Long senderId;
-    String text;
+public class MessageSendTextResponseDto extends ActionDto {
+    ChatDto chat;
+    Long receiverId;
 }

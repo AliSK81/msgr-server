@@ -11,5 +11,5 @@ import java.util.Set;
 public interface PublicChatRepository extends JpaRepository<PublicChat, Long> {
     PublicChat findPublicChatByLink(String link) throws ChatNotFoundException;
 
-    Set<PublicChat> findPublicChatsByUsersId(Long userId);
+    Set<PublicChat> findPublicChatsByMembersId(Long userId);
 }

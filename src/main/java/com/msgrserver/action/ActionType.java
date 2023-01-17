@@ -18,4 +18,5 @@ public enum ActionType {
     EDIT_PROFILE,
     EDIT_PROFILE_PUBLIC_CHAT,
     CREATE_PUBLIC_CHAT,
+    GET_CHAT_MESSAGES,
 }

@@ -61,6 +61,9 @@ public class WSServerEndpoint {
             sessions.get(user.getId()).add(session);
 
             for (long receiverId : result.getReceivers()) {
+                if (!sessions.containsKey(receiverId)){
+                    continue; // offline user
+                }
                 sessions.get(receiverId).forEach(receiver ->
                         receiver.getAsyncRemote().sendObject(result.getAction()));
             }

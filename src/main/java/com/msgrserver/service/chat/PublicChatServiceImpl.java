@@ -31,12 +31,12 @@ public class PublicChatServiceImpl implements PublicChatService {
     public PublicChat createPublicChat(Long creatorId, PublicChat chat, Set<Long> initMemberIds) {
         User creator = findUser(creatorId);
         chat.setOwner(creator);
-        chat.setUsers(new HashSet<>(List.of(creator)));
+        chat.setMembers(new HashSet<>(List.of(creator)));
         chat.setLink(LinkGenerator.generate(20));
         initMemberIds.forEach(id -> {
             User user = findUser(id);
             if (user.isAllowedInvite()) {
-                chat.getUsers().add(user);
+                chat.getMembers().add(user);
             }
         });
         return publicChatRepository.save(chat);
@@ -63,8 +63,8 @@ public class PublicChatServiceImpl implements PublicChatService {
         // todo check user is not banned
         // todo other required checks
 
-        chat.setUsers(userRepository.findUsersByChatId(chatId));
-        chat.getUsers().add(user);
+        chat.setMembers(userRepository.findMembersByChatId(chatId));
+        chat.getMembers().add(user);
         return publicChatRepository.save(chat);
     }
 
@@ -87,8 +87,8 @@ public class PublicChatServiceImpl implements PublicChatService {
                 chat.getAdmins().remove(user);
             }
 
-            chat.setUsers(userRepository.findUsersByChatId(chatId));
-            chat.getUsers().remove(user);
+            chat.setMembers(userRepository.findMembersByChatId(chatId));
+            chat.getMembers().remove(user);
         }
 
         return publicChatRepository.save(chat);
@@ -107,8 +107,8 @@ public class PublicChatServiceImpl implements PublicChatService {
 
         if (!user.isAllowedInvite())
             throw new UserPrivacySettingsException();
-        chat.setUsers(userRepository.findUsersByChatId(chatId));
-        chat.getUsers().add(user);
+        chat.setMembers(userRepository.findMembersByChatId(chatId));
+        chat.getMembers().add(user);
         return publicChatRepository.save(chat);
     }
 
@@ -132,8 +132,8 @@ public class PublicChatServiceImpl implements PublicChatService {
         if (!isOwner && admins.contains(user))
             throw new BadRequestException();
 
-        chat.setUsers(userRepository.findUsersByChatId(chatId));
-        chat.getUsers().remove(user);
+        chat.setMembers(userRepository.findMembersByChatId(chatId));
+        chat.getMembers().remove(user);
 
         if (admins.contains(user)) {
             chat.setAdmins(admins);
@@ -149,8 +149,8 @@ public class PublicChatServiceImpl implements PublicChatService {
         User user = findUser(userId);
         User selector = findUser(selectorId);
         chat.setAdmins(userRepository.findAdminsByChatId(chatId));
-        chat.setUsers(userRepository.findUsersByChatId(chatId));
-        boolean isMember = chat.getUsers().contains(user);
+        chat.setMembers(userRepository.findMembersByChatId(chatId));
+        boolean isMember = chat.getMembers().contains(user);
         boolean isAdmin = chat.getAdmins().contains(user);
         boolean isOwner = chat.getOwner().equals(user);
 
@@ -207,7 +207,7 @@ public class PublicChatServiceImpl implements PublicChatService {
 
     @Override
     public Set<User> getChatMembers(Long chatId) {
-        return userRepository.findUsersByChatId(chatId);
+        return userRepository.findMembersByChatId(chatId);
     }
 
 

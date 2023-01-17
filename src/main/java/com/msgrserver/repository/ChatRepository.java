@@ -9,5 +9,4 @@ import java.util.Set;
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
-    Set<Chat> findChatsByUsersId(Long userId);
 }
