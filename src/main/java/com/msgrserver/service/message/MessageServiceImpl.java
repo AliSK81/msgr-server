@@ -3,6 +3,7 @@ package com.msgrserver.service.message;
 
 import com.msgrserver.exception.BadRequestException;
 import com.msgrserver.exception.ChatNotFoundException;
+import com.msgrserver.exception.MessageNotFoundException;
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.ChatType;
@@ -99,4 +100,28 @@ public class MessageServiceImpl implements MessageService {
         // todo check sender is not blocked by receiver user
     }
 
+    @Override
+    public Long deleteMessage(Long deleterId, Long messageId) {
+        Message message = findMessage(messageId);
+        User sender = message.getSender();
+        Chat chat = message.getChat();
+
+        if (chat instanceof PrivateChat) {
+            if (!deleterId.equals(sender.getId())) {
+                throw new BadRequestException();
+            }
+        } else {
+            User owner = ((PublicChat) chat).getOwner();
+            if (!deleterId.equals(owner.getId()) && !deleterId.equals(sender.getId())) {
+                throw new BadRequestException();
+            }
+        }
+        messageRepository.deleteMessageById(messageId);
+        return chat.getId();
+    }
+
+    @Override
+    public Message findMessage(Long messageId) {
+        return messageRepository.findById(messageId).orElseThrow(MessageNotFoundException::new);
+    }
 }
