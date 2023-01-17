@@ -11,6 +11,6 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class PublicChatCreateRequestDto extends ActionDto {
-    ChatDto chatDto;
+    ChatDto chat;
     Set<Long> initMemberIds;
 }

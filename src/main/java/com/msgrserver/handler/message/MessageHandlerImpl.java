@@ -114,7 +114,7 @@ public class MessageHandlerImpl implements MessageHandler {
             receivers = new HashSet<>(List.of(chat.getUser1().getId(), chat.getUser2().getId()));
         } else if (isPublic) {
             var chat = (PublicChat) message.getChat();
-            receivers = chat.getMembers().stream()
+            receivers = publicChatService.getChatMembers(chat.getId()).stream()
                     .map(User::getId)
                     .collect(Collectors.toSet());
         } else {
