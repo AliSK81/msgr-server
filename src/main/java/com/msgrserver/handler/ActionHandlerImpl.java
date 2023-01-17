@@ -6,11 +6,13 @@ import com.msgrserver.action.ActionResult;
 import com.msgrserver.exception.NotImplementedException;
 import com.msgrserver.handler.chat.PublicChatHandler;
 import com.msgrserver.handler.message.MessageHandler;
+import com.msgrserver.handler.message.MessageHandlerImpl;
 import com.msgrserver.handler.user.UserHandler;
 import com.msgrserver.model.dto.chat.PublicChatAddUserRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatCreateRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatDeleteUserRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatJoinWithLinkRequestDto;
+import com.msgrserver.model.dto.message.MessageDeleteRequestDto;
 import com.msgrserver.model.dto.message.MessageSendTextDto;
 import com.msgrserver.model.dto.user.UserEditProfileRequestDto;
 import com.msgrserver.model.dto.user.UserSignInRequestDto;
@@ -48,11 +50,9 @@ public class ActionHandlerImpl implements ActionHandler {
 
                 switch (action.getType()) {
 
-                    case SEND_TEXT ->
-                            actionResult = messageHandler.sendText((MessageSendTextDto) action.getDto());
+                    case SEND_TEXT -> actionResult = messageHandler.sendText((MessageSendTextDto) action.getDto());
 
-                    case GET_USER_CHATS ->
-                            actionResult = userHandler.getUserChats(userId);
+                    case GET_USER_CHATS -> actionResult = userHandler.getUserChats(userId);
 
                     case VIEW_USER_PROFILE ->
                             actionResult = userHandler.getUserProfile(userId, (UserViewProfileRequestDto) action.getDto());
@@ -71,6 +71,9 @@ public class ActionHandlerImpl implements ActionHandler {
 
                     case CREATE_PUBLIC_CHAT ->
                             actionResult = publicChatHandler.createPublicChat(userId, (PublicChatCreateRequestDto) action.getDto());
+
+                    case DELETE_MESSAGE ->
+                            actionResult = messageHandler.deleteMessage(userId, (MessageDeleteRequestDto) action.getDto());
 
                     default -> throw new NotImplementedException();
                 }

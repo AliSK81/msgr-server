@@ -11,6 +11,8 @@ import java.util.Set;
 public interface MessageRepository extends JpaRepository<Message, Long> {
     void deleteMessagesByChatId(Long chatId);
 
+    void deleteMessageById(Long id);
+
     Set<Message> findMessagesByChatId(Long chatId);
 
     @Query(value = "SELECT m FROM Message m WHERE m.chat.id = ?1 " +

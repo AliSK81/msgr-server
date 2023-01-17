@@ -8,8 +8,11 @@ public interface MessageService {
 
     TextMessage saveText(Long chatId, Long senderId, TextMessage textMessage);
 
+    Long deleteMessage(Long deleterId, Long messageId);
+
     BinaryMessage saveFile(BinaryMessage binaryMessage);
 
     Message getLastMessage(Long chatId);
 
+    Message findMessage(Long messageId);
 }
