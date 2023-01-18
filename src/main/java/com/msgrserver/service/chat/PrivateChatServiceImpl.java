@@ -26,6 +26,7 @@ public class PrivateChatServiceImpl implements PrivateChatService {
                 .user1(user1)
                 .user2(user2)
                 .type(ChatType.PRIVATE)
+                .createdAt(System.currentTimeMillis())
                 .build();
 
         return privateChatRepository.save(chat);
