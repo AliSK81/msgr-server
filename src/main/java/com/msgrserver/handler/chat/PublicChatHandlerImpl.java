@@ -1,9 +1,10 @@
 package com.msgrserver.handler.chat;
 
 import com.msgrserver.action.Action;
-import com.msgrserver.action.ActionType;
 import com.msgrserver.action.ActionResult;
+import com.msgrserver.action.ActionType;
 import com.msgrserver.model.dto.chat.*;
+import com.msgrserver.model.dto.user.UserDto;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PublicChatRepository;
@@ -97,6 +98,33 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
         return ActionResult.builder()
                 .action(action)
                 .receivers(receivers).build();
+    }
+
+    @Override
+    public ActionResult getPublicChatMembers(Long userId, PublicChatGetMembersRequestDto dto) {
+        Set<UserDto> users = publicChatService.getChatMembers(dto.getChatId()).stream()
+                .map(user -> Mapper.map(user, UserDto.class)).collect(Collectors.toSet());
+
+        Set<MemberDto> members = users.stream()
+                .map(user -> MemberDto.builder()
+                        .chatId(dto.getChatId())
+                        .userId(user.getId())
+                        .build())
+                .collect(Collectors.toSet());
+
+        PublicChatGetMembersResponseDto responseDto = PublicChatGetMembersResponseDto.builder()
+                .users(users)
+                .members(members)
+                .build();
+
+        Action action = Action.builder()
+                .type(ActionType.GET_PUBLIC_CHAT_MEMBERS)
+                .dto(responseDto)
+                .build();
+
+        return ActionResult.builder()
+                .action(action)
+                .receivers(Set.of(userId)).build();
     }
 
     private ActionResult getResponse(PublicChat chat, Action action) {

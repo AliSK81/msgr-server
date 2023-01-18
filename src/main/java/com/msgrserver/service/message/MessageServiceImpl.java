@@ -85,8 +85,11 @@ public class MessageServiceImpl implements MessageService {
         if (isChannel) {
             Set<User> admins = userRepository.findAdminsByChatId(chat.getId());
 
-            boolean isOwner = chat.getOwner().equals(sender);
-            boolean isAdmin = admins.contains(sender);
+            boolean isOwner = chat.getOwner().getId().equals(sender.getId());
+            boolean isAdmin = admins.stream()
+                    .map(User::getId)
+                    .collect(Collectors.toSet())
+                    .contains(sender.getId());
 
             if (!isOwner && !isAdmin)
                 throw new BadRequestException();
