@@ -52,7 +52,7 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                 .build();
 
         Action action = Action.builder()
-                .type(ActionType.ADD_NEW_MEMBER)
+                .type(ActionType.ADD_NEW_MEMBERS)
                 .dto(responseDto).build();
 
         return getResponse(chat, action);
