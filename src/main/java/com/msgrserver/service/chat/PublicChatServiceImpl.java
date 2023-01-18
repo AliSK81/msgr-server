@@ -4,11 +4,13 @@ import com.msgrserver.exception.BadRequestException;
 import com.msgrserver.exception.ChatNotFoundException;
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.exception.UserPrivacySettingsException;
+import com.msgrserver.model.entity.chat.Chat;
+import com.msgrserver.model.entity.chat.ChatType;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.repository.MessageRepository;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
+import com.msgrserver.service.user.UserService;
 import com.msgrserver.util.LinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ public class PublicChatServiceImpl implements PublicChatService {
     private final UserRepository userRepository;
     private final PublicChatRepository publicChatRepository;
     private final ChatService chatService;
+
+    private final UserService userService;
 
     @Override
     public PublicChat createPublicChat(Long creatorId, PublicChat chat, Set<Long> initMemberIds) {
@@ -197,6 +201,32 @@ public class PublicChatServiceImpl implements PublicChatService {
         return userRepository.findMembersByChatId(chatId);
     }
 
+    private Set<User> getChatAdmins(Long chatId) {
+        return userRepository.findAdminsByChatId(chatId);
+    }
+
+    @Override
+    public Set<User> getChatMembers(Long userId, Long chatId) {
+        Chat chat = chatService.findChat(chatId);
+        User user = userService.findUser(userId);
+        Set<User> members;
+
+        if (chat instanceof PublicChat) {
+            members = getChatMembers(chatId);
+        } else throw new BadRequestException();
+
+        Long ownerId = ((PublicChat) chat).getOwner().getId();
+        Set<Long> adminIds = getChatAdmins(chatId).stream().map(User::getId).collect(Collectors.toSet());
+
+        if (members.contains(user)) {
+            if (chat.getType().equals(ChatType.GROUP)) {
+                return getChatMembers(chatId);
+            } else if (userId.equals(ownerId) || adminIds.contains(userId)) {
+                return getChatMembers(chatId);
+            } else throw new BadRequestException();
+        }
+        throw new BadRequestException();
+    }
 
     @Override
     public PublicChat findPublicChat(Long chatId) {

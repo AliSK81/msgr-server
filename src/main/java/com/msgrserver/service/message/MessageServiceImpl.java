@@ -104,7 +104,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Long deleteMessage(Long deleterId, Long messageId) {
+    public void deleteMessage(Long deleterId, Long messageId) {
         Message message = findMessage(messageId);
         User sender = message.getSender();
         Chat chat = message.getChat();
@@ -120,7 +120,6 @@ public class MessageServiceImpl implements MessageService {
             }
         }
         messageRepository.deleteMessageById(messageId);
-        return chat.getId();
     }
 
     @Override

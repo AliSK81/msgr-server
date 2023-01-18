@@ -12,7 +12,7 @@ public interface MessageService {
 
     Message getLastMessage(Long chatId);
 
-    Long deleteMessage(Long deleterId, Long messageId);
+    void deleteMessage(Long deleterId, Long messageId);
 
     Message findMessage(Long messageId);
 }
