@@ -8,8 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class PublicChatDeleteUserResponseDto extends ActionDto {
+public class PublicChatDeleteMemberRequestDto extends ActionDto {
     Long chatId;
     Long userId;
-    Long deleterId;
 }

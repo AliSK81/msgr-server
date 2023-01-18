@@ -14,7 +14,7 @@ public interface PublicChatHandler {
 
     ActionResult addUserToPublicChat(Long adminId, PublicChatAddUserRequestDto dto);
 
-    ActionResult deleteUserFromPublicChat(Long deleterId, PublicChatDeleteUserRequestDto dto);
+    ActionResult deleteMemberFromPublicChat(Long deleterId, PublicChatDeleteMemberRequestDto dto);
 
     ActionResult editProfilePublicChat(Long userId, PublicChatEditProfileRequestDto dto);
 

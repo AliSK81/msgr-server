@@ -56,15 +56,15 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     }
 
     @Override
-    public ActionResult deleteUserFromPublicChat(Long deleterId, PublicChatDeleteUserRequestDto dto) {
+    public ActionResult deleteMemberFromPublicChat(Long deleterId, PublicChatDeleteMemberRequestDto dto) {
         PublicChat chat = publicChatService.deleteUserFromPublicChat(dto.getChatId(), deleterId, dto.getUserId());
-        PublicChatDeleteUserResponseDto responseDto = PublicChatDeleteUserResponseDto.builder()
+        PublicChatDeleteMemberResponseDto responseDto = PublicChatDeleteMemberResponseDto.builder()
                 .chatId(chat.getId())
-                .userId(dto.getUserId())
-                .deleterId(deleterId)
+                .user(Mapper.map(dto.getUserId(), UserDto.class))
+                .deleter(Mapper.map(deleterId, UserDto.class))
                 .build();
         Action action = Action.builder()
-                .type(ActionType.DELETE_USER_BY_ADMIN)
+                .type(ActionType.DELETE_MEMBER_BY_ADMIN)
                 .dto(responseDto).build();
 
         return getResponse(chat, action);
