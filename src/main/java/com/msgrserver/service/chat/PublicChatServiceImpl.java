@@ -58,7 +58,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         PublicChat chat = findPublicChat(chatId);
         User user = findUser(userId);
 
-        boolean isOwner = chat.getOwner().getId().equals(userId);
+        boolean isOwner = chat.getOwner().equals(user);
 
         if (isOwner) {
             chatService.deleteChat(chatId, userId);//todo check for replace an admin
@@ -84,12 +84,9 @@ public class PublicChatServiceImpl implements PublicChatService {
         PublicChat chat = findPublicChat(chatId);
         User adder = findUser(adderId);
 
-        boolean isAdmin = userRepository.findAdminsByChatId(chatId).stream()
-                .map(User::getId)
-                .collect(Collectors.toSet())
-                .contains(adder.getId());
+        boolean isAdmin = userRepository.findAdminsByChatId(chatId).contains(adder);
 
-        boolean isOwner = chat.getOwner().getId().equals(adder.getId());
+        boolean isOwner = chat.getOwner().equals(adder);
 
         if (!isOwner && !isAdmin)
             throw new BadRequestException();
@@ -112,19 +109,21 @@ public class PublicChatServiceImpl implements PublicChatService {
         if (chat.getOwner().equals(user))
             throw new BadRequestException();
 
-        boolean isOwner = chat.getOwner().equals(deleter);
-        boolean isAdmin = admins.contains(deleter);
+        boolean isDeleterOwner = chat.getOwner().equals(deleter);
+        boolean isDeleterAdmin = admins.contains(deleter);
 
-        if (!isOwner && !isAdmin)
+        if (!isDeleterOwner && !isDeleterAdmin)
             throw new BadRequestException();
 
-        if (!isOwner && admins.contains(user))
+        boolean isUserAdmin = admins.contains(user);
+
+        if (!isDeleterOwner && isUserAdmin)
             throw new BadRequestException();
 
         chat.setMembers(userRepository.findMembersByChatId(chatId));
         chat.getMembers().remove(user);
 
-        if (admins.contains(user)) {
+        if (isUserAdmin) {
             chat.setAdmins(admins);
             chat.getAdmins().remove(user);
         }
@@ -137,8 +136,10 @@ public class PublicChatServiceImpl implements PublicChatService {
         PublicChat chat = findPublicChat(chatId);
         User user = findUser(userId);
         User selector = findUser(selectorId);
+
         chat.setAdmins(userRepository.findAdminsByChatId(chatId));
         chat.setMembers(userRepository.findMembersByChatId(chatId));
+
         boolean isMember = chat.getMembers().contains(user);
         boolean isAdmin = chat.getAdmins().contains(user);
         boolean isOwner = chat.getOwner().equals(user);
@@ -153,6 +154,7 @@ public class PublicChatServiceImpl implements PublicChatService {
             throw new BadRequestException();
 
         chat.getAdmins().add(user);
+
         return publicChatRepository.save(chat);
     }
 
@@ -180,13 +182,16 @@ public class PublicChatServiceImpl implements PublicChatService {
 
     @Override
     public PublicChat editProfilePublicChat(PublicChat publicChat, Long editorId) {
+        User editor = findUser(editorId);
         PublicChat chat = publicChatRepository.getReferenceById(publicChat.getId());
         Set<User> admins = userRepository.findAdminsByChatId(chat.getId());
-        Set<Long> adminIds = admins.stream().map(User::getId).collect(Collectors.toSet());
-        boolean isAdmin = adminIds.contains(editorId);
-        boolean isOwner = chat.getOwner().getId().equals(editorId);
+
+        boolean isAdmin = admins.contains(editor);
+        boolean isOwner = chat.getOwner().equals(editor);
+
         if (!isAdmin && !isOwner) {
             throw new BadRequestException();
+
         } else {
             chat.setAvatar(publicChat.getAvatar());
             chat.setTitle(publicChat.getTitle());

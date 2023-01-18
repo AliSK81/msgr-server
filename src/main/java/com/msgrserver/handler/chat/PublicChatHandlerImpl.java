@@ -3,6 +3,7 @@ package com.msgrserver.handler.chat;
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionResult;
 import com.msgrserver.action.ActionType;
+import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.dto.chat.*;
 import com.msgrserver.model.dto.user.UserDto;
 import com.msgrserver.model.entity.chat.PublicChat;
@@ -10,7 +11,6 @@ import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
 import com.msgrserver.service.chat.PublicChatService;
-import com.msgrserver.service.user.UserService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -62,15 +62,20 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     }
 
     @Override
-    public ActionResult deleteUserFromPublicChat(Long deleterId, PublicChatDeleteUserRequestDto dto) {
+    public ActionResult deleteUserFromPublicChat(Long deleterId, PublicChatDeleteMemberRequestDto dto) {
         PublicChat chat = publicChatService.deleteUserFromPublicChat(dto.getChatId(), deleterId, dto.getUserId());
-        PublicChatDeleteUserResponseDto responseDto = PublicChatDeleteUserResponseDto.builder()
+
+        User user = findUser(dto.getUserId());
+        User deleter = findUser(deleterId);
+
+        PublicChatDeleteMemberResponseDto responseDto = PublicChatDeleteMemberResponseDto.builder()
                 .chatId(chat.getId())
-                .userId(dto.getUserId())
-                .deleterId(deleterId)
+                .user(Mapper.map(user, UserDto.class))
+                .deleter(Mapper.map(deleter, UserDto.class))
                 .build();
+
         Action action = Action.builder()
-                .type(ActionType.DELETE_USER_BY_ADMIN)
+                .type(ActionType.DELETE_MEMBER)
                 .dto(responseDto).build();
 
         return getResponse(chat, action);
@@ -191,5 +196,9 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
         return getResponse(chat, action);
     }
 
+    private User findUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+    }
 
 }

@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Objects;
+
 @Entity
 @Getter
 @Setter
@@ -28,4 +30,17 @@ public class Message {
 
     @ManyToOne
     private Chat chat;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return Objects.equals(id, message.id) && Objects.equals(date, message.date) && messageType == message.messageType && Objects.equals(sender, message.sender) && Objects.equals(chat, message.chat);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, date, messageType, sender, chat);
+    }
 }
