@@ -127,11 +127,10 @@ public class MessageHandlerImpl implements MessageHandler {
         Message message = messageService.findMessage(dto.getMessageId());
         Set<Long> receivers = getMessageReceivers(message);
 
-        Long chatId = messageService.deleteMessage(userId, dto.getMessageId());
+        messageService.deleteMessage(userId, dto.getMessageId());
 
         MessageDeleteResponseDto responseDto = MessageDeleteResponseDto.builder()
-                .messageId(dto.getMessageId())
-                .chatId(chatId).build();
+                .messageId(dto.getMessageId()).build();
 
         Action action = Action.builder()
                 .dto(responseDto)

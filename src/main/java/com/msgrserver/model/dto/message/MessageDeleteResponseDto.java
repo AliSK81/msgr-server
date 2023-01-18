@@ -10,5 +10,4 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class MessageDeleteResponseDto extends ActionDto {
     Long messageId;
-    Long chatId;
 }
