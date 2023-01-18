@@ -8,7 +8,6 @@ public interface PublicChatHandler {
 
     ActionResult leavePublicChat(Long userId, PublicChatLeaveRequestDto dto);
 
-
     ActionResult selectNewAdminPublicChat(Long selectorId, PublicChatSelectNewAdminRequestDto dto);
 
     ActionResult deleteAdminPublicChat(Long selectorId, PublicChatDeleteAdminRequestDto dto);
@@ -20,4 +19,6 @@ public interface PublicChatHandler {
     ActionResult editProfilePublicChat(Long userId, PublicChatEditProfileRequestDto dto);
 
     ActionResult createPublicChat(Long creatorId, PublicChatCreateRequestDto dto);
+
+    ActionResult getPublicChatMembers(Long userId, PublicChatGetMembersRequestDto dto);
 }

@@ -92,6 +92,9 @@ public class ActionHandlerImpl implements ActionHandler {
                     case LEAVE_PUBLIC_CHAT ->
                             actionResult = publicChatHandler.leavePublicChat(userId, (PublicChatLeaveRequestDto) action.getDto());
 
+                    case GET_PUBLIC_CHAT_MEMBERS ->
+                        actionResult = publicChatHandler.getPublicChatMembers(userId, (PublicChatGetMembersRequestDto) action.getDto());
+
                     default -> throw new NotImplementedException();
                 }
 
