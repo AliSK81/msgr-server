@@ -9,6 +9,7 @@ import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.service.chat.PublicChatService;
+import com.msgrserver.service.user.UserService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class PublicChatHandlerImpl implements PublicChatHandler {
     private final PublicChatService publicChatService;
     private final PublicChatRepository publicChatRepository;
+    private final UserService userService;
 
     @Override
     public ActionResult joinChatWithLink(Long userId, PublicChatJoinWithLinkRequestDto dto) {
@@ -144,13 +146,16 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     @Override
     public ActionResult leavePublicChat(Long userId, PublicChatLeaveRequestDto dto) {
         PublicChat chat = publicChatService.leavePublicChat(dto.getChatId(), userId);
+
         PublicChatLeaveResponseDto responseDto = PublicChatLeaveResponseDto.builder()
                 .chatId(chat.getId())
-                .userId(userId)
+                .user(Mapper.map(userService.findUser(userId), UserDto.class))
                 .build();
+
         Action action = Action.builder()
                 .type(ActionType.LEAVE_PUBLIC_CHAT)
                 .dto(responseDto).build();
+
         return getResponse(chat, action);
     }
 
