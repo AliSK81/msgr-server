@@ -102,7 +102,7 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
 
     @Override
     public ActionResult getPublicChatMembers(Long userId, PublicChatGetMembersRequestDto dto) {
-        Set<UserDto> users = publicChatService.getChatMembers(dto.getChatId()).stream()
+        Set<UserDto> users = publicChatService.getChatMembers(userId, dto.getChatId()).stream()
                 .map(user -> Mapper.map(user, UserDto.class)).collect(Collectors.toSet());
 
         Set<MemberDto> members = users.stream()

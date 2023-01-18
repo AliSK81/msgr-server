@@ -26,4 +26,6 @@ public interface PublicChatService {
     PublicChat editProfilePublicChat(PublicChat publicChat, Long editorId);
 
     Set<User> getChatMembers(Long chatId);
+
+    Set<User> getChatMembers(Long userId, Long chatId);
 }
