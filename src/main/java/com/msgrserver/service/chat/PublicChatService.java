@@ -15,7 +15,7 @@ public interface PublicChatService {
 
     PublicChat leavePublicChat(Long chatId, Long userId);
 
-    PublicChat addUserToPublicChat(Long chatId, Long adderId, Set<Long> userIds);
+    PublicChat addMembersToPublicChat(Long chatId, Long adderId, Set<Long> userIds);
 
     PublicChat deleteUserFromPublicChat(Long chatId, Long deleterId, Long userId);
 

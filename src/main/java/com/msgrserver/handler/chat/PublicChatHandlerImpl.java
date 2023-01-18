@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,13 +39,13 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     }
 
     @Override
-    public ActionResult addUserToPublicChat(Long adminId, PublicChatAddUserRequestDto dto) {
-        PublicChat chat = publicChatService.addUserToPublicChat(dto.getChatId(), adminId, dto.getUserIds());
+    public ActionResult addMembersToPublicChat(Long adminId, PublicChatAddMembersRequestDto dto) {
+        PublicChat chat = publicChatService.addMembersToPublicChat(dto.getChatId(), adminId, dto.getUserIds());
 
         Set<UserDto> usersAddedIds = publicChatService.usersCanBeAdd(dto.getChatId(), dto.getUserIds()).stream()
                 .map(user -> Mapper.map(user, UserDto.class)).collect(Collectors.toSet());
 
-        PublicChatAddUserResponseDto responseDto = PublicChatAddUserResponseDto.builder()
+        PublicChatAddMembersResponseDto responseDto = PublicChatAddMembersResponseDto.builder()
                 .chatId(dto.getChatId())
                 .userAddedIds(usersAddedIds)
                 .adminId(adminId)

@@ -12,7 +12,7 @@ public interface PublicChatHandler {
 
     ActionResult deleteAdminPublicChat(Long selectorId, PublicChatDeleteAdminRequestDto dto);
 
-    ActionResult addUserToPublicChat(Long adminId, PublicChatAddUserRequestDto dto);
+    ActionResult addMembersToPublicChat(Long adminId, PublicChatAddMembersRequestDto dto);
 
     ActionResult deleteUserFromPublicChat(Long deleterId, PublicChatDeleteUserRequestDto dto);
 

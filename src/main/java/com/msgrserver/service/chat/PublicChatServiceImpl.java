@@ -80,7 +80,7 @@ public class PublicChatServiceImpl implements PublicChatService {
     }
 
     @Override
-    public PublicChat addUserToPublicChat(Long chatId, Long adderId, Set<Long> userIds) {
+    public PublicChat addMembersToPublicChat(Long chatId, Long adderId, Set<Long> userIds) {
         PublicChat chat = findPublicChat(chatId);
         User adder = findUser(adderId);
         boolean isAdmin = userRepository.findAdminsByChatId(chatId).contains(adder);

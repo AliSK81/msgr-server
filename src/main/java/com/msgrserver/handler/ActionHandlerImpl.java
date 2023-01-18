@@ -60,7 +60,7 @@ public class ActionHandlerImpl implements ActionHandler {
                             actionResult = publicChatHandler.joinChatWithLink(userId, (PublicChatJoinWithLinkRequestDto) action.getDto());
 
                     case ADD_NEW_MEMBER ->
-                            actionResult = publicChatHandler.addUserToPublicChat(userId, (PublicChatAddUserRequestDto) action.getDto());
+                            actionResult = publicChatHandler.addMembersToPublicChat(userId, (PublicChatAddMembersRequestDto) action.getDto());
 
                     case DELETE_USER_BY_ADMIN ->
                             actionResult = publicChatHandler.deleteUserFromPublicChat(userId, (PublicChatDeleteUserRequestDto) action.getDto());
