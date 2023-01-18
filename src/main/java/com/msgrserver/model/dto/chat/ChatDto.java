@@ -18,4 +18,5 @@ public class ChatDto extends ActionDto {
     private String avatar;
     private Long user1Id;
     private Long user2Id;
+    private Long createdAt;
 }

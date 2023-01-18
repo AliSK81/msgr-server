@@ -22,12 +22,7 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private ChatType type;
+    private Long createdAt;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "member",
-//            joinColumns = @JoinColumn(name = "chat_id"),
-//            inverseJoinColumns = @JoinColumn(name = "user_id"))
-//    private Set<User> users;
+    private ChatType type;
 }

@@ -157,6 +157,9 @@ public class UserHandlerImpl implements UserHandler {
         Set<UserDto> users = new HashSet<>();
         Set<MessageDto> messages = new HashSet<>();
 
+        User self = userService.findUser(userId);
+        users.add(Mapper.map(self, UserDto.class));
+
         userService.getUserChats(userId).forEach(chat -> {
 
             ChatDto chatDto = Mapper.map(chat, ChatDto.class);
@@ -185,6 +188,8 @@ public class UserHandlerImpl implements UserHandler {
                 messages.add(messageDto);
             }
         });
+
+        System.out.println(chats);
 
         return UserGetChatsResponseDto.builder()
                 .chats(chats)

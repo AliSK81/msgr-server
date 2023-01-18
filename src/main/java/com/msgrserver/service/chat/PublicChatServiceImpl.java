@@ -32,6 +32,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         chat.setOwner(creator);
         chat.setMembers(new HashSet<>(List.of(creator)));
         chat.setLink(LinkGenerator.generate(20));
+        chat.setCreatedAt(System.currentTimeMillis());
         initMemberIds.forEach(id -> {
             User user = findUser(id);
             if (user.isAllowedInvite()) {
