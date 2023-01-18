@@ -83,8 +83,13 @@ public class PublicChatServiceImpl implements PublicChatService {
     public PublicChat addMembersToPublicChat(Long chatId, Long adderId, Set<Long> userIds) {
         PublicChat chat = findPublicChat(chatId);
         User adder = findUser(adderId);
-        boolean isAdmin = userRepository.findAdminsByChatId(chatId).contains(adder);
-        boolean isOwner = chat.getOwner().equals(adder);
+
+        boolean isAdmin = userRepository.findAdminsByChatId(chatId).stream()
+                .map(User::getId)
+                .collect(Collectors.toSet())
+                .contains(adder.getId());
+
+        boolean isOwner = chat.getOwner().getId().equals(adder.getId());
 
         if (!isOwner && !isAdmin)
             throw new BadRequestException();
@@ -92,6 +97,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         chat.setMembers(userRepository.findMembersByChatId(chatId));
         Set<User> usersCanBeAdd = usersCanBeAdd(chatId, userIds);
         chat.getMembers().addAll(usersCanBeAdd);
+
         return publicChatRepository.save(chat);
     }
 

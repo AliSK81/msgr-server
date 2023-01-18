@@ -8,7 +8,9 @@ import com.msgrserver.model.dto.user.UserDto;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PublicChatRepository;
+import com.msgrserver.repository.UserRepository;
 import com.msgrserver.service.chat.PublicChatService;
+import com.msgrserver.service.user.UserService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class PublicChatHandlerImpl implements PublicChatHandler {
     private final PublicChatService publicChatService;
     private final PublicChatRepository publicChatRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ActionResult joinChatWithLink(Long userId, PublicChatJoinWithLinkRequestDto dto) {
@@ -138,7 +141,8 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
             case GROUP -> receivers.addAll(chat.getMembers().stream().map(User::getId).toList());
             case CHANNEL -> {
                 receivers.add(chat.getOwner().getId());
-                receivers.addAll(chat.getAdmins().stream().map(User::getId).toList());
+                receivers.addAll(userRepository.findAdminsByChatId(chat.getId()).stream()
+                        .map(User::getId).toList());
             }
         }
         return ActionResult.builder()
