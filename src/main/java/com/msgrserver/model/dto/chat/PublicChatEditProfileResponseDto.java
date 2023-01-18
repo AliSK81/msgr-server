@@ -10,5 +10,5 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 
 public class PublicChatEditProfileResponseDto extends ActionDto {
-    ChatDto chatDto;
+    ChatDto chat;
 }

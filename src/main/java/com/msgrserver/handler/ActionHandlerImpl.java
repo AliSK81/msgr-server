@@ -80,6 +80,18 @@ public class ActionHandlerImpl implements ActionHandler {
                     case DELETE_MESSAGE ->
                             actionResult = messageHandler.deleteMessage(userId, (MessageDeleteRequestDto) action.getDto());
 
+                    case DELETE_ADMIN_PUBLIC_CHAT ->
+                            actionResult = publicChatHandler.deleteAdminPublicChat(userId, (PublicChatDeleteAdminRequestDto) action.getDto());
+
+                    case SELECT_NEW_ADMIN_PUBLIC_CHAT ->
+                            actionResult = publicChatHandler.selectNewAdminPublicChat(userId, (PublicChatSelectNewAdminRequestDto) action.getDto());
+
+                    case EDIT_PROFILE_PUBLIC_CHAT ->
+                            actionResult = publicChatHandler.editProfilePublicChat(userId, (PublicChatEditProfileRequestDto) action.getDto());
+
+                    case LEAVE_PUBLIC_CHAT ->
+                            actionResult = publicChatHandler.leavePublicChat(userId, (PublicChatLeaveRequestDto) action.getDto());
+
                     default -> throw new NotImplementedException();
                 }
 
