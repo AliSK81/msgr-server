@@ -1,13 +1,13 @@
 package com.msgrserver.model.dto.chat;
 
 import com.msgrserver.model.dto.ActionDto;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.*;
 
-@Value
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ChatDeleteRequestDto extends ActionDto {
+public class PrivateChatDeleteResponseDto extends ActionDto {
     Long chatId;
 }
