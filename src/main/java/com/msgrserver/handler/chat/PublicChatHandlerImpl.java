@@ -142,14 +142,18 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
 
     private ActionResult getResponse(PublicChat chat, Action action) {
         Set<Long> receivers = new HashSet<>();
+
         switch (chat.getType()) {
-            case GROUP -> receivers.addAll(chat.getMembers().stream().map(User::getId).toList());
+            case GROUP -> receivers.addAll(publicChatService.getChatMembers(chat.getId())
+                    .stream().map(User::getId).toList());
+
             case CHANNEL -> {
                 receivers.add(chat.getOwner().getId());
                 receivers.addAll(userRepository.findAdminsByChatId(chat.getId()).stream()
                         .map(User::getId).toList());
             }
         }
+
         return ActionResult.builder()
                 .action(action)
                 .receivers(receivers).build();
@@ -158,13 +162,16 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     @Override
     public ActionResult leavePublicChat(Long userId, PublicChatLeaveRequestDto dto) {
         PublicChat chat = publicChatService.leavePublicChat(dto.getChatId(), userId);
+
         PublicChatLeaveResponseDto responseDto = PublicChatLeaveResponseDto.builder()
                 .chatId(chat.getId())
-                .userId(userId)
+                .user(Mapper.map(findUser(userId), UserDto.class))
                 .build();
+
         Action action = Action.builder()
                 .type(ActionType.LEAVE_PUBLIC_CHAT)
                 .dto(responseDto).build();
+
         return getResponse(chat, action);
     }
 

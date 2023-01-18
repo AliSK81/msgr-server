@@ -189,8 +189,6 @@ public class UserHandlerImpl implements UserHandler {
             }
         });
 
-        System.out.println(chats);
-
         return UserGetChatsResponseDto.builder()
                 .chats(chats)
                 .users(users)

@@ -1,14 +1,15 @@
 package com.msgrserver.model.dto.chat;
 
 import com.msgrserver.model.dto.ActionDto;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import com.msgrserver.model.dto.user.UserDto;
+import lombok.*;
 
-@Value
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class PublicChatLeaveResponseDto extends ActionDto {
-    Long userId;
     Long chatId;
+    UserDto user;
 }
