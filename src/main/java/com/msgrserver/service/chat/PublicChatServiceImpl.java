@@ -201,6 +201,10 @@ public class PublicChatServiceImpl implements PublicChatService {
         return userRepository.findMembersByChatId(chatId);
     }
 
+    private Set<User> getChatAdmins(Long chatId) {
+        return userRepository.findAdminsByChatId(chatId);
+    }
+
     @Override
     public Set<User> getChatMembers(Long userId, Long chatId) {
         Chat chat = chatService.findChat(chatId);
@@ -208,16 +212,16 @@ public class PublicChatServiceImpl implements PublicChatService {
         Set<User> members;
 
         if (chat instanceof PublicChat) {
-            members = ((PublicChat) chat).getMembers();
+            members = getChatMembers(chatId);
         } else throw new BadRequestException();
 
         Long ownerId = ((PublicChat) chat).getOwner().getId();
-        Set<User> admins = ((PublicChat) chat).getAdmins();
+        Set<Long> adminIds = getChatAdmins(chatId).stream().map(User::getId).collect(Collectors.toSet());
 
         if (members.contains(user)) {
             if (chat.getType().equals(ChatType.GROUP)) {
                 return getChatMembers(chatId);
-            } else if (userId.equals(ownerId) || admins.contains(user)) {
+            } else if (userId.equals(ownerId) || adminIds.contains(userId)) {
                 return getChatMembers(chatId);
             } else throw new BadRequestException();
         }
