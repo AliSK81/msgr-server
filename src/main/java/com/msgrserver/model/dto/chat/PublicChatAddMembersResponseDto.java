@@ -1,14 +1,18 @@
 package com.msgrserver.model.dto.chat;
 
 import com.msgrserver.model.dto.ActionDto;
+import com.msgrserver.model.dto.user.UserDto;
 import lombok.*;
+
+import java.util.Set;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class PublicChatAddUserRequestDto extends ActionDto {
+public class PublicChatAddMembersResponseDto extends ActionDto {
     Long chatId;
-    Long userId;
+    Long adminId;
+    Set<UserDto> userAddedIds;
 }

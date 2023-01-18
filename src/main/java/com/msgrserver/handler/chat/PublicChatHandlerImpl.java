@@ -8,7 +8,9 @@ import com.msgrserver.model.dto.user.UserDto;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PublicChatRepository;
+import com.msgrserver.repository.UserRepository;
 import com.msgrserver.service.chat.PublicChatService;
+import com.msgrserver.service.user.UserService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class PublicChatHandlerImpl implements PublicChatHandler {
     private final PublicChatService publicChatService;
     private final PublicChatRepository publicChatRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ActionResult joinChatWithLink(Long userId, PublicChatJoinWithLinkRequestDto dto) {
@@ -39,17 +42,22 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     }
 
     @Override
-    public ActionResult addUserToPublicChat(Long adminId, PublicChatAddUserRequestDto dto) {
-        PublicChat chat = publicChatService.addUserToPublicChat(dto.getChatId(), adminId, dto.getUserId());
+    public ActionResult addMembersToPublicChat(Long adminId, PublicChatAddMembersRequestDto dto) {
+        PublicChat chat = publicChatService.addMembersToPublicChat(dto.getChatId(), adminId, dto.getUserIds());
 
-        PublicChatAddUserResponseDto responseDto = PublicChatAddUserResponseDto.builder()
-                .chatId(chat.getId())
-                .userId(dto.getUserId())
+        Set<UserDto> usersAddedIds = publicChatService.usersCanBeAdd(dto.getChatId(), dto.getUserIds()).stream()
+                .map(user -> Mapper.map(user, UserDto.class)).collect(Collectors.toSet());
+
+        PublicChatAddMembersResponseDto responseDto = PublicChatAddMembersResponseDto.builder()
+                .chatId(dto.getChatId())
+                .userAddedIds(usersAddedIds)
                 .adminId(adminId)
                 .build();
+
         Action action = Action.builder()
-                .type(ActionType.ADD_USER_BY_ADMIN)
+                .type(ActionType.ADD_NEW_MEMBERS)
                 .dto(responseDto).build();
+
         return getResponse(chat, action);
     }
 
@@ -133,7 +141,8 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
             case GROUP -> receivers.addAll(chat.getMembers().stream().map(User::getId).toList());
             case CHANNEL -> {
                 receivers.add(chat.getOwner().getId());
-                receivers.addAll(chat.getAdmins().stream().map(User::getId).toList());
+                receivers.addAll(userRepository.findAdminsByChatId(chat.getId()).stream()
+                        .map(User::getId).toList());
             }
         }
         return ActionResult.builder()
@@ -181,5 +190,6 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                 .build();
         return getResponse(chat, action);
     }
+
 
 }
