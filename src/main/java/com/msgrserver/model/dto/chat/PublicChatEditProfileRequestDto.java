@@ -10,6 +10,5 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 
 public class PublicChatEditProfileRequestDto extends ActionDto {
-    Long editorId;
-    ChatDto chatDto;
+    ChatDto chat;
 }

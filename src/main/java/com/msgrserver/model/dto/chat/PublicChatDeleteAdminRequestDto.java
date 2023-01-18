@@ -10,6 +10,5 @@ import lombok.Value;
 @EqualsAndHashCode(callSuper = true)
 public class PublicChatDeleteAdminRequestDto extends ActionDto {
     Long userId;
-    Long selectorId;
     Long chatId;
 }

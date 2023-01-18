@@ -68,11 +68,11 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     }
 
     @Override
-    public ActionResult editProfilePublicChat(PublicChatEditProfileRequestDto dto) {
-        PublicChat chat1 = Mapper.map(dto, PublicChat.class);
-        PublicChat chat = publicChatService.editProfilePublicChat(chat1, dto.getEditorId());
+    public ActionResult editProfilePublicChat(Long editorId, PublicChatEditProfileRequestDto dto) {
+        PublicChat chat1 = Mapper.map(dto.getChat(), PublicChat.class);
+        PublicChat chat = publicChatService.editProfilePublicChat(chat1, editorId);
         PublicChatEditProfileResponseDto responseDto = PublicChatEditProfileResponseDto.builder()
-                .chatDto(Mapper.map(chat, ChatDto.class))
+                .chat(Mapper.map(chat, ChatDto.class))
                 .build();
         Action action = Action.builder()
                 .type(ActionType.EDIT_PROFILE_PUBLIC_CHAT)
@@ -114,24 +114,21 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     }
 
     @Override
-    public ActionResult leavePublicChat(PublicChatLeaveRequestDto dto) {
-        PublicChat chat = publicChatService.leavePublicChat(dto.getChatId(), dto.getUserId());
+    public ActionResult leavePublicChat(Long userId, PublicChatLeaveRequestDto dto) {
+        PublicChat chat = publicChatService.leavePublicChat(dto.getChatId(), userId);
         PublicChatLeaveResponseDto responseDto = PublicChatLeaveResponseDto.builder()
                 .chatId(chat.getId())
-                .userId(dto.getUserId())
+                .userId(userId)
                 .build();
         Action action = Action.builder()
                 .type(ActionType.LEAVE_PUBLIC_CHAT)
                 .dto(responseDto).build();
-        Set<Long> receivers = new HashSet<>();//todo use getResponse function after merge
-        return ActionResult.builder()
-                .action(action)
-                .receivers(receivers).build();
+        return getResponse(chat, action);
     }
 
     @Override
-    public ActionResult selectNewAdminPublicChat(PublicChatSelectNewAdminRequestDto dto) {
-        PublicChat chat = publicChatService.selectNewAdminPublicChat(dto.getChatId(), dto.getSelectorId(), dto.getUserId());
+    public ActionResult selectNewAdminPublicChat(Long selectorId, PublicChatSelectNewAdminRequestDto dto) {
+        PublicChat chat = publicChatService.selectNewAdminPublicChat(dto.getChatId(), selectorId, dto.getUserId());
         PublicChatSelectNewAdminResponseDto responseDto = PublicChatSelectNewAdminResponseDto.builder()
                 .chatId(chat.getId())
                 .userId(dto.getUserId())
@@ -140,16 +137,12 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                 .type(ActionType.SELECT_NEW_ADMIN_PUBLIC_CHAT)
                 .dto(responseDto)
                 .build();
-        Set<Long> receivers = new HashSet<>();//todo use getResponse function after merge
-        return ActionResult.builder()
-                .action(action)
-                .receivers(receivers)
-                .build();
+        return getResponse(chat, action);
     }
 
     @Override
-    public ActionResult deleteAdminPublicChat(PublicChatDeleteAdminRequestDto dto) {
-        PublicChat chat = publicChatService.deleteAdminPublicChat(dto.getChatId(), dto.getSelectorId(), dto.getUserId());
+    public ActionResult deleteAdminPublicChat(Long selectorId, PublicChatDeleteAdminRequestDto dto) {
+        PublicChat chat = publicChatService.deleteAdminPublicChat(dto.getChatId(), selectorId, dto.getUserId());
         PublicChatDeleteAdminResponseDto responseDto = PublicChatDeleteAdminResponseDto.builder()
                 .chatId(chat.getId())
                 .userId(dto.getUserId())
@@ -158,11 +151,7 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                 .type(ActionType.DELETE_ADMIN_PUBLIC_CHAT)
                 .dto(responseDto)
                 .build();
-        Set<Long> receivers = new HashSet<>();//todo use getResponse function after merge
-        return ActionResult.builder()
-                .action(action)
-                .receivers(receivers)
-                .build();
+        return getResponse(chat, action);
     }
 
 }
