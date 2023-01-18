@@ -1,5 +1,6 @@
 package com.msgrserver.service.chat;
 
+import com.msgrserver.exception.ChatNotFoundException;
 import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.chat.ChatType;
 import com.msgrserver.model.entity.chat.PrivateChat;
@@ -16,6 +17,12 @@ import java.util.Optional;
 public class PrivateChatServiceImpl implements PrivateChatService {
     private final PrivateChatRepository privateChatRepository;
     private final UserRepository userRepository;
+
+    @Override
+    public PrivateChat findPrivateChat(Long chatId) {
+        return privateChatRepository.findById(chatId)
+                .orElseThrow(ChatNotFoundException::new);
+    }
 
     @Override
     public PrivateChat createPrivateChat(Long user1Id, Long user2Id) {

@@ -74,8 +74,8 @@ public class ActionHandlerImpl implements ActionHandler {
                     case GET_CHAT_MESSAGES ->
                             actionResult = chatHandler.getChatMessages(userId, (ChatGetMessagesRequestDto) action.getDto());
 
-                    case DELETE_CHAT ->
-                            actionResult = chatHandler.deleteChat(userId, (ChatDeleteRequestDto) action.getDto());
+                    case DELETE_PRIVATE_CHAT ->
+                            actionResult = chatHandler.deletePrivateChat(userId, (PrivateChatDeleteRequestDto) action.getDto());
 
                     case DELETE_MESSAGE ->
                             actionResult = messageHandler.deleteMessage(userId, (MessageDeleteRequestDto) action.getDto());
