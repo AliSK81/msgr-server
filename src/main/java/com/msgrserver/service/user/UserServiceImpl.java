@@ -9,10 +9,15 @@ import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PrivateChatRepository;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
+import com.msgrserver.util.Hashing;
 import com.msgrserver.util.PasswordChecker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,8 +63,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUser(String username, String password) {
-        return userRepository.findUserByUsernameAndPassword(username, password)
-                .orElseThrow(UserNotFoundException::new);
+         var user = userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+        try {
+            var isValid = Hashing.validatePassword(password, user.getPassword());
+            if (!isValid) throw new UserNotFoundException();
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new UserNotFoundException();
+        }
+        return user;
     }
 
     @Override
