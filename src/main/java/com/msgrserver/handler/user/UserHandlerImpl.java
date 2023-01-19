@@ -114,8 +114,8 @@ public class UserHandlerImpl implements UserHandler {
         User user = userService.editProfile(userSend, userId);
         UserEditProfileResponseDto responseDto = UserEditProfileResponseDto.builder()
                 .userDto(Mapper.map(user, UserDto.class))
-                .accessAddPublicChat(user.isAllowedInvite())
-                .visibleAvatar(user.isVisibleAvatar())
+                .accessAddPublicChat(user.getAllowedInvite())
+                .visibleAvatar(user.getVisibleAvatar())
                 .build();
         Action action = Action.builder()
                 .type(ActionType.EDIT_PROFILE)
@@ -132,7 +132,7 @@ public class UserHandlerImpl implements UserHandler {
         User user = userService.findUser(dto.getUsername());
 
         UserDto userDto = Mapper.map(user, UserDto.class);
-        if (!user.isVisibleAvatar()) {
+        if (!user.getVisibleAvatar()) {
             userDto.setAvatar(null);
         }
 

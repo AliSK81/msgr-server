@@ -33,7 +33,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         chat.setCreatedAt(System.currentTimeMillis());
         initMemberIds.forEach(id -> {
             User user = findUser(id);
-            if (user.isAllowedInvite()) {
+            if (user.getAllowedInvite()) {
                 chat.getMembers().add(user);
             }
         });
@@ -214,6 +214,6 @@ public class PublicChatServiceImpl implements PublicChatService {
 
     @Override
     public Set<User> usersCanBeAdd(Long chatId, Set<Long> userIds) {
-        return userIds.stream().map(this::findUser).filter(User::isAllowedInvite).collect(Collectors.toSet());
+        return userIds.stream().map(this::findUser).filter(User::getAllowedInvite).collect(Collectors.toSet());
     }
 }

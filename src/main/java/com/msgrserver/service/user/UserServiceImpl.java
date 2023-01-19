@@ -76,8 +76,8 @@ public class UserServiceImpl implements UserService {
         user.setAvatar(userInput.getAvatar());
         user.setUsername(userInput.getUsername());
         user.setEmail(userInput.getEmail());
-        user.setAllowedInvite(user.isAllowedInvite());
-        user.setVisibleAvatar(user.isVisibleAvatar());
+        user.setAllowedInvite(user.getAllowedInvite());
+        user.setVisibleAvatar(user.getVisibleAvatar());
         return userRepository.save(user);
     }
 
