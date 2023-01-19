@@ -25,8 +25,8 @@ public class User {
     private String password;
     private String name;
     private String avatar;
-    private boolean allowedInvite;
-    private boolean visibleAvatar;
+    private Boolean allowedInvite;
+    private Boolean visibleAvatar;
 
     @Override
     public boolean equals(Object o) {
