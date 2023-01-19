@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.msgrserver.model.dto.ActionDto;
 import org.modelmapper.ModelMapper;
 import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -24,7 +25,8 @@ public class Mapper {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        Reflections reflections = new Reflections("com.msgrserver.model.dto");
+        Reflections reflections =
+                new Reflections(new ConfigurationBuilder().forPackages(ActionDto.class.getPackageName()));
         Set<Class<? extends ActionDto>> subTypes = reflections.getSubTypesOf(ActionDto.class);
         objectMapper.registerSubtypes(new ArrayList<>(subTypes));
     }
