@@ -3,9 +3,10 @@ package com.msgrserver.socket;
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionRequest;
 import com.msgrserver.action.ActionResult;
+import com.msgrserver.action.ActionType;
+import com.msgrserver.exception.BadRequestException;
 import com.msgrserver.handler.ActionHandler;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.service.user.SessionService;
 import com.msgrserver.socket.config.CustomSpringConfigurator;
 import jakarta.annotation.PostConstruct;
 import jakarta.websocket.*;
@@ -83,6 +84,19 @@ public class WSServerEndpoint {
     @OnError
     public void onError(Session session, Throwable err) {
         LOGGER.warning("[SERVER]: Error!, Session ID: " + session.getId() + ", " + err);
+
+        Action action = Action.builder()
+                .type(ActionType.ERROR)
+                .build();
+
+        if(err instanceof BadRequestException) {
+            action.setError(err.getClass().getSimpleName());
+        } else {
+            action.setError("Server Error");
+        }
+
+        session.getAsyncRemote().sendObject(action);
+
         err.printStackTrace();
     }
 

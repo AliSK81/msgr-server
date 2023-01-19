@@ -12,5 +12,6 @@ public class Action {
     private ActionType type;
     private ActionDto dto;
     private String token;
+    private String error;
 }
 

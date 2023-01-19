@@ -1,5 +1,5 @@
 package com.msgrserver.exception;
 
-public class NotImplementedException extends RuntimeException {
+public class NotImplementedException extends BadRequestException {
 
 }
