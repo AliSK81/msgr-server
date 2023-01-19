@@ -27,5 +27,7 @@ public interface PublicChatService {
 
     Set<User> getChatMembers(Long chatId);
 
+    Set<User> getChatAdmins(Long chatId);
+
     public Set<User> usersCanBeAdd(Long chatId, Set<Long> userIds);
 }

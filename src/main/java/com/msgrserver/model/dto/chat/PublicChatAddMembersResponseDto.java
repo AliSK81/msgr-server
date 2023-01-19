@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class PublicChatAddMembersResponseDto extends ActionDto {
-    Long chatId;
-    Long adminId;
-    Set<UserDto> userAddedIds;
+    ChatDto chat;
+    UserDto adder;
+    Set<UserDto> users;
 }

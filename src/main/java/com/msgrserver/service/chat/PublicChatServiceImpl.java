@@ -58,23 +58,16 @@ public class PublicChatServiceImpl implements PublicChatService {
         PublicChat chat = findPublicChat(chatId);
         User user = findUser(userId);
 
-        boolean isOwner = chat.getOwner().equals(user);
+        Set<User> admins = userRepository.findAdminsByChatId(chatId);
+        boolean isAdmin = admins.contains(user);
 
-        if (isOwner) {
-            chatService.deleteChat(userId, chatId); // todo check for replace an admin
-
-        } else {
-            Set<User> admins = userRepository.findAdminsByChatId(chatId);
-            boolean isAdmin = admins.contains(user);
-
-            if (isAdmin) {
-                chat.setAdmins(admins);
-                chat.getAdmins().remove(user);
-            }
-
-            chat.setMembers(userRepository.findMembersByChatId(chatId));
-            chat.getMembers().remove(user);
+        if (isAdmin) {
+            chat.setAdmins(admins);
+            chat.getAdmins().remove(user);
         }
+
+        chat.setMembers(userRepository.findMembersByChatId(chatId));
+        chat.getMembers().remove(user);
 
         return publicChatRepository.save(chat);
     }
@@ -202,6 +195,11 @@ public class PublicChatServiceImpl implements PublicChatService {
     @Override
     public Set<User> getChatMembers(Long chatId) {
         return userRepository.findMembersByChatId(chatId);
+    }
+
+    @Override
+    public Set<User> getChatAdmins(Long chatId) {
+        return userRepository.findAdminsByChatId(chatId);
     }
 
 

@@ -10,6 +10,7 @@ import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.repository.PublicChatRepository;
 import com.msgrserver.repository.UserRepository;
+import com.msgrserver.service.chat.ChatService;
 import com.msgrserver.service.chat.PublicChatService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,8 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
     private final PublicChatRepository publicChatRepository;
     private final UserRepository userRepository;
 
+    private final ChatService chatService;
+
     @Override
     public ActionResult joinChatWithLink(Long userId, PublicChatJoinWithLinkRequestDto dto) {
         PublicChat publicChat = publicChatRepository.findPublicChatByLink(dto.getLink());
@@ -35,34 +38,53 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                 .chatId(chat.getId())
                 .userId(userId)
                 .build();
+
         Action action = Action.builder()
                 .type(ActionType.JOIN_CHAT_WITH_LINK)
                 .dto(responseDto).build();
-        return getResponse(chat, action);
+
+        Set<Long> receivers = publicChatService.getChatMembers(chat.getId()).stream()
+                .map(User::getId).collect(Collectors.toSet());
+
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers)
+                .build();
     }
 
     @Override
-    public ActionResult addMembersToPublicChat(Long adminId, PublicChatAddMembersRequestDto dto) {
-        PublicChat chat = publicChatService.addMembersToPublicChat(dto.getChatId(), adminId, dto.getUserIds());
+    public ActionResult addMembersToPublicChat(Long adder, PublicChatAddMembersRequestDto dto) {
+        PublicChat chat = publicChatService.addMembersToPublicChat(dto.getChatId(), adder, dto.getUserIds());
 
-        Set<UserDto> usersAddedIds = publicChatService.usersCanBeAdd(dto.getChatId(), dto.getUserIds()).stream()
+        Set<UserDto> users = publicChatService.usersCanBeAdd(dto.getChatId(), dto.getUserIds()).stream()
                 .map(user -> Mapper.map(user, UserDto.class)).collect(Collectors.toSet());
 
         PublicChatAddMembersResponseDto responseDto = PublicChatAddMembersResponseDto.builder()
-                .chatId(dto.getChatId())
-                .userAddedIds(usersAddedIds)
-                .adminId(adminId)
+                .chat(Mapper.map(chat, ChatDto.class))
+                .users(users)
+                .adder(Mapper.map(findUser(adder), UserDto.class))
                 .build();
 
         Action action = Action.builder()
                 .type(ActionType.ADD_NEW_MEMBERS)
-                .dto(responseDto).build();
+                .dto(responseDto)
+                .build();
 
-        return getResponse(chat, action);
+        Set<Long> receivers = publicChatService.getChatMembers(dto.getChatId()).stream()
+                .map(User::getId).collect(Collectors.toSet());
+
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers)
+                .build();
     }
 
     @Override
     public ActionResult deleteUserFromPublicChat(Long deleterId, PublicChatDeleteMemberRequestDto dto) {
+
+        Set<Long> receivers = publicChatService.getChatMembers(dto.getChatId()).stream()
+                .map(User::getId).collect(Collectors.toSet());
+
         PublicChat chat = publicChatService.deleteUserFromPublicChat(dto.getChatId(), deleterId, dto.getUserId());
 
         User user = findUser(dto.getUserId());
@@ -78,7 +100,10 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                 .type(ActionType.DELETE_MEMBER)
                 .dto(responseDto).build();
 
-        return getResponse(chat, action);
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers)
+                .build();
     }
 
     @Override
@@ -125,9 +150,17 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                         .build())
                 .collect(Collectors.toSet());
 
+        Set<AdminDto> admins = publicChatService.getChatAdmins(dto.getChatId()).stream()
+                .map(user -> AdminDto.builder()
+                        .chatId(dto.getChatId())
+                        .userId(user.getId())
+                        .build())
+                .collect(Collectors.toSet());
+
         PublicChatGetMembersResponseDto responseDto = PublicChatGetMembersResponseDto.builder()
                 .users(users)
                 .members(members)
+                .admins(admins)
                 .build();
 
         Action action = Action.builder()
@@ -140,19 +173,20 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                 .receivers(Set.of(userId)).build();
     }
 
-    private ActionResult getResponse(PublicChat chat, Action action) {
+    private ActionResult getResult(Long userId, PublicChat chat, Action action) {
         Set<Long> receivers = new HashSet<>();
 
         switch (chat.getType()) {
             case GROUP -> receivers.addAll(publicChatService.getChatMembers(chat.getId())
-                    .stream().map(User::getId).toList());
+                    .stream().map(User::getId).collect(Collectors.toSet()));
 
             case CHANNEL -> {
                 receivers.add(chat.getOwner().getId());
                 receivers.addAll(userRepository.findAdminsByChatId(chat.getId()).stream()
-                        .map(User::getId).toList());
+                        .map(User::getId).collect(Collectors.toSet()));
             }
         }
+        receivers.add(userId);
 
         return ActionResult.builder()
                 .action(action)
@@ -161,7 +195,16 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
 
     @Override
     public ActionResult leavePublicChat(Long userId, PublicChatLeaveRequestDto dto) {
-        PublicChat chat = publicChatService.leavePublicChat(dto.getChatId(), userId);
+        Set<Long> receivers = publicChatService.getChatMembers(dto.getChatId()).stream()
+                .map(User::getId).collect(Collectors.toSet());
+
+        PublicChat chat = publicChatService.findPublicChat(dto.getChatId());
+
+        if (chat.getOwner().getId().equals(userId)) {
+            chatService.deleteChat(userId, dto.getChatId());
+        } else {
+            publicChatService.leavePublicChat(dto.getChatId(), userId);
+        }
 
         PublicChatLeaveResponseDto responseDto = PublicChatLeaveResponseDto.builder()
                 .chatId(chat.getId())
@@ -172,7 +215,10 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                 .type(ActionType.LEAVE_PUBLIC_CHAT)
                 .dto(responseDto).build();
 
-        return getResponse(chat, action);
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers)
+                .build();
     }
 
     @Override
@@ -186,21 +232,37 @@ public class PublicChatHandlerImpl implements PublicChatHandler {
                 .type(ActionType.SELECT_NEW_ADMIN_PUBLIC_CHAT)
                 .dto(responseDto)
                 .build();
-        return getResponse(chat, action);
+
+        Set<Long> receivers = publicChatService.getChatMembers(dto.getChatId()).stream()
+                .map(User::getId).collect(Collectors.toSet());
+
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers)
+                .build();
     }
 
     @Override
-    public ActionResult deleteAdminPublicChat(Long selectorId, PublicChatDeleteAdminRequestDto dto) {
-        PublicChat chat = publicChatService.deleteAdminPublicChat(dto.getChatId(), selectorId, dto.getUserId());
+    public ActionResult deleteAdminPublicChat(Long deleterId, PublicChatDeleteAdminRequestDto dto) {
+        PublicChat chat = publicChatService.deleteAdminPublicChat(dto.getChatId(), deleterId, dto.getUserId());
+
         PublicChatDeleteAdminResponseDto responseDto = PublicChatDeleteAdminResponseDto.builder()
                 .chatId(chat.getId())
                 .userId(dto.getUserId())
                 .build();
+
         Action action = Action.builder()
                 .type(ActionType.DELETE_ADMIN_PUBLIC_CHAT)
                 .dto(responseDto)
                 .build();
-        return getResponse(chat, action);
+
+        Set<Long> receivers = publicChatService.getChatMembers(dto.getChatId()).stream()
+                .map(User::getId).collect(Collectors.toSet());
+
+        return ActionResult.builder()
+                .action(action)
+                .receivers(receivers)
+                .build();
     }
 
     private User findUser(Long userId) {

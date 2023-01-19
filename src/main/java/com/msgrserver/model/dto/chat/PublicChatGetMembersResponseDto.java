@@ -14,4 +14,5 @@ import java.util.Set;
 public class PublicChatGetMembersResponseDto extends ActionDto {
     Set<UserDto> users;
     Set<MemberDto> members;
+    Set<AdminDto> admins;
 }
