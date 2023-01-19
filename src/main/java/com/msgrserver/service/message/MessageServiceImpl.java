@@ -18,6 +18,7 @@ import com.msgrserver.repository.MessageRepository;
 import com.msgrserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -97,6 +98,7 @@ public class MessageServiceImpl implements MessageService {
         // todo check sender is not blocked by receiver user
     }
 
+    @Transactional
     @Override
     public Long deleteMessage(Long deleterId, Long messageId) {
         Message message = findMessage(messageId);

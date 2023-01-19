@@ -32,8 +32,14 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) {
         checkUniqueUsername(user.getUsername());
 //        checkStrongPassword(user.getPassword());
+        hashPassword(user);
         user.setAllowedInvite(true);
+        user.setVisibleAvatar(true);
         return userRepository.save(user);
+    }
+
+    private void hashPassword(User user) {
+        
     }
 
     @Override

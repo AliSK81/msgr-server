@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,7 @@ public class ChatServiceImpl implements ChatService {
 
         if (chat instanceof PrivateChat privateChat) {
             boolean isUserInChat =
-                    Set.of(privateChat.getUser1().getId(), privateChat.getUser2().getId()).contains(userId);
+                    List.of(privateChat.getUser1().getId(), privateChat.getUser2().getId()).contains(userId);
 
             if (!isUserInChat) {
                 throw new BadRequestException();
