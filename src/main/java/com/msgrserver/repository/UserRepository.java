@@ -14,9 +14,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findUserByUsername(String username);
 
-    @Query(value = "select * from User u join Member m on u.id = m.user_id where m.chat_id = ?1", nativeQuery = true)
+    @Query(value = "select * from user u join member m on u.id = m.user_id where m.chat_id = ?1", nativeQuery = true)
     Set<User> findMembersByChatId(Long chatId);
 
-    @Query(value = "select * from User u join Admin a on u.id = a.user_id where a.chat_id = ?1", nativeQuery = true)
+    @Query(value = "select * from user u join admin a on u.id = a.user_id where a.chat_id = ?1", nativeQuery = true)
     Set<User> findAdminsByChatId(Long chatId);
 }

@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Repository
 public interface PrivateChatRepository extends JpaRepository<PrivateChat, Long> {
-    @Query(value = "SELECT * FROM msgr.private_chat WHERE " +
+    @Query(value = "SELECT * FROM private_chat WHERE " +
             "user1_id = ?1 AND user2_id = ?2 OR " +
             "user1_id = ?2 AND user2_id = ?1", nativeQuery = true)
     Optional<PrivateChat> findPrivateChatByUsersId(Long user1Id, Long user2Id);
