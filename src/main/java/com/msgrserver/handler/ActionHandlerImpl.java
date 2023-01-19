@@ -62,8 +62,8 @@ public class ActionHandlerImpl implements ActionHandler {
                     case ADD_NEW_MEMBERS ->
                             actionResult = publicChatHandler.addMembersToPublicChat(userId, (PublicChatAddMembersRequestDto) action.getDto());
 
-                    case DELETE_USER_BY_ADMIN ->
-                            actionResult = publicChatHandler.deleteUserFromPublicChat(userId, (PublicChatDeleteUserRequestDto) action.getDto());
+                    case DELETE_MEMBER ->
+                            actionResult = publicChatHandler.deleteUserFromPublicChat(userId, (PublicChatDeleteMemberRequestDto) action.getDto());
 
                     case EDIT_PROFILE ->
                             actionResult = userHandler.editProfile(userId, (UserEditProfileRequestDto) action.getDto());

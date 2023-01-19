@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -71,11 +70,9 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private void checkPublicChatAccess(User sender, PublicChat chat) {
+
         Set<User> users = userRepository.findMembersByChatId(chat.getId());
-        boolean isMember = users.stream()
-                .map(User::getId)
-                .collect(Collectors.toSet())
-                .contains(sender.getId());
+        boolean isMember = users.contains(sender);
 
         if (!isMember)
             throw new BadRequestException();
@@ -85,11 +82,8 @@ public class MessageServiceImpl implements MessageService {
         if (isChannel) {
             Set<User> admins = userRepository.findAdminsByChatId(chat.getId());
 
-            boolean isOwner = chat.getOwner().getId().equals(sender.getId());
-            boolean isAdmin = admins.stream()
-                    .map(User::getId)
-                    .collect(Collectors.toSet())
-                    .contains(sender.getId());
+            boolean isOwner = chat.getOwner().equals(sender);
+            boolean isAdmin = admins.contains(sender);
 
             if (!isOwner && !isAdmin)
                 throw new BadRequestException();
@@ -108,14 +102,15 @@ public class MessageServiceImpl implements MessageService {
         Message message = findMessage(messageId);
         User sender = message.getSender();
         Chat chat = message.getChat();
+        User deleter = findUser(deleterId);
 
         if (chat instanceof PrivateChat) {
-            if (!deleterId.equals(sender.getId())) {
+            if (!deleter.equals(sender)) {
                 throw new BadRequestException();
             }
-        } else {
-            User owner = ((PublicChat) chat).getOwner();
-            if (!deleterId.equals(owner.getId()) && !deleterId.equals(sender.getId())) {
+        } else if (chat instanceof PublicChat publicChat) {
+            User owner = publicChat.getOwner();
+            if (!deleter.equals(owner) && !deleter.equals(sender)) {
                 throw new BadRequestException();
             }
         }

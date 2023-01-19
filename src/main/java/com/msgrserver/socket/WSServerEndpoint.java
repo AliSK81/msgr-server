@@ -34,7 +34,6 @@ public class WSServerEndpoint {
 
     private static final Logger LOGGER = Logger.getLogger(WSServerEndpoint.class.getName());
     private final ActionHandler actionHandler;
-    private final SessionService sessionService;
 
 
     private static final Map<Long, Set<Session>> sessions = new HashMap<>();
@@ -55,6 +54,8 @@ public class WSServerEndpoint {
 
         try {
             ActionResult result = actionHandler.handle(request);
+            System.out.println(result.getAction().getType());
+            System.out.println(result.getReceivers());
 
             User user = result.getUser();
             sessions.putIfAbsent(user.getId(), new HashSet<>());
