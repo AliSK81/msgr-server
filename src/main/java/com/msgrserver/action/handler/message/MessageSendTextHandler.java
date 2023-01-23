@@ -1,11 +1,14 @@
-package com.msgrserver.handler.message;
+package com.msgrserver.action.handler.message;
 
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionResult;
 import com.msgrserver.action.ActionType;
+import com.msgrserver.action.handler.ActionHandler;
 import com.msgrserver.exception.NotImplementedException;
 import com.msgrserver.model.dto.chat.ChatDto;
-import com.msgrserver.model.dto.message.*;
+import com.msgrserver.model.dto.message.MessageDto;
+import com.msgrserver.model.dto.message.MessageSendTextRequestDto;
+import com.msgrserver.model.dto.message.MessageSendTextResponseDto;
 import com.msgrserver.model.dto.user.UserDto;
 import com.msgrserver.model.entity.chat.Chat;
 import com.msgrserver.model.entity.chat.PrivateChat;
@@ -13,11 +16,9 @@ import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.service.chat.ChatService;
 import com.msgrserver.service.chat.PrivateChatService;
 import com.msgrserver.service.chat.PublicChatService;
 import com.msgrserver.service.message.MessageService;
-import com.msgrserver.service.user.UserService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -30,24 +31,27 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class MessageHandlerImpl implements MessageHandler {
+public class MessageSendTextHandler implements ActionHandler<MessageSendTextRequestDto> {
     private final MessageService messageService;
     private final PrivateChatService privateChatService;
     private final PublicChatService publicChatService;
-    private final UserService userService;
-    private final ChatService chatService;
 
+    @Override
+    public ActionType type() {
+        return ActionType.SEND_TEXT;
+    }
 
-    public ActionResult sendText(Long senderId, MessageSendTextRequestDto dto) {
+    @Override
+    public ActionResult handle(Long userId, MessageSendTextRequestDto dto) {
 
         Long chatId;
         if (dto.isPrivate()) {
 
             long receiverId = dto.getToId();
-            Optional<PrivateChat> chat = privateChatService.findPrivateChat(senderId, receiverId);
+            Optional<PrivateChat> chat = privateChatService.findPrivateChat(userId, receiverId);
 
             if (chat.isEmpty()) {
-                chat = Optional.of(privateChatService.createPrivateChat(senderId, receiverId));
+                chat = Optional.of(privateChatService.createPrivateChat(userId, receiverId));
             }
 
             chatId = chat.get().getId();
@@ -58,12 +62,12 @@ public class MessageHandlerImpl implements MessageHandler {
 
         TextMessage newMessage = messageService.createText(
                 chatId,
-                senderId,
+                userId,
                 Mapper.map(dto, TextMessage.class)
         );
 
-        Action action = getMessageReceiveAction(newMessage);
-        Set<Long> receivers = getMessageReceivers(newMessage);
+        Action action = getAction(newMessage);
+        Set<Long> receivers = getReceivers(newMessage);
 
         return ActionResult.builder()
                 .receivers(receivers)
@@ -71,7 +75,7 @@ public class MessageHandlerImpl implements MessageHandler {
                 .build();
     }
 
-    private Action getMessageReceiveAction(Message message) {
+    private Action getAction(Message message) {
 
         User sender = message.getSender();
         Chat chat = message.getChat();
@@ -101,7 +105,7 @@ public class MessageHandlerImpl implements MessageHandler {
                 .build();
     }
 
-    private Set<Long> getMessageReceivers(Message message) {
+    private Set<Long> getReceivers(Message message) {
         Set<Long> receivers;
 
         boolean isPrivate = message.getChat() instanceof PrivateChat;
@@ -120,27 +124,5 @@ public class MessageHandlerImpl implements MessageHandler {
         }
 
         return receivers;
-    }
-
-    @Override
-    public ActionResult deleteMessage(Long userId, MessageDeleteRequestDto dto) {
-        Message message = messageService.findMessage(dto.getMessageId());
-        Set<Long> receivers = getMessageReceivers(message);
-
-        Long chatId = messageService.deleteMessage(userId, dto.getMessageId());
-
-        MessageDeleteResponseDto responseDto = MessageDeleteResponseDto.builder()
-                .messageId(dto.getMessageId())
-                .chatId(chatId).build();
-
-        Action action = Action.builder()
-                .dto(responseDto)
-                .type(ActionType.DELETE_MESSAGE)
-                .build();
-
-        return ActionResult.builder()
-                .action(action)
-                .receivers(receivers)
-                .build();
     }
 }

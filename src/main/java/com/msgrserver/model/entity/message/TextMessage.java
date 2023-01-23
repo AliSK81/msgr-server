@@ -1,6 +1,7 @@
 package com.msgrserver.model.entity.message;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.Objects;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@PrimaryKeyJoinColumn
 public class TextMessage extends Message {
     private String text;
 

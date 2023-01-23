@@ -14,6 +14,7 @@ import java.util.Set;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@PrimaryKeyJoinColumn
 public class PublicChat extends Chat {
     private String title;
     private String link;

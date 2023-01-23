@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class UserGetChatsResponseDto extends ActionDto {
-    Set<ChatDto> chats;
     Set<UserDto> users;
+    Set<ChatDto> chats;
     Set<MessageDto> messages;
 }

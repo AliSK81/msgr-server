@@ -1,17 +1,14 @@
-package com.msgrserver.handler.chat;
+package com.msgrserver.action.handler.chat;
 
 import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionResult;
 import com.msgrserver.action.ActionType;
-import com.msgrserver.model.dto.chat.PrivateChatDeleteRequestDto;
-import com.msgrserver.model.dto.chat.PrivateChatDeleteResponseDto;
+import com.msgrserver.action.handler.ActionHandler;
 import com.msgrserver.model.dto.chat.ChatGetMessagesRequestDto;
 import com.msgrserver.model.dto.chat.ChatGetMessagesResponseDto;
 import com.msgrserver.model.dto.message.MessageDto;
 import com.msgrserver.model.dto.user.UserDto;
-import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.service.chat.ChatService;
-import com.msgrserver.service.chat.PrivateChatService;
 import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,13 +18,16 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class ChatHandlerImpl implements ChatHandler {
-
+public class ChatGetMessagesHandler implements ActionHandler<ChatGetMessagesRequestDto> {
     private final ChatService chatService;
-    private final PrivateChatService privateChatService;
 
     @Override
-    public ActionResult getChatMessages(Long userId, ChatGetMessagesRequestDto dto) {
+    public ActionType type() {
+        return ActionType.GET_CHAT_MESSAGES;
+    }
+
+    @Override
+    public ActionResult handle(Long userId, ChatGetMessagesRequestDto dto) {
 
         Set<MessageDto> messages = new HashSet<>();
         Set<UserDto> users = new HashSet<>();
@@ -54,29 +54,6 @@ public class ChatHandlerImpl implements ChatHandler {
         return ActionResult.builder()
                 .action(action)
                 .receivers(Set.of(userId))
-                .build();
-    }
-
-    @Override
-    public ActionResult deletePrivateChat(Long userId, PrivateChatDeleteRequestDto dto) {
-        PrivateChat chat = privateChatService.findPrivateChat(dto.getChatId());
-
-        chatService.deleteChat(userId, dto.getChatId());
-
-        Set<Long> receivers = Set.of(chat.getUser1().getId(), chat.getUser2().getId());
-
-        PrivateChatDeleteResponseDto responseDto = PrivateChatDeleteResponseDto.builder()
-                .chatId(dto.getChatId())
-                .build();
-
-        Action action = Action.builder()
-                .type(ActionType.DELETE_PRIVATE_CHAT)
-                .dto(responseDto)
-                .build();
-
-        return ActionResult.builder()
-                .action(action)
-                .receivers(receivers)
                 .build();
     }
 }
