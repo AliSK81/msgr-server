@@ -9,7 +9,6 @@ import com.msgrserver.repository.PrivateChatRepository;
 import com.msgrserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -42,7 +41,7 @@ public class PrivateChatServiceImpl implements PrivateChatService {
 
     @Override
     public Optional<PrivateChat> findPrivateChat(Long user1Id, Long user2Id) {
-        return privateChatRepository.findPrivateChatByUsersId(user1Id, user2Id);
+        return privateChatRepository.findPrivateChatByUser1IdOrUser2Id(user1Id, user2Id);
 //                .orElseThrow(ChatNotFoundException::new);
     }
 

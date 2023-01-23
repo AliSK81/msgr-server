@@ -12,6 +12,8 @@ import com.msgrserver.service.chat.PrivateChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -32,7 +34,7 @@ public class PrivateChatDeleteHandler implements ActionHandler<PrivateChatDelete
 
         chatService.deleteChat(userId, dto.getChatId());
 
-        Set<Long> receivers = Set.of(chat.getUser1().getId(), chat.getUser2().getId());
+        Set<Long> receivers = new HashSet<>(List.of(chat.getUser1().getId(), chat.getUser2().getId()));
 
         PrivateChatDeleteResponseDto responseDto = PrivateChatDeleteResponseDto.builder()
                 .chatId(dto.getChatId())
