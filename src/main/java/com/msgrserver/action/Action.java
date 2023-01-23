@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class Action {
+    private Long id;
     private ActionType type;
     private ActionDto dto;
     private String token;

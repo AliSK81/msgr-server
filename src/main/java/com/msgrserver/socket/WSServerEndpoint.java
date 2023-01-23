@@ -1,12 +1,13 @@
 package com.msgrserver.socket;
 
 import com.msgrserver.action.Action;
-import com.msgrserver.action.ActionRequest;
 import com.msgrserver.action.ActionResult;
 import com.msgrserver.action.ActionType;
+import com.msgrserver.action.handler.ActionHandler;
 import com.msgrserver.exception.BadRequestException;
-import com.msgrserver.handler.ActionHandler;
-import com.msgrserver.model.entity.user.User;
+import com.msgrserver.exception.NotImplementedException;
+import com.msgrserver.model.dto.ActionDto;
+import com.msgrserver.service.user.SessionService;
 import com.msgrserver.socket.config.CustomSpringConfigurator;
 import jakarta.annotation.PostConstruct;
 import jakarta.websocket.*;
@@ -15,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.glassfish.tyrus.server.Server;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,13 +32,10 @@ import java.util.logging.Logger;
         configurator = CustomSpringConfigurator.class
 )
 public class WSServerEndpoint {
-
     private static final Logger LOGGER = Logger.getLogger(WSServerEndpoint.class.getName());
-    private final ActionHandler actionHandler;
-
-
     private static final Map<Long, Set<Session>> sessions = new HashMap<>();
-
+    private final Set<ActionHandler<? extends ActionDto>> handlers;
+    private final SessionService sessionService;
 
     @OnOpen
     public void onOpen(Session session) {
@@ -49,36 +46,33 @@ public class WSServerEndpoint {
     public void onMessage(Session session, Action action) {
         LOGGER.info("[FROM CLIENT]: " + action + ", Session ID: " + session.getId());
 
-        ActionRequest request = ActionRequest.builder()
-                .action(action)
-                .build();
-
-        try {
-            ActionResult result = actionHandler.handle(request);
-            System.out.println(result.getAction().getType());
-            System.out.println(result.getReceivers());
-
-            User user = result.getUser();
-            sessions.putIfAbsent(user.getId(), new HashSet<>());
-            sessions.get(user.getId()).add(session);
-
-            for (long receiverId : result.getReceivers()) {
-                if (!sessions.containsKey(receiverId)){
-                    continue; // offline user
-                }
-                sessions.get(receiverId).forEach(receiver ->
-                        receiver.getAsyncRemote().sendObject(result.getAction()));
-            }
-        } catch (Exception ex) {
-            throw ex;
+        Long userId = null;
+        if (tokenRequired(action.getType())) {
+            userId = sessionService.findUserSession(action.getToken()).getUser().getId();
         }
 
+        ActionHandler<ActionDto> actionHandler = findHandler(action.getType());
+        ActionResult result = actionHandler.handle(userId, action.getDto());
 
+        if (!tokenRequired(action.getType())) {
+            session.getAsyncRemote().sendObject(result.getAction());
+        } else {
+            sessions.putIfAbsent(userId, new HashSet<>());
+            sessions.get(userId).add(session);
+        }
+
+        for (long receiverId : result.getReceivers()) {
+            if (!sessions.containsKey(receiverId)) {
+                continue; // offline user
+            }
+            sessions.get(receiverId).forEach(receiver ->
+                    receiver.getAsyncRemote().sendObject(result.getAction()));
+        }
     }
 
     @OnMessage
-    public void onMessage(Session session, ByteBuffer buffer) throws IOException {
-
+    public void onMessage(Session session, ByteBuffer buffer) {
+        LOGGER.info("[FROM CLIENT]: " + "input buffer " + buffer.get(0) + ", Session ID: " + session.getId());
     }
 
     @OnError
@@ -89,7 +83,7 @@ public class WSServerEndpoint {
                 .type(ActionType.ERROR)
                 .build();
 
-        if(err instanceof BadRequestException) {
+        if (err instanceof BadRequestException) {
             action.setError(err.getClass().getSimpleName());
         } else {
             action.setError("Server Error");
@@ -108,8 +102,20 @@ public class WSServerEndpoint {
 
     @PostConstruct
     public void start() {
-        String[] serverConfig = new String[]{"localhost", "8086", "/", this.getClass().getName()};
+        String[] serverConfig = new String[]{"localhost", "8086", "/", WSServerEndpoint.class.getName()};
         new Thread(() -> Server.main(serverConfig)).start();
     }
 
+    @SuppressWarnings("unchecked")
+    private ActionHandler<ActionDto> findHandler(ActionType actionType) {
+        return handlers.stream()
+                .filter(handler -> handler.type().equals(actionType))
+                .findFirst()
+                .map(handler -> (ActionHandler<ActionDto>) handler)
+                .orElseThrow(NotImplementedException::new);
+    }
+
+    private boolean tokenRequired(ActionType actionType) {
+        return !actionType.equals(ActionType.SIGN_IN) && !actionType.equals(ActionType.SIGN_UP);
+    }
 }
