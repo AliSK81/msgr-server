@@ -4,6 +4,7 @@ import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
+@PrimaryKeyJoinColumn
 public class PrivateChat extends Chat {
 
     @ManyToOne

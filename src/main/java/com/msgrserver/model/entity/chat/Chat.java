@@ -17,7 +17,7 @@ import java.util.Set;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
