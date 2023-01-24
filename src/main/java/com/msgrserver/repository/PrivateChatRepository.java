@@ -10,7 +10,7 @@ import java.util.Set;
 @Repository
 public interface PrivateChatRepository extends JpaRepository<PrivateChat, Long> {
 
-    Optional<PrivateChat> findPrivateChatByUser1IdOrUser2Id(Long user1Id, Long user2Id);
+    Optional<PrivateChat> findPrivateChatByUser1IdAndUser2Id(Long user1Id, Long user2Id);
 
     Set<PrivateChat> findPrivateChatsByUser1Id(Long userId);
 
