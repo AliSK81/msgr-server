@@ -58,14 +58,10 @@ public class MessageDeleteHandler implements ActionHandler<MessageDeleteRequestD
     private Set<Long> getReceivers(Message message) {
         Set<Long> receivers;
 
-        boolean isPrivate = message.getChat() instanceof PrivateChat;
-        boolean isPublic = message.getChat() instanceof PublicChat;
-
-        if (isPrivate) {
-            var chat = (PrivateChat) message.getChat();
+        if (message.getChat() instanceof PrivateChat chat) {
             receivers = new HashSet<>(List.of(chat.getUser1().getId(), chat.getUser2().getId()));
-        } else if (isPublic) {
-            var chat = (PublicChat) message.getChat();
+
+        } else if (message.getChat() instanceof PublicChat chat) {
             receivers = publicChatService.getChatMembers(chat.getId()).stream()
                     .map(User::getId)
                     .collect(Collectors.toSet());

@@ -8,9 +8,6 @@ import com.msgrserver.model.dto.chat.PublicChatDeleteAdminRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatDeleteAdminResponseDto;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.repository.PublicChatRepository;
-import com.msgrserver.repository.UserRepository;
-import com.msgrserver.service.chat.ChatService;
 import com.msgrserver.service.chat.PublicChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,9 +19,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PublicChatDeleteAdminHandler implements ActionHandler<PublicChatDeleteAdminRequestDto> {
     private final PublicChatService publicChatService;
-    private final PublicChatRepository publicChatRepository;
-    private final UserRepository userRepository;
-    private final ChatService chatService;
 
     @Override
     public ActionType type() {
