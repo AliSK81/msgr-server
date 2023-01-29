@@ -31,6 +31,8 @@ public class UserGetProfileHandler implements ActionHandler<UserViewProfileReque
         User user = userService.findUser(dto.getUsername());
 
         UserDto userDto = Mapper.map(user, UserDto.class);
+
+        // todo check this in service
         if (!user.getVisibleAvatar()) {
             userDto.setAvatar(null);
         }
