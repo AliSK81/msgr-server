@@ -10,7 +10,6 @@ import com.msgrserver.model.entity.user.User;
 import com.msgrserver.model.entity.user.UserSession;
 import com.msgrserver.service.user.SessionService;
 import com.msgrserver.service.user.UserService;
-import com.msgrserver.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -32,12 +31,7 @@ public class UserSignInHandler implements ActionHandler<UserSignInRequestDto> {
 
         User user = userService.findUser(dto.getUsername(), dto.getPassword());
 
-        UserSession session = UserSession.builder()
-                .id(TokenGenerator.generateNewToken())
-                .user(user)
-                .build();
-
-        sessionService.saveUserSession(session);
+        UserSession session = sessionService.createUserSession(user);
 
         UserSignInResponseDto responseDto = UserSignInResponseDto.builder()
                 .userId(user.getId())

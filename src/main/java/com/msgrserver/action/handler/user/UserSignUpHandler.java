@@ -11,7 +11,6 @@ import com.msgrserver.model.entity.user.UserSession;
 import com.msgrserver.service.user.SessionService;
 import com.msgrserver.service.user.UserService;
 import com.msgrserver.util.Mapper;
-import com.msgrserver.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -34,12 +33,7 @@ public class UserSignUpHandler implements ActionHandler<UserSignUpRequestDto> {
         User mappedUser = Mapper.map(dto, User.class);
         User newUser = userService.saveUser(mappedUser);
 
-        UserSession session = UserSession.builder()
-                .id(TokenGenerator.generateNewToken())
-                .user(newUser)
-                .build();
-
-        sessionService.saveUserSession(session);
+        UserSession session = sessionService.createUserSession(newUser);
 
         UserSignUpResponseDto responseDto = UserSignUpResponseDto.builder()
                 .userId(newUser.getId())
