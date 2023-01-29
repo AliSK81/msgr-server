@@ -28,7 +28,7 @@ public class PublicChatDeleteAdminHandler implements ActionHandler<PublicChatDel
     @Override
     public ActionResult handle(Long userId, PublicChatDeleteAdminRequestDto dto) {
 
-        PublicChat chat = publicChatService.deleteAdminPublicChat(dto.getChatId(), userId, dto.getUserId());
+        PublicChat chat = publicChatService.dismissAdmin(dto.getChatId(), userId, dto.getUserId());
 
         PublicChatDeleteAdminResponseDto responseDto = PublicChatDeleteAdminResponseDto.builder()
                 .chatId(chat.getId())

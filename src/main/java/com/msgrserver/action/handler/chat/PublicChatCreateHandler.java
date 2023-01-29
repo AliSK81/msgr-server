@@ -14,6 +14,7 @@ import com.msgrserver.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,19 +30,19 @@ public class PublicChatCreateHandler implements ActionHandler<PublicChatCreateRe
 
     @Override
     public ActionResult handle(Long userId, PublicChatCreateRequestDto dto) {
-        PublicChat chatSend = Mapper.map(dto.getChat(), PublicChat.class);
+        PublicChat chat = Mapper.map(dto.getChat(), PublicChat.class);
 
-        PublicChat chat = publicChatService.createPublicChat(userId, chatSend, dto.getInitMemberIds());
+        PublicChat createdChat = publicChatService.createPublicChat(userId, chat, dto.getInitMemberIds());
 
         PublicChatCreateResponseDto responseDto = PublicChatCreateResponseDto.builder()
-                .chat(Mapper.map(chat, ChatDto.class))
+                .chat(Mapper.map(createdChat, ChatDto.class))
                 .build();
 
         Action action = Action.builder()
                 .type(ActionType.CREATE_PUBLIC_CHAT)
                 .dto(responseDto).build();
 
-        Set<Long> receivers = publicChatService.getChatMembers(chat.getId()).stream()
+        Set<Long> receivers = publicChatService.getChatMembers(createdChat.getId()).stream()
                 .map(User::getId).collect(Collectors.toSet());
 
         return ActionResult.builder()

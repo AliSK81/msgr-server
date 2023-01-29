@@ -13,14 +13,10 @@ import com.msgrserver.model.entity.message.BinaryMessage;
 import com.msgrserver.model.entity.message.Message;
 import com.msgrserver.model.entity.message.TextMessage;
 import com.msgrserver.model.entity.user.User;
-import com.msgrserver.repository.ChatRepository;
-import com.msgrserver.repository.MessageRepository;
-import com.msgrserver.repository.UserRepository;
+import com.msgrserver.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +24,8 @@ public class MessageServiceImpl implements MessageService {
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
+    private final AdminRepository adminRepository;
 
     @Override
     public TextMessage createText(Long chatId, Long senderId, TextMessage textMessage) {
@@ -72,8 +70,7 @@ public class MessageServiceImpl implements MessageService {
 
     private void checkPublicChatAccess(User sender, PublicChat chat) {
 
-        Set<User> users = userRepository.findMembersByChatId(chat.getId());
-        boolean isMember = users.contains(sender);
+        boolean isMember = memberRepository.findByChatIdAndUserId(chat.getId(), sender.getId()).isPresent();
 
         if (!isMember)
             throw new BadRequestException();
@@ -81,10 +78,9 @@ public class MessageServiceImpl implements MessageService {
         boolean isChannel = chat.getType() == ChatType.CHANNEL;
 
         if (isChannel) {
-            Set<User> admins = userRepository.findAdminsByChatId(chat.getId());
 
             boolean isOwner = chat.getOwner().equals(sender);
-            boolean isAdmin = admins.contains(sender);
+            boolean isAdmin = adminRepository.findByChatIdAndUserId(chat.getId(), sender.getId()).isPresent();
 
             if (!isOwner && !isAdmin)
                 throw new BadRequestException();

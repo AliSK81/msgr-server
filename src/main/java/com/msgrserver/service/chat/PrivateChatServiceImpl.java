@@ -41,6 +41,7 @@ public class PrivateChatServiceImpl implements PrivateChatService {
 
     @Override
     public Optional<PrivateChat> findPrivateChat(Long user1Id, Long user2Id) {
+        // todo check if needed to change order of ids
         return privateChatRepository.findPrivateChatByUser1IdAndUser2Id(user1Id, user2Id);
 //                .orElseThrow(ChatNotFoundException::new);
     }

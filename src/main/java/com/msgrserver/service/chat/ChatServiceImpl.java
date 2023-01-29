@@ -2,22 +2,22 @@ package com.msgrserver.service.chat;
 
 import com.msgrserver.exception.BadRequestException;
 import com.msgrserver.exception.ChatNotFoundException;
+import com.msgrserver.exception.NotImplementedException;
+import com.msgrserver.exception.UserNotFoundException;
 import com.msgrserver.model.entity.chat.Chat;
+import com.msgrserver.model.entity.chat.Member;
 import com.msgrserver.model.entity.chat.PrivateChat;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.message.Message;
-import com.msgrserver.repository.ChatRepository;
-import com.msgrserver.repository.MessageRepository;
-import com.msgrserver.repository.UserRepository;
-import com.msgrserver.service.user.UserService;
+import com.msgrserver.model.entity.user.User;
+import com.msgrserver.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +25,10 @@ public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
+    private final MemberRepository memberRepository;
+    private final PrivateChatRepository privateChatRepository;
 
     @Override
     public Chat findChat(Long chatId) {
@@ -33,17 +36,28 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Set<Message> getChatMessages(Long chatId) {
-        return messageRepository.findMessagesByChatId(chatId);
-    }
+    public Set<Message> getChatMessages(Long userId, Long chatId) {
 
-    @Override
-    public boolean isChatParticipant(Long chatId, Long userId) {
-        Set<Chat> chats = userService.getUserChats(userId);
-        return chats.stream()
-                .map(Chat::getId)
-                .collect(Collectors.toSet())
-                .contains(chatId);
+        Chat chat = findChat(chatId);
+
+        boolean isMember;
+
+        if(chat instanceof PrivateChat privateChat) {
+
+            isMember = privateChat.getUser1().getId().equals(userId) || privateChat.getUser2().getId().equals(userId);
+
+        } else if (chat instanceof PublicChat) {
+
+            isMember = memberRepository.findByChatIdAndUserId(chatId, userId).isPresent();
+
+        } else {
+            throw new NotImplementedException();
+        }
+
+        if (!isMember)
+            throw new BadRequestException();
+
+        return messageRepository.findMessagesByChatId(chatId);
     }
 
     @Transactional
@@ -65,13 +79,17 @@ public class ChatServiceImpl implements ChatService {
                 throw new BadRequestException();
             }
 
-            publicChat.setAdmins(new HashSet<>());
-            publicChat.setMembers(new HashSet<>());
-            chatRepository.save(publicChat);
+            adminRepository.deleteByIdChatId(chatId);
+            memberRepository.deleteByChatId(chatId);
         }
 
-        messageRepository.deleteMessagesByChatId(chatId);
+        messageRepository.deleteByChatId(chatId);
         chatRepository.deleteById(chatId);
+    }
+
+    private User findUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
     }
 }
 

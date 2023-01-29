@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    void deleteMessagesByChatId(Long chatId);
+    void deleteByChatId(Long chatId);
 
     Set<Message> findMessagesByChatId(Long chatId);
 
