@@ -41,12 +41,14 @@ public class UserGetChatsHandler implements ActionHandler<UserGetChatsRequestDto
                 .type(type())
                 .dto(responseDto).build();
 
+        Set<Long> receivers = Set.of(userId);
+
         return ActionResult.builder()
                 .action(action)
-                .receivers(Set.of(userId)).build();
+                .receivers(receivers).build();
     }
 
-    UserGetChatsResponseDto generateResponse(Long userId) {
+    private UserGetChatsResponseDto generateResponse(Long userId) {
 
         Set<ChatDto> chats = new HashSet<>();
         Set<UserDto> users = new HashSet<>();
