@@ -4,8 +4,8 @@ import com.msgrserver.action.Action;
 import com.msgrserver.action.ActionResult;
 import com.msgrserver.action.ActionType;
 import com.msgrserver.action.handler.ActionHandler;
+import com.msgrserver.action.handler.ActionHandlerFactory;
 import com.msgrserver.exception.BadRequestException;
-import com.msgrserver.exception.NotImplementedException;
 import com.msgrserver.model.dto.ActionDto;
 import com.msgrserver.service.user.SessionService;
 import com.msgrserver.socket.config.CustomSpringConfigurator;
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 public class WSServerEndpoint {
     private static final Logger LOGGER = Logger.getLogger(WSServerEndpoint.class.getName());
     private static final Map<Long, Set<Session>> sessions = new HashMap<>();
-    private final Set<ActionHandler<? extends ActionDto>> handlers;
+    private final ActionHandlerFactory actionHandlerFactory;
     private final SessionService sessionService;
 
     @OnOpen
@@ -51,7 +51,7 @@ public class WSServerEndpoint {
             userId = sessionService.findUserSession(action.getToken()).getUser().getId();
         }
 
-        ActionHandler<ActionDto> actionHandler = findHandler(action.getType());
+        ActionHandler<ActionDto> actionHandler = actionHandlerFactory.getHandler(action.getType());
         ActionResult result = actionHandler.handle(userId, action.getDto());
 
         if (!tokenRequired(action.getType())) {
@@ -104,15 +104,6 @@ public class WSServerEndpoint {
     public void start() {
         String[] serverConfig = new String[]{"localhost", "8086", "/", WSServerEndpoint.class.getName()};
         new Thread(() -> Server.main(serverConfig)).start();
-    }
-
-    @SuppressWarnings("unchecked")
-    private ActionHandler<ActionDto> findHandler(ActionType actionType) {
-        return handlers.stream()
-                .filter(handler -> handler.type().equals(actionType))
-                .findFirst()
-                .map(handler -> (ActionHandler<ActionDto>) handler)
-                .orElseThrow(NotImplementedException::new);
     }
 
     private boolean tokenRequired(ActionType actionType) {

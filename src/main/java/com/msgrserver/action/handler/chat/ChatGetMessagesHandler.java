@@ -32,7 +32,7 @@ public class ChatGetMessagesHandler implements ActionHandler<ChatGetMessagesRequ
         Set<MessageDto> messages = new HashSet<>();
         Set<UserDto> users = new HashSet<>();
 
-        chatService.getChatMessages(dto.getChatId()).forEach(message -> {
+        chatService.getChatMessages(userId, dto.getChatId()).forEach(message -> {
             MessageDto messageDto = Mapper.map(message, MessageDto.class);
             messageDto.setSenderId(message.getSender().getId());
             messageDto.setChatId(message.getChat().getId());

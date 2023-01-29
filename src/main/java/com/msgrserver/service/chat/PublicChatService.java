@@ -1,5 +1,7 @@
 package com.msgrserver.service.chat;
 
+import com.msgrserver.model.entity.chat.Admin;
+import com.msgrserver.model.entity.chat.Member;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 
@@ -9,19 +11,23 @@ public interface PublicChatService {
 
     PublicChat findPublicChat(Long chatId);
 
+    Member findMember(Long chatId, Long userId);
+
+    Admin findAdmin(Long chatId, Long userId);
+
     PublicChat createPublicChat(Long creatorId, PublicChat chat, Set<Long> initMemberIds);
 
     PublicChat joinPublicChat(Long chatId, Long userId);
 
-    PublicChat leavePublicChat(Long chatId, Long userId);
+    void leavePublicChat(Long chatId, Long userId);
 
-    PublicChat addMembersToPublicChat(Long chatId, Long adderId, Set<Long> userIds);
+    Set<User> addMembers(Long chatId, Long adderId, Set<Long> userIds);
 
-    PublicChat deleteUserFromPublicChat(Long chatId, Long deleterId, Long userId);
+    PublicChat deleteMember(Long chatId, Long deleterId, Long userId);
 
-    PublicChat selectNewAdminPublicChat(Long chatId, Long selectorId, Long userId);
+    Admin addAdmin(Long chatId, Long selectorId, Long userId);
 
-    PublicChat deleteAdminPublicChat(Long chatId, Long selectorId, Long userId);
+    PublicChat dismissAdmin(Long chatId, Long selectorId, Long userId);
 
     PublicChat editProfilePublicChat(PublicChat publicChat, Long editorId);
 

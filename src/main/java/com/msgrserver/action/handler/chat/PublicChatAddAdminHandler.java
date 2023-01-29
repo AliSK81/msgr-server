@@ -6,7 +6,6 @@ import com.msgrserver.action.ActionType;
 import com.msgrserver.action.handler.ActionHandler;
 import com.msgrserver.model.dto.chat.PublicChatSelectNewAdminRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatSelectNewAdminResponseDto;
-import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.service.chat.PublicChatService;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +27,10 @@ public class PublicChatAddAdminHandler implements ActionHandler<PublicChatSelect
     @Override
     public ActionResult handle(Long userId, PublicChatSelectNewAdminRequestDto dto) {
 
-        PublicChat chat = publicChatService.selectNewAdminPublicChat(dto.getChatId(), userId, dto.getUserId());
+        publicChatService.addAdmin(dto.getChatId(), userId, dto.getUserId());
 
         PublicChatSelectNewAdminResponseDto responseDto = PublicChatSelectNewAdminResponseDto.builder()
-                .chatId(chat.getId())
+                .chatId(dto.getChatId())
                 .userId(dto.getUserId())
                 .build();
 

@@ -9,9 +9,7 @@ public interface ChatService {
 
     Chat findChat(Long chatId);
 
-    Set<Message> getChatMessages(Long chatId);
-
-    boolean isChatParticipant(Long chatId, Long userId);
+    Set<Message> getChatMessages(Long userId, Long chatId);
 
     void deleteChat(Long userId, Long chatId);
 }

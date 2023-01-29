@@ -8,6 +8,7 @@ import com.msgrserver.model.dto.chat.ChatDto;
 import com.msgrserver.model.dto.chat.PublicChatAddMembersRequestDto;
 import com.msgrserver.model.dto.chat.PublicChatAddMembersResponseDto;
 import com.msgrserver.model.dto.user.UserDto;
+import com.msgrserver.model.entity.chat.Member;
 import com.msgrserver.model.entity.chat.PublicChat;
 import com.msgrserver.model.entity.user.User;
 import com.msgrserver.service.chat.PublicChatService;
@@ -33,10 +34,12 @@ public class PublicChatAddMembersHandler implements ActionHandler<PublicChatAddM
     @Override
     public ActionResult handle(Long userId, PublicChatAddMembersRequestDto dto) {
 
-        PublicChat chat = publicChatService.addMembersToPublicChat(dto.getChatId(), userId, dto.getUserIds());
+        Set<User> addedUsers = publicChatService.addMembers(dto.getChatId(), userId, dto.getUserIds());
 
-        Set<UserDto> users = publicChatService.usersCanBeAdd(dto.getChatId(), dto.getUserIds()).stream()
+        Set<UserDto> users = addedUsers.stream()
                 .map(user -> Mapper.map(user, UserDto.class)).collect(Collectors.toSet());
+
+        PublicChat chat = publicChatService.findPublicChat(dto.getChatId());
 
         PublicChatAddMembersResponseDto responseDto = PublicChatAddMembersResponseDto.builder()
                 .chat(Mapper.map(chat, ChatDto.class))

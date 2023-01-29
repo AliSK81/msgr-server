@@ -35,7 +35,7 @@ public class PublicChatDeleteMemberHandler implements ActionHandler<PublicChatDe
         Set<Long> receivers = publicChatService.getChatMembers(dto.getChatId()).stream()
                 .map(User::getId).collect(Collectors.toSet());
 
-        PublicChat chat = publicChatService.deleteUserFromPublicChat(dto.getChatId(), deleterId, dto.getUserId());
+        PublicChat chat = publicChatService.deleteMember(dto.getChatId(), deleterId, dto.getUserId());
 
         User user = userService.findUser(dto.getUserId());
         User deleter = userService.findUser(deleterId);
